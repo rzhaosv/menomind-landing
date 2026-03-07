@@ -123,6 +123,8 @@ export function LandingPage() {
   const [email, setEmail] = useState('')
   const [showExitPopup, setShowExitPopup] = useState(false)
   const [exitShown, setExitShown] = useState(false)
+  const [guideSending, setGuideSending] = useState(false)
+  const [guideSent, setGuideSent] = useState(false)
   const quizRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -668,33 +670,58 @@ export function LandingPage() {
             >
               ✕
             </button>
-            <h3 className="text-xl font-bold mb-2">Before you go — get your free guide</h3>
-            <p className="text-brand-purple font-semibold mb-4">
-              The 5 Signs It Might Be Perimenopause (Not Anxiety)
-            </p>
-            <div className="flex gap-2">
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Your email"
-                className="input-field flex-1"
-              />
-              <button
-                onClick={() => {
-                  if (email) {
-                    setShowExitPopup(false)
-                    alert('Guide sent! Check your email.')
-                  }
-                }}
-                className="btn-primary text-sm whitespace-nowrap"
-              >
-                Send Guide
-              </button>
-            </div>
-            <p className="text-xs text-gray-500 mt-3">
-              No spam. Unsubscribe anytime.
-            </p>
+            <h3 className="text-xl font-bold mb-2">
+              {guideSent ? 'Check your inbox!' : 'Before you go — get your free guide'}
+            </h3>
+            {guideSent ? (
+              <p className="text-gray-600 text-sm mb-4">
+                We&apos;ve sent &quot;The 5 Signs It Might Be Perimenopause&quot; to <strong>{email}</strong>. If you don&apos;t see it, check your spam folder.
+              </p>
+            ) : (
+              <>
+                <p className="text-brand-purple font-semibold mb-4">
+                  The 5 Signs It Might Be Perimenopause (Not Anxiety)
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Your email"
+                    className="input-field flex-1"
+                  />
+                  <button
+                    onClick={async () => {
+                      if (!email) return
+                      setGuideSending(true)
+                      try {
+                        const res = await fetch('/api/guide', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ email }),
+                        })
+                        if (res.ok) {
+                          setGuideSent(true)
+                        } else {
+                          alert('Something went wrong. Please try again.')
+                        }
+                      } catch {
+                        alert('Something went wrong. Please try again.')
+                      } finally {
+                        setGuideSending(false)
+                      }
+                    }}
+                    disabled={guideSending || guideSent}
+                    className="btn-primary text-sm whitespace-nowrap"
+                  >
+                    {guideSending ? 'Sending...' : guideSent ? 'Sent!' : 'Send Guide'}
+                  </button>
+                </div>
+                <p className="text-xs text-gray-500 mt-3">
+                  No spam. Unsubscribe anytime.
+                </p>
+              </>
+            )}
           </div>
         </div>
       )}

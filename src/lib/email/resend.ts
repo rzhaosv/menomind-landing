@@ -62,6 +62,73 @@ export async function sendTrialReminderEmail(
   })
 }
 
+export async function sendFreeGuideEmail(email: string) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    subject: 'Your Free Guide: 5 Signs It Might Be Perimenopause',
+    html: `
+      <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+        <h1 style="color: #6B3F8D; font-size: 24px;">The 5 Signs It Might Be Perimenopause (Not Anxiety)</h1>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
+          Thank you for requesting our free guide. Here are the 5 signs that what you're experiencing
+          might be perimenopause — not "just anxiety."
+        </p>
+
+        <div style="background: #FFFBF5; padding: 24px; border-radius: 12px; margin: 24px 0;">
+          <h2 style="color: #6B3F8D; font-size: 18px; margin-top: 0;">1. Your anxiety appeared out of nowhere</h2>
+          <p style="color: #1A1A2E; font-size: 15px; line-height: 1.6;">
+            If you've never been an anxious person but suddenly feel on edge, racing heart, or dread —
+            fluctuating estrogen and progesterone can directly affect your brain's GABA receptors,
+            the same ones anti-anxiety medications target.
+          </p>
+
+          <h2 style="color: #6B3F8D; font-size: 18px;">2. You wake up at 3am and can't fall back asleep</h2>
+          <p style="color: #1A1A2E; font-size: 15px; line-height: 1.6;">
+            Early morning waking is a hallmark of perimenopause. Dropping progesterone — your body's
+            natural sedative — disrupts your sleep architecture, especially in the second half of the night.
+          </p>
+
+          <h2 style="color: #6B3F8D; font-size: 18px;">3. Brain fog that makes you question yourself</h2>
+          <p style="color: #1A1A2E; font-size: 15px; line-height: 1.6;">
+            Forgetting words, losing your train of thought, feeling mentally "slow" — estrogen is a key
+            neurotransmitter regulator. When it fluctuates, so does your cognitive clarity. This is
+            temporary and treatable.
+          </p>
+
+          <h2 style="color: #6B3F8D; font-size: 18px;">4. Your symptoms cluster together</h2>
+          <p style="color: #1A1A2E; font-size: 15px; line-height: 1.6;">
+            Anxiety + sleep disruption + brain fog + fatigue isn't a coincidence. When multiple symptoms
+            appear together in your late 30s to early 50s, hormonal changes are a likely common cause.
+          </p>
+
+          <h2 style="color: #6B3F8D; font-size: 18px;">5. Your doctor says "everything looks normal"</h2>
+          <p style="color: #1A1A2E; font-size: 15px; line-height: 1.6;">
+            Standard blood work often misses perimenopause because hormone levels fluctuate daily.
+            A single test can look "normal" even when you're deep in the transition. Symptom tracking
+            over time is far more revealing.
+          </p>
+        </div>
+
+        <h2 style="color: #6B3F8D; font-size: 18px;">What to do next</h2>
+        <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
+          Start tracking your symptoms daily — even for just 2 weeks. Patterns tell a story that a
+          single doctor's visit can't. MenoMind makes this easy with AI-guided tracking and
+          personalized insights.
+        </p>
+
+        <a href="https://www.menomind.app/signup" style="display: inline-block; background: #D65C8C; color: white; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: 600; margin-top: 20px;">
+          Start Tracking Free →
+        </a>
+
+        <p style="color: #888; font-size: 14px; margin-top: 40px;">
+          You're not imagining it. And you don't have to figure it out alone.
+        </p>
+      </div>
+    `,
+  })
+}
+
 export async function sendPaymentConfirmationEmail(
   email: string,
   name: string,
