@@ -107,7 +107,8 @@
 
         /* HERO SECTION */
         .hero {
-            background: linear-gradient(135deg, #6B3F8D 0%, rgba(214, 92, 140, 0.1) 100%);
+            background: linear-gradient(135deg, rgba(107, 63, 141, 0.92) 0%, rgba(107, 63, 141, 0.85) 100%),
+                        url('images/hero-woman.png') center/cover no-repeat;
             padding: 80px 20px;
             position: relative;
             overflow: hidden;
@@ -363,10 +364,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #D65C8C;
+            color: transparent;
             font-size: 14px;
             font-weight: 700;
             margin-top: 2px;
+            background-color: rgba(214, 92, 140, 0.06);
         }
 
         .awareness-stats {
@@ -893,6 +895,22 @@
             border: 1px solid #E8DFF3;
             border-radius: 12px;
             padding: 28px 24px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .testimonial-photo {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+            border: 2px solid #E8DFF3;
+        }
+
+        .testimonial-text {
+            flex: 1;
         }
 
         .testimonial-quote {
@@ -909,9 +927,12 @@
             font-weight: 600;
         }
 
-        .testimonial-detail {
-            font-size: 13px;
-            color: #999;
+        @media (max-width: 600px) {
+            .testimonial-card {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
         }
 
         .trust-stats-bar {
@@ -1578,15 +1599,15 @@
     <section class="hero">
         <div class="hero-content">
             <h1>You're Not Losing Your Mind. It Might Be Perimenopause.</h1>
-            <p class="hero-subheading">Sudden anxiety. Brain fog. Feeling like a stranger in your own body...</p>
-            <p class="hero-body">Our AI asks you the questions your doctor didn't — and helps you make sense of symptoms you've been told are "just stress." Free, private, and built on real medical research.</p>
+            <p class="hero-subheading">Sudden anxiety. Brain fog. Feeling like a stranger in your own body — at 40-something. Millions of women are experiencing exactly what you're going through. And most of their doctors missed it.</p>
+            <p class="hero-body">Our AI asks you the questions your doctor didn't. In 2 minutes, find out if your symptoms might be hormonal — and exactly what to do next.</p>
 
             <div class="hero-cta-wrapper">
                 <button class="cta-button" onclick="scrollToQuiz()">Take the Free Symptom Quiz &rarr;</button>
             </div>
 
             <div class="hero-social-proof">
-                <p class="hero-testimonial-quote">"I thought I was going crazy. Turns out it was perimenopause. MenoMind helped me see that in 2 minutes."</p>
+                <p class="hero-testimonial-quote">"I thought I was developing anxiety or early Alzheimer's. This told me it was perimenopause." — Sarah, 44, Denver</p>
                 <div class="hero-social-stats">
                     <div class="avatar-stack">
                         <span style="background-color: #D65C8C; color: white;">M</span>
@@ -1633,39 +1654,40 @@
 
             <div class="symptom-checklist">
                 <div class="symptom-check-item">
-                    <div class="check-icon">&#x2713;</div>
-                    <span>You wake up at 3am with your heart racing — for no reason</span>
+                    <div class="check-icon">&#x25A1;</div>
+                    <span>Anxiety or panic attacks that seem to come out of nowhere</span>
                 </div>
                 <div class="symptom-check-item">
-                    <div class="check-icon">&#x2713;</div>
-                    <span>Brain fog so thick you forget words mid-sentence</span>
+                    <div class="check-icon">&#x25A1;</div>
+                    <span>Brain fog — forgetting words mid-sentence, struggling to concentrate</span>
                 </div>
                 <div class="symptom-check-item">
-                    <div class="check-icon">&#x2713;</div>
-                    <span>Anxiety that appeared out of nowhere in your late 30s or 40s</span>
+                    <div class="check-icon">&#x25A1;</div>
+                    <span>Feeling irritable or emotionally raw in a way that isn't "you"</span>
                 </div>
                 <div class="symptom-check-item">
-                    <div class="check-icon">&#x2713;</div>
-                    <span>Rage or irritability that doesn't feel like "you"</span>
+                    <div class="check-icon">&#x25A1;</div>
+                    <span>Waking at 3am with your mind racing</span>
                 </div>
                 <div class="symptom-check-item">
-                    <div class="check-icon">&#x2713;</div>
-                    <span>Weight gain around your midsection that won't budge</span>
+                    <div class="check-icon">&#x25A1;</div>
+                    <span>Fatigue that sleep doesn't fix</span>
                 </div>
                 <div class="symptom-check-item">
-                    <div class="check-icon">&#x2713;</div>
-                    <span>Periods that have gone rogue — heavier, lighter, or MIA</span>
+                    <div class="check-icon">&#x25A1;</div>
+                    <span>Heart palpitations for no clear reason</span>
                 </div>
                 <div class="symptom-check-item">
-                    <div class="check-icon">&#x2713;</div>
-                    <span>Fatigue so deep that sleep doesn't fix it</span>
+                    <div class="check-icon">&#x25A1;</div>
+                    <span>Feeling like you're "losing it" — and terrified to say it out loud</span>
                 </div>
             </div>
 
             <div class="awareness-stats">
-                <p>Perimenopause has <span class="stat-highlight">34 recognized symptoms</span> — and most women don't know that.</p>
-                <p><span class="stat-highlight">65% of women</span> don't recognize their symptoms as hormonal.</p>
-                <p><span class="stat-highlight">1 in 3 women</span> are initially misdiagnosed with anxiety or depression.</p>
+                <p>These aren't signs you're going crazy.</p>
+                <p>They're among the <span class="stat-highlight">34 recognized symptoms</span> of perimenopause — the 2-12 year hormonal transition that begins, on average, in the early 40s. And <span class="stat-highlight">65% of women</span> don't recognize them.</p>
+                <p><span class="stat-highlight">1 in 3 women</span> aged 45-54 receives an incorrect diagnosis first. Most get sent home with antidepressants. Some go years — decades — without answers.</p>
+                <p style="font-weight: 600; color: #1A1A2E;">You deserve better than that.</p>
             </div>
 
             <div class="awareness-cta">
@@ -1682,19 +1704,21 @@
             <div class="problem-stats-grid">
                 <div class="problem-stat">
                     <div class="problem-stat-number">80%</div>
-                    <div class="problem-stat-label">of OB-GYNs receive no formal menopause training</div>
+                    <div class="problem-stat-label">of OB-GYN residents feel "barely comfortable" treating perimenopause</div>
                 </div>
                 <div class="problem-stat">
                     <div class="problem-stat-number">94%</div>
-                    <div class="problem-stat-label">of medical residencies include zero menopause education</div>
+                    <div class="problem-stat-label">of women received zero education about menopause. Ever.</div>
                 </div>
                 <div class="problem-stat">
                     <div class="problem-stat-number">Age 56</div>
-                    <div class="problem-stat-label">average age women finally get answers — years after symptoms start</div>
+                    <div class="problem-stat-label">average age women seek treatment — up to 15 years of unnecessary suffering</div>
                 </div>
             </div>
 
-            <p class="problem-narrative">Most doctors aren't trained to recognize perimenopause. So they prescribe antidepressants for what might be a hormone shift. Or they say "it's just stress." Meanwhile, the FDA recently confirmed that hormone therapy is safe and effective for most women — but this message still hasn't reached most exam rooms.</p>
+            <p class="problem-narrative">You're not behind. You're not weak. You were never given the information you needed.</p>
+            <p class="problem-narrative">The medical system was designed around a 70-year-old man's body. Perimenopause — the most universal female health experience after puberty — gets a fraction of the research, training, and attention it deserves.</p>
+            <p class="problem-narrative">In late 2025, the FDA finally removed the decades-old black box warning from HRT — a warning that caused millions of women to avoid treatment based on outdated, flawed science. The information landscape is finally catching up. But your doctor may not have gotten the memo.</p>
 
             <p class="problem-bridge">That's why we built this.</p>
         </div>
@@ -1704,34 +1728,33 @@
     <section class="product-section">
         <div class="product-content fade-in-section">
             <h2>Meet your AI perimenopause companion.</h2>
-            <p class="product-description">MenoMind uses AI trained on the latest menopause research to help you understand your symptoms, prepare for doctor visits, and feel less alone in this transition.</p>
+            <p class="product-subtitle" style="text-align: center; font-size: 20px; color: #6B3F8D; font-weight: 600; margin-bottom: 24px;">The knowledgeable friend your doctor never was.</p>
+            <p class="product-description">MenoMind is an AI-powered companion trained on the latest perimenopause and menopause research. It asks about your symptoms, helps you understand what might be happening, and gives you a clear, evidence-based picture — so you can finally have the conversation your doctor should have started years ago.</p>
 
             <div class="product-tiers">
                 <div class="product-tier">
-                    <h3>Free</h3>
-                    <div class="tier-price">$0 — always</div>
+                    <h3>Free — Start Here</h3>
+                    <div class="tier-price">$0</div>
                     <ul>
-                        <li>7-question symptom assessment</li>
-                        <li>Personalized symptom snapshot</li>
-                        <li>Matched symptom clusters</li>
-                        <li>Shareable results</li>
+                        <li>"Could This Be Perimenopause?" symptom quiz</li>
+                        <li>1 full AI conversation about your symptoms</li>
+                        <li>"5 Signs It Might Be Perimenopause" guide (downloadable)</li>
                     </ul>
                 </div>
                 <div class="product-tier paid">
                     <h3>Full Access</h3>
-                    <div class="tier-price">From $14.99/mo</div>
+                    <div class="tier-price">$14.99/month or $99/year</div>
                     <ul>
-                        <li>Unlimited AI conversations</li>
-                        <li>Ongoing symptom tracking</li>
-                        <li>Weekly personalized insights</li>
-                        <li>Doctor Visit Prep Sheet</li>
-                        <li>HRT Decision Guide</li>
-                        <li>Downloadable Action Plan</li>
+                        <li>Unlimited AI conversations, available 24/7</li>
+                        <li>Personalized symptom pattern tracking</li>
+                        <li>Weekly check-in summaries for your doctor</li>
+                        <li>Doctor Visit Prep Sheet generator</li>
+                        <li>HRT Decision Guide — evidence-based, jargon-free</li>
                     </ul>
                 </div>
             </div>
 
-            <p class="product-disclaimer">MenoMind is an educational tool, not a medical device. It does not diagnose, treat, or replace professional medical advice. Always consult your healthcare provider.</p>
+            <p class="product-disclaimer">MenoMind provides educational information, not medical advice or diagnosis. Always consult a qualified healthcare provider for medical decisions.</p>
         </div>
     </section>
 
@@ -1945,19 +1968,25 @@
 
             <div class="testimonials-grid">
                 <div class="testimonial-card">
-                    <p class="testimonial-quote">"I spent two years thinking I had an anxiety disorder. MenoMind connected the dots in minutes — the brain fog, the insomnia, the random rage. I brought my results to my doctor and she finally tested my hormones."</p>
-                    <div class="testimonial-author">Michelle, 43</div>
-                    <div class="testimonial-detail">Marketing Director, Denver</div>
+                    <img class="testimonial-photo" src="images/testimonial-michelle.png" alt="Michelle T." onerror="this.style.display='none'">
+                    <div class="testimonial-text">
+                        <p class="testimonial-quote">"I spent two years convinced I had early-onset dementia. The brain fog was so bad I couldn't finish a sentence. My doctor put me on SSRIs. MenoMind asked me five questions and told me this was almost certainly perimenopause. I cried for an hour — because someone finally listened, even if it was an AI."</p>
+                        <div class="testimonial-author">Michelle T., 46, Chicago</div>
+                    </div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="testimonial-quote">"My doctor kept telling me I was too young for menopause. I was 38. The Doctor Visit Prep Sheet gave me the language to advocate for myself. I finally got the care I needed."</p>
-                    <div class="testimonial-author">Diane, 39</div>
-                    <div class="testimonial-detail">Teacher, Portland</div>
+                    <img class="testimonial-photo" src="images/testimonial-diane.png" alt="Diane K." onerror="this.style.display='none'">
+                    <div class="testimonial-text">
+                        <p class="testimonial-quote">"I was having panic attacks three times a week. I thought my life was unraveling. Turns out it was hormonal. My Doctor Visit Prep Sheet changed my next appointment completely."</p>
+                        <div class="testimonial-author">Diane K., 43, Austin</div>
+                    </div>
                 </div>
                 <div class="testimonial-card">
-                    <p class="testimonial-quote">"I cried reading my results — not because they were bad, but because someone finally understood. The HRT Decision Guide helped me have the most productive conversation I've ever had with my OB-GYN."</p>
-                    <div class="testimonial-author">Jennifer, 47</div>
-                    <div class="testimonial-detail">Nurse Practitioner, Atlanta</div>
+                    <img class="testimonial-photo" src="images/testimonial-jennifer.png" alt="Jennifer R." onerror="this.style.display='none'">
+                    <div class="testimonial-text">
+                        <p class="testimonial-quote">"Balance is great but it's very UK-focused and assumes you already know you're in menopause. MenoMind was the one that helped me figure out I even had perimenopause. That's the app I needed first."</p>
+                        <div class="testimonial-author">Jennifer R., 49, Seattle</div>
+                    </div>
                 </div>
             </div>
 
@@ -1973,22 +2002,25 @@
     <section class="how-it-works-section">
         <div class="how-it-works-content fade-in-section">
             <h2>Three steps to clarity.</h2>
+            <div style="text-align: center; margin-bottom: 32px;">
+                <img src="images/how-it-works.png" alt="Woman getting answers on her phone" style="max-width: 400px; width: 100%; border-radius: 12px; box-shadow: 0 4px 20px rgba(107, 63, 141, 0.12);" onerror="this.style.display='none'">
+            </div>
 
             <div class="steps-grid">
                 <div class="step-card">
                     <div class="step-number">1</div>
-                    <h3>Tell the AI your symptoms</h3>
-                    <p>Answer 7 quick questions about what you've been experiencing. No judgment, no rush.</p>
+                    <h3>Tell our AI how you've been feeling</h3>
+                    <p>No medical jargon. No forms. Just a conversation — warm, private, and completely judgment-free.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">2</div>
-                    <h3>Get your symptom picture</h3>
-                    <p>See which symptom clusters match perimenopause patterns — backed by medical research.</p>
+                    <h3>Get your personalized symptom picture</h3>
+                    <p>Our AI maps your symptoms against the 34 recognized signs of perimenopause and tells you what might be happening — and what it's probably not.</p>
                 </div>
                 <div class="step-card">
                     <div class="step-number">3</div>
-                    <h3>Walk into your appointment ready</h3>
-                    <p>Use your Doctor Visit Prep Sheet and HRT Guide to have a real conversation with your provider.</p>
+                    <h3>Walk into your next appointment ready</h3>
+                    <p>Download your Doctor Visit Prep Sheet. Know your questions. Stop being dismissed.</p>
                 </div>
             </div>
         </div>
@@ -2050,7 +2082,7 @@
                     <span class="faq-icon">+</span>
                 </div>
                 <div class="faq-answer">
-                    No — and we'd never want it to be. MenoMind is an educational companion that helps you understand your symptoms and prepare for productive conversations with your healthcare provider. Think of it as a translator between what you're feeling and what your doctor needs to hear. We encourage every user to bring their results to a qualified provider.
+                    No — and we're clear about that. MenoMind provides education and information, not diagnosis or treatment. Think of it as a research assistant and conversation prep tool that helps you get more from your doctor, not bypass them.
                 </div>
             </div>
 
@@ -2060,7 +2092,7 @@
                     <span class="faq-icon">+</span>
                 </div>
                 <div class="faq-answer">
-                    Your privacy is non-negotiable. All data is encrypted end-to-end and stored on HIPAA-compliant infrastructure. We never sell your data to third parties — ever. You can request full deletion of your data at any time. We built MenoMind the way we'd want our own health data handled.
+                    Your conversations are private, encrypted, and never sold to third parties. You control your data. We never share your health information with employers, insurers, or advertisers.
                 </div>
             </div>
 
@@ -2070,7 +2102,7 @@
                     <span class="faq-icon">+</span>
                 </div>
                 <div class="faq-answer">
-                    Absolutely. That uncertainty is exactly why MenoMind exists. Most women spend years wondering "is it just me?" before getting answers. Our assessment helps you see whether your symptom pattern aligns with perimenopause — whether you're 35 or 55. You don't need a diagnosis to start understanding your body better.
+                    Absolutely. In fact, this is exactly who we built it for. If you're 35-52 and experiencing unexplained symptoms — anxiety, brain fog, fatigue, sleep changes — this is the place to start. You don't need a diagnosis to benefit.
                 </div>
             </div>
 
@@ -2080,7 +2112,7 @@
                     <span class="faq-icon">+</span>
                 </div>
                 <div class="faq-answer">
-                    We offer a 14-day no-questions-asked refund on all paid plans. The free quiz and symptom assessment are always free — you can see your results before you pay anything. If MenoMind doesn't feel right for you, just reach out and we'll process your refund immediately.
+                    The free tier costs nothing. If you upgrade and aren't satisfied in the first 14 days, we'll refund you — no questions asked.
                 </div>
             </div>
 
@@ -2090,7 +2122,7 @@
                     <span class="faq-icon">+</span>
                 </div>
                 <div class="faq-answer">
-                    Yes. Our AI is trained on peer-reviewed research from The Menopause Society, NAMS, NIH, and Nature. It was developed in consultation with board-certified OB-GYNs and menopause specialists. Unlike a general chatbot, MenoMind understands the nuances of hormonal transitions — the 34 recognized symptoms, their interplay, and the latest evidence on treatments including HRT.
+                    Yes. It's trained on the latest evidence-based guidelines from the Menopause Society, NAMS, the British Menopause Society, and current peer-reviewed research. It's not a generic chatbot — it's specifically designed for this.
                 </div>
             </div>
         </div>
@@ -2100,12 +2132,13 @@
     <section class="final-cta-section">
         <div class="final-cta-content fade-in-section">
             <h2>You've been waiting for someone to listen.</h2>
+            <p style="font-size: 18px; opacity: 0.95;">We built this because that someone should be available at 2AM.</p>
             <p>Start for free. No credit card. No judgment. Just answers — finally.</p>
 
-            <button class="cta-button" onclick="scrollToQuiz()">Take the Free Symptom Quiz &rarr;</button>
+            <button class="cta-button" onclick="scrollToQuiz()">Start My Free Symptom Quiz &rarr;</button>
 
             <div class="final-cta-secondary">
-                <a onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">View pricing plans</a>
+                <a onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Or get full access: $14.99/month &middot; $99/year</a>
             </div>
 
             <div class="final-cta-micro">14-day money-back guarantee &middot; Cancel anytime &middot; Your data stays private</div>
