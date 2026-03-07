@@ -54,6 +54,8 @@
     }
     </script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -107,9 +109,9 @@
 
         /* HERO SECTION */
         .hero {
-            background: linear-gradient(135deg, rgba(107, 63, 141, 0.92) 0%, rgba(107, 63, 141, 0.85) 100%),
-                        url('images/hero-woman.png') center/cover no-repeat;
-            padding: 80px 20px;
+            background: linear-gradient(135deg, rgba(107, 63, 141, 0.65) 0%, rgba(107, 63, 141, 0.35) 100%),
+                        url('images/hero-woman.jpg') center/cover no-repeat;
+            padding: 60px 20px 48px;
             position: relative;
             overflow: hidden;
         }
@@ -154,33 +156,35 @@
         }
 
         .hero h1 {
-            font-size: clamp(32px, 8vw, 48px);
+            font-size: clamp(28px, 7vw, 44px);
             font-weight: 700;
-            line-height: 1.15;
-            margin-bottom: 20px;
+            line-height: 1.2;
+            margin-bottom: 16px;
             color: #FFFBF5;
             letter-spacing: -1px;
-        }
-
-        .hero-subheading {
-            font-size: 18px;
-            color: #FFFBF5;
-            margin-bottom: 24px;
-            line-height: 1.5;
-            opacity: 0.95;
-            font-weight: 500;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.5);
         }
 
         .hero-body {
-            font-size: 17px;
+            font-size: 16px;
             color: #FFFBF5;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
             line-height: 1.6;
-            opacity: 0.9;
+            opacity: 0.95;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.4);
         }
 
         .hero-cta-wrapper {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
+        }
+
+        .hero-no-cc {
+            text-align: center;
+            font-size: 13px;
+            color: #FFFBF5;
+            opacity: 0.8;
+            margin-top: 10px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
         .cta-button {
@@ -216,26 +220,12 @@
         }
 
         /* HERO SOCIAL PROOF */
-        .hero-social-proof {
-            margin-top: 32px;
-            padding-top: 32px;
-            border-top: 1px solid rgba(255, 251, 245, 0.2);
-        }
-
-        .hero-testimonial-quote {
-            font-size: 15px;
-            color: #FFFBF5;
-            opacity: 0.9;
-            font-style: italic;
-            margin-bottom: 16px;
-            line-height: 1.6;
-        }
-
         .hero-social-stats {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
+            margin-bottom: 16px;
         }
 
         .avatar-stack {
@@ -244,13 +234,13 @@
 
         .avatar-stack span {
             display: inline-block;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             border: 2px solid #FFFBF5;
             margin-left: -8px;
-            font-size: 14px;
-            line-height: 28px;
+            font-size: 12px;
+            line-height: 24px;
             text-align: center;
         }
 
@@ -259,18 +249,39 @@
         }
 
         .hero-social-text {
-            font-size: 14px;
+            font-size: 13px;
             color: #FFFBF5;
             opacity: 0.9;
             font-weight: 500;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
-        .trust-badges {
+        .hero-empathy {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 251, 245, 0.15);
+        }
+
+        .hero-testimonial-quote {
+            font-size: 14px;
+            color: #FFFBF5;
+            opacity: 0.85;
+            font-style: italic;
+            line-height: 1.6;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* TRUST BADGES CARD */
+        .trust-badges-card {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 16px;
-            margin-top: 24px;
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 14px 20px;
+            backdrop-filter: blur(4px);
         }
 
         .badge {
@@ -279,15 +290,41 @@
             gap: 8px;
             font-size: 13px;
             color: #FFFBF5;
-            opacity: 0.9;
         }
 
-        .badge-icon {
-            font-size: 16px;
+        .badge-svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
         }
 
         .badge-text {
             line-height: 1.4;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        /* STICKY MOBILE CTA */
+        .sticky-cta {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 20px;
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 100;
+            text-align: center;
+        }
+
+        .sticky-cta.visible {
+            display: block;
+        }
+
+        .sticky-cta .cta-button {
+            max-width: 100%;
+            min-height: 52px;
+            font-size: 15px;
         }
 
         /* EVIDENCE STRIP */
@@ -341,18 +378,29 @@
             margin: 0 auto 32px;
         }
 
-        .symptom-check-item {
+        .symptom-checklist .symptom-check-item {
             display: flex;
             align-items: flex-start;
             gap: 12px;
-            padding: 12px 0;
+            padding: 12px 16px;
             font-size: 16px;
             color: #1A1A2E;
             border-bottom: 1px solid rgba(107, 63, 141, 0.08);
+            border-radius: 8px;
         }
 
-        .symptom-check-item:last-child {
+        .symptom-checklist .symptom-check-item:last-child {
             border-bottom: none;
+        }
+
+        .symptom-check-item {
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 0.15s;
+        }
+
+        .symptom-check-item:hover {
+            background-color: rgba(214, 92, 140, 0.04);
         }
 
         .check-icon {
@@ -364,11 +412,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: transparent;
             font-size: 14px;
             font-weight: 700;
             margin-top: 2px;
             background-color: rgba(214, 92, 140, 0.06);
+            transition: all 0.15s;
+        }
+
+        .symptom-check-item input:checked ~ .check-icon {
+            background-color: #D65C8C;
+            border-color: #D65C8C;
+        }
+
+        .symptom-check-item input:checked ~ .check-icon::after {
+            content: '\2713';
+            color: white;
+            font-size: 14px;
+            line-height: 1;
+        }
+
+        .symptom-feedback {
+            text-align: center;
+            padding: 16px 20px;
+            background-color: rgba(214, 92, 140, 0.08);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .symptom-feedback p {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6B3F8D;
         }
 
         .awareness-stats {
@@ -1525,22 +1600,58 @@
         }
 
         /* MOBILE RESPONSIVE */
+        @media (max-width: 768px) {
+            .cta-button {
+                max-width: 100%;
+                width: calc(100% - 40px);
+                min-height: 56px;
+            }
+        }
+
         @media (max-width: 600px) {
             .hero {
-                padding: 60px 20px;
+                padding: 40px 20px 32px;
             }
 
             .hero h1 {
-                font-size: 28px;
+                font-size: 26px;
+                line-height: 1.2;
+                margin-bottom: 12px;
+            }
+
+            .hero-body {
+                font-size: 15px;
+                margin-bottom: 16px;
             }
 
             .cta-button {
                 max-width: 100%;
+                width: 100%;
+                min-height: 56px;
             }
 
-            .trust-badges {
+            .trust-badges-card {
                 flex-direction: column;
-                gap: 12px;
+                gap: 10px;
+                padding: 12px 16px;
+                align-items: flex-start;
+            }
+
+            .badge {
+                justify-content: flex-start;
+            }
+
+            header {
+                padding: 12px 20px;
+            }
+
+            header.header-hidden {
+                transform: translateY(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            header {
+                transition: transform 0.3s ease;
             }
 
             .pricing-grid {
@@ -1572,6 +1683,11 @@
             .trust-stats-bar {
                 gap: 16px;
             }
+
+            /* Add bottom padding for sticky CTA */
+            body {
+                padding-bottom: 76px;
+            }
         }
 
         /* INTERSECTION OBSERVER ANIMATIONS */
@@ -1596,42 +1712,46 @@
     </header>
 
     <!-- HERO SECTION -->
-    <section class="hero">
+    <section class="hero" id="hero">
         <div class="hero-content">
             <h1>You're Not Losing Your Mind. It Might Be Perimenopause.</h1>
-            <p class="hero-subheading">Sudden anxiety. Brain fog. Feeling like a stranger in your own body — at 40-something. Millions of women are experiencing exactly what you're going through. And most of their doctors missed it.</p>
-            <p class="hero-body">Our AI asks you the questions your doctor didn't. In 2 minutes, find out if your symptoms might be hormonal — and exactly what to do next.</p>
+            <p class="hero-body">Our AI asks the questions your doctor didn't. In 2 minutes, find out if your symptoms might be hormonal.</p>
+
+            <!-- Social proof above CTA -->
+            <div class="hero-social-stats">
+                <div class="avatar-stack">
+                    <span style="background-color: #D65C8C; color: white;">M</span>
+                    <span style="background-color: #6B3F8D; color: white;">D</span>
+                    <span style="background-color: #007A87; color: white;">J</span>
+                    <span style="background-color: #FFA500; color: white;">S</span>
+                </div>
+                <span class="hero-social-text">Joined by 2,400+ women this month</span>
+            </div>
 
             <div class="hero-cta-wrapper">
                 <button class="cta-button" onclick="scrollToQuiz()">Take the Free Symptom Quiz &rarr;</button>
+                <div class="hero-no-cc">No credit card required</div>
             </div>
 
-            <div class="hero-social-proof">
-                <p class="hero-testimonial-quote">"I thought I was developing anxiety or early Alzheimer's. This told me it was perimenopause." — Sarah, 44, Denver</p>
-                <div class="hero-social-stats">
-                    <div class="avatar-stack">
-                        <span style="background-color: #D65C8C; color: white;">M</span>
-                        <span style="background-color: #6B3F8D; color: white;">D</span>
-                        <span style="background-color: #007A87; color: white;">J</span>
-                        <span style="background-color: #FFA500; color: white;">S</span>
-                    </div>
-                    <span class="hero-social-text">Joined by 2,400+ women this month</span>
-                </div>
-            </div>
-
-            <div class="trust-badges">
+            <!-- Trust badges with background card -->
+            <div class="trust-badges-card">
                 <div class="badge">
-                    <span class="badge-icon">&#x1F468;&#x200D;&#x2695;&#xFE0F;</span>
-                    <span class="badge-text">Developed with board-certified OBGYNs</span>
-                </div>
-                <div class="badge">
-                    <span class="badge-icon">&#x1F512;</span>
+                    <svg class="badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5v1h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h1V7a5 5 0 0 1 5-5z"/><circle cx="12" cy="15" r="1.5"/></svg>
                     <span class="badge-text">Private &amp; encrypted</span>
                 </div>
                 <div class="badge">
-                    <span class="badge-icon">&#x1F4B0;</span>
-                    <span class="badge-text">14-Day No-Questions Refund</span>
+                    <svg class="badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-3-3.87M15 3.13a4 4 0 0 1 0 7.75"/><circle cx="9" cy="7" r="4"/><path d="M4 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2"/></svg>
+                    <span class="badge-text">Board-certified OBGYNs</span>
                 </div>
+                <div class="badge">
+                    <svg class="badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span class="badge-text">14-Day Refund</span>
+                </div>
+            </div>
+
+            <!-- Empathy copy below CTA -->
+            <div class="hero-empathy">
+                <p class="hero-testimonial-quote">"I thought I was developing anxiety or early Alzheimer's. This told me it was perimenopause." — Sarah, 44, Denver</p>
             </div>
         </div>
     </section>
@@ -1652,35 +1772,46 @@
         <div class="awareness-content fade-in-section">
             <h2>Does any of this sound familiar?</h2>
 
-            <div class="symptom-checklist">
-                <div class="symptom-check-item">
-                    <div class="check-icon">&#x25A1;</div>
+            <div class="symptom-checklist" id="symptomChecklist">
+                <label class="symptom-check-item" onclick="updateSymptomCount()">
+                    <input type="checkbox" class="symptom-cb" hidden>
+                    <div class="check-icon"></div>
                     <span>Anxiety or panic attacks that seem to come out of nowhere</span>
-                </div>
-                <div class="symptom-check-item">
-                    <div class="check-icon">&#x25A1;</div>
+                </label>
+                <label class="symptom-check-item" onclick="updateSymptomCount()">
+                    <input type="checkbox" class="symptom-cb" hidden>
+                    <div class="check-icon"></div>
                     <span>Brain fog — forgetting words mid-sentence, struggling to concentrate</span>
-                </div>
-                <div class="symptom-check-item">
-                    <div class="check-icon">&#x25A1;</div>
+                </label>
+                <label class="symptom-check-item" onclick="updateSymptomCount()">
+                    <input type="checkbox" class="symptom-cb" hidden>
+                    <div class="check-icon"></div>
                     <span>Feeling irritable or emotionally raw in a way that isn't "you"</span>
-                </div>
-                <div class="symptom-check-item">
-                    <div class="check-icon">&#x25A1;</div>
+                </label>
+                <label class="symptom-check-item" onclick="updateSymptomCount()">
+                    <input type="checkbox" class="symptom-cb" hidden>
+                    <div class="check-icon"></div>
                     <span>Waking at 3am with your mind racing</span>
-                </div>
-                <div class="symptom-check-item">
-                    <div class="check-icon">&#x25A1;</div>
+                </label>
+                <label class="symptom-check-item" onclick="updateSymptomCount()">
+                    <input type="checkbox" class="symptom-cb" hidden>
+                    <div class="check-icon"></div>
                     <span>Fatigue that sleep doesn't fix</span>
-                </div>
-                <div class="symptom-check-item">
-                    <div class="check-icon">&#x25A1;</div>
+                </label>
+                <label class="symptom-check-item" onclick="updateSymptomCount()">
+                    <input type="checkbox" class="symptom-cb" hidden>
+                    <div class="check-icon"></div>
                     <span>Heart palpitations for no clear reason</span>
-                </div>
-                <div class="symptom-check-item">
-                    <div class="check-icon">&#x25A1;</div>
+                </label>
+                <label class="symptom-check-item" onclick="updateSymptomCount()">
+                    <input type="checkbox" class="symptom-cb" hidden>
+                    <div class="check-icon"></div>
                     <span>Feeling like you're "losing it" — and terrified to say it out loud</span>
-                </div>
+                </label>
+            </div>
+
+            <div class="symptom-feedback" id="symptomFeedback" style="display: none;">
+                <p id="symptomFeedbackText"></p>
             </div>
 
             <div class="awareness-stats">
@@ -1691,7 +1822,7 @@
             </div>
 
             <div class="awareness-cta">
-                <a onclick="scrollToQuiz()">Find out if it's hormonal — free &rarr;</a>
+                <button class="cta-button" onclick="scrollToQuiz()">Find out what's going on &rarr;</button>
             </div>
         </div>
     </section>
@@ -1730,6 +1861,10 @@
             <h2>Meet your AI perimenopause companion.</h2>
             <p class="product-subtitle" style="text-align: center; font-size: 20px; color: #6B3F8D; font-weight: 600; margin-bottom: 24px;">The knowledgeable friend your doctor never was.</p>
             <p class="product-description">MenoMind is an AI-powered companion trained on the latest perimenopause and menopause research. It asks about your symptoms, helps you understand what might be happening, and gives you a clear, evidence-based picture — so you can finally have the conversation your doctor should have started years ago.</p>
+
+            <div class="product-screenshots" style="text-align: center; margin-bottom: 40px;">
+                <img src="images/app-screenshot.jpg" alt="MenoMind AI conversation interface" style="max-width: 300px; width: 100%; border-radius: 24px; box-shadow: 0 8px 40px rgba(107, 63, 141, 0.2); border: 1px solid #E8DFF3;" onerror="this.parentElement.style.display='none'">
+            </div>
 
             <div class="product-tiers">
                 <div class="product-tier">
@@ -2026,10 +2161,10 @@
         </div>
     </section>
 
-    <!-- PRICING SECTION -->
-    <section class="pricing" id="pricing">
+    <!-- PRICING SECTION (collapsed by default — users reach via links) -->
+    <section class="pricing" id="pricing" style="display: none;">
         <div class="pricing-content">
-            <div class="pricing-intro fade-in-section">
+            <div class="pricing-intro">
                 <h2>Choose Your Plan</h2>
                 <p>Start free. Upgrade when you're ready for ongoing support, tracking, and doctor visit tools.</p>
             </div>
@@ -2138,7 +2273,7 @@
             <button class="cta-button" onclick="scrollToQuiz()">Start My Free Symptom Quiz &rarr;</button>
 
             <div class="final-cta-secondary">
-                <a onclick="document.getElementById('pricing').scrollIntoView({behavior: 'smooth'})">Or get full access: $14.99/month &middot; $99/year</a>
+                <a onclick="showPricing()">Or get full access: $14.99/month &middot; $99/year</a>
             </div>
 
             <div class="final-cta-micro">14-day money-back guarantee &middot; Cancel anytime &middot; Your data stays private</div>
@@ -2164,6 +2299,11 @@
             </div>
         </div>
     </footer>
+
+    <!-- STICKY MOBILE CTA -->
+    <div class="sticky-cta" id="stickyCta">
+        <button class="cta-button" onclick="scrollToQuiz()">Take the Free Quiz &rarr;</button>
+    </div>
 
     <!-- EXIT INTENT POPUP -->
     <div class="exit-popup" id="exitPopup">
@@ -2228,6 +2368,8 @@
             setupIntersectionObserver();
             setupExitIntent();
             updateProgressBar();
+            setupStickyCta();
+            setupCollapsibleHeader();
         });
 
         function setupQuizListeners() {
@@ -2548,6 +2690,12 @@
             closeExitPopup();
         }
 
+        function showPricing() {
+            var section = document.getElementById('pricing');
+            section.style.display = 'block';
+            section.scrollIntoView({ behavior: 'smooth' });
+        }
+
         function openStripeModal(planType) {
             document.getElementById('stripeModal').classList.add('active');
         }
@@ -2559,6 +2707,61 @@
         function toggleFaq(element) {
             const faqItem = element.parentElement;
             faqItem.classList.toggle('active');
+        }
+
+        // INTERACTIVE SYMPTOM CHECKLIST
+        function updateSymptomCount() {
+            setTimeout(function() {
+                var checked = document.querySelectorAll('.symptom-cb:checked').length;
+                var feedback = document.getElementById('symptomFeedback');
+                var text = document.getElementById('symptomFeedbackText');
+                if (checked >= 2) {
+                    feedback.style.display = 'block';
+                    text.textContent = 'You checked ' + checked + ' of 7 — that\u2019s worth looking into.';
+                } else {
+                    feedback.style.display = 'none';
+                }
+            }, 50);
+        }
+
+        // STICKY MOBILE CTA
+        function setupStickyCta() {
+            var stickyCta = document.getElementById('stickyCta');
+            var hero = document.getElementById('hero');
+            if (!stickyCta || !hero) return;
+
+            window.addEventListener('scroll', function() {
+                if (window.innerWidth > 600) {
+                    stickyCta.classList.remove('visible');
+                    return;
+                }
+                var heroBottom = hero.getBoundingClientRect().bottom;
+                if (heroBottom < 0) {
+                    stickyCta.classList.add('visible');
+                } else {
+                    stickyCta.classList.remove('visible');
+                }
+            });
+        }
+
+        // COLLAPSIBLE HEADER ON MOBILE
+        function setupCollapsibleHeader() {
+            var header = document.querySelector('header');
+            var lastScroll = 0;
+
+            window.addEventListener('scroll', function() {
+                if (window.innerWidth > 600) {
+                    header.classList.remove('header-hidden');
+                    return;
+                }
+                var currentScroll = window.pageYOffset;
+                if (currentScroll > lastScroll && currentScroll > 100) {
+                    header.classList.add('header-hidden');
+                } else {
+                    header.classList.remove('header-hidden');
+                }
+                lastScroll = currentScroll <= 0 ? 0 : currentScroll;
+            });
         }
 
         // Keyboard navigation
