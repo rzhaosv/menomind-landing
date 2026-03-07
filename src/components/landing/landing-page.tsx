@@ -284,22 +284,29 @@ export function LandingPage() {
           </p>
           <div className="space-y-3 max-w-md mx-auto">
             {SYMPTOMS_CHECKLIST.map((symptom, i) => (
-              <label
+              <button
                 key={i}
-                className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all ${
+                type="button"
+                onClick={() => toggleSymptom(i)}
+                className={`flex items-center gap-3 p-4 rounded-xl cursor-pointer transition-all w-full text-left ${
                   checkedSymptoms.has(i)
                     ? 'bg-brand-purple/10 border-2 border-brand-purple'
                     : 'bg-white border-2 border-gray-100 hover:border-gray-200'
                 }`}
               >
-                <input
-                  type="checkbox"
-                  checked={checkedSymptoms.has(i)}
-                  onChange={() => toggleSymptom(i)}
-                  className="w-5 h-5 rounded accent-brand-purple"
-                />
+                <div className={`w-5 h-5 rounded flex-shrink-0 flex items-center justify-center border-2 transition-colors ${
+                  checkedSymptoms.has(i)
+                    ? 'bg-brand-purple border-brand-purple'
+                    : 'border-gray-300'
+                }`}>
+                  {checkedSymptoms.has(i) && (
+                    <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
+                      <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  )}
+                </div>
                 <span className="text-sm font-medium">{symptom}</span>
-              </label>
+              </button>
             ))}
           </div>
           {checkedSymptoms.size > 0 && (
