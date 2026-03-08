@@ -932,7 +932,7 @@ export function LandingPage() {
               </span>
               <h3 className="font-semibold text-brand-purple mb-2">Premium</h3>
               <p className="text-3xl font-bold mb-1">$14.99<span className="text-sm font-normal text-gray-500">/mo</span></p>
-              <p className="text-xs text-gray-500 mb-4">or $99/year (save 33%)</p>
+              <p className="text-xs text-gray-500 mb-4">or $99/year — save $80</p>
               <ul className="text-sm text-gray-700 space-y-2 text-left mb-6">
                 <li>✓ Unlimited AI conversations</li>
                 <li>✓ Full symptom history</li>

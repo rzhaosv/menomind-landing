@@ -7,6 +7,7 @@ import {
   type Conversation,
 } from '@/components/chat/conversation-list';
 import type { ChatMessage } from '@/components/chat/message-bubble';
+import { PricingModal } from '@/components/subscription/pricing-modal';
 
 export default function ChatPage() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -17,6 +18,7 @@ export default function ChatPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [messageLimit, setMessageLimit] = useState<{ used: number; max: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showPricingModal, setShowPricingModal] = useState(false);
 
   // Fetch conversations
   const fetchConversations = useCallback(async () => {
@@ -175,9 +177,20 @@ export default function ChatPage() {
             initialMessages={messages}
             onNewConversation={handleNewConversation}
             messageLimit={messageLimit}
+            onLimitReached={() => setShowPricingModal(true)}
           />
         )}
       </div>
+
+      <PricingModal
+        open={showPricingModal}
+        onClose={() => setShowPricingModal(false)}
+        context={{
+          headline: 'Keep the conversation going',
+          body: "You've used all your free messages today. Unlock unlimited AI conversations to continue getting personalized guidance.",
+          icon: '💬',
+        }}
+      />
     </div>
   );
 }

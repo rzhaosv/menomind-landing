@@ -124,7 +124,7 @@ export default function SubscriptionPage() {
               </div>
               <div className="border-2 border-brand-pink rounded-xl p-4 relative">
                 <span className="absolute -top-2 right-4 bg-brand-pink text-white text-xs px-2 py-0.5 rounded-full">
-                  Save 33%
+                  Save $80/yr
                 </span>
                 <p className="font-semibold text-brand-pink">Annual</p>
                 <p className="text-2xl font-bold mt-1">

@@ -9,6 +9,7 @@ interface ChatInterfaceProps {
   initialMessages?: ChatMessage[];
   onNewConversation?: () => void;
   messageLimit?: { used: number; max: number } | null;
+  onLimitReached?: () => void;
 }
 
 function TypingIndicator() {
@@ -35,6 +36,7 @@ function ChatInterface({
   initialMessages = [],
   onNewConversation,
   messageLimit,
+  onLimitReached,
 }: ChatInterfaceProps) {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
@@ -110,6 +112,13 @@ function ChatInterface({
 
         if (!res.ok) {
           const errData = await res.json().catch(() => null);
+          if (res.status === 429 && onLimitReached) {
+            onLimitReached();
+            // Remove the empty assistant message
+            setMessages((prev) => prev.filter((msg) => msg.id !== assistantMessageId));
+            setIsStreaming(false);
+            return;
+          }
           throw new Error(errData?.error || `Request failed (${res.status})`);
         }
 
@@ -157,7 +166,7 @@ function ChatInterface({
         abortControllerRef.current = null;
       }
     },
-    [isStreaming, currentConversationId]
+    [isStreaming, currentConversationId, onLimitReached]
   );
 
   const handleSubmit = (e: React.FormEvent) => {

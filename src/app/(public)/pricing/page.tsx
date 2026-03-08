@@ -100,7 +100,7 @@ export default function PricingPage() {
             >
               Annual
               <span className="ml-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
-                Save 33%
+                Save $80/yr
               </span>
             </span>
           </div>

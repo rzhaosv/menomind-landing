@@ -28,7 +28,7 @@ interface OnboardingData {
 /*  Constants                                                          */
 /* ------------------------------------------------------------------ */
 
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 const SYMPTOM_OPTIONS = [
   'Hot flashes',
@@ -570,6 +570,119 @@ function StepGenerating({ error, onRetry }: { error: string | null; onRetry: () 
   );
 }
 
+function StepPremiumOffer({
+  data,
+  onContinueFree,
+}: {
+  data: OnboardingData;
+  onContinueFree: () => void;
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ANNUAL;
+
+  async function handleStartTrial() {
+    if (!priceId) {
+      onContinueFree();
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId }),
+      });
+      const result = await res.json();
+      if (result.url) {
+        window.location.href = result.url;
+      } else {
+        onContinueFree();
+      }
+    } catch {
+      onContinueFree();
+    }
+  }
+
+  const symptomCount = data.symptoms.length;
+  const goalCount = data.goals.length;
+
+  return (
+    <div className="max-w-lg mx-auto text-center">
+      {/* Success icon */}
+      <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="white" className="w-10 h-10" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+
+      <h2 className="text-2xl font-bold text-brand-dark mb-2">
+        Your personalized plan is ready!
+      </h2>
+      <p className="text-gray-600 mb-6">
+        Based on your {symptomCount} symptom{symptomCount !== 1 ? 's' : ''} and {goalCount} goal{goalCount !== 1 ? 's' : ''}, we&apos;ve created a plan tailored just for you.
+      </p>
+
+      {/* What they get with premium */}
+      <div className="bg-brand-purple/5 border-2 border-brand-purple/20 rounded-2xl p-6 mb-6 text-left">
+        <p className="text-sm font-bold text-brand-purple mb-3 uppercase tracking-wide">
+          Unlock your full plan with Premium
+        </p>
+        <ul className="space-y-2.5">
+          {[
+            'Unlimited AI conversations about your symptoms',
+            'All 5 personalized wellness plans',
+            'Full symptom history & trend analysis',
+            'Doctor visit prep reports',
+            'Weekly AI insights personalized to your data',
+          ].map((feature) => (
+            <li key={feature} className="flex items-start gap-2 text-sm text-gray-700">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B3F8D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5" aria-hidden="true">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              {feature}
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-4 pt-4 border-t border-brand-purple/10 text-center">
+          <div className="flex items-baseline justify-center gap-2">
+            <span className="text-sm text-gray-400 line-through">$14.99/mo</span>
+            <span className="text-2xl font-bold text-brand-dark">$8.25</span>
+            <span className="text-sm text-gray-500">/mo</span>
+          </div>
+          <p className="text-xs text-gray-400">Billed as $99/year · Save $80</p>
+        </div>
+      </div>
+
+      {/* Primary CTA */}
+      <Button
+        size="lg"
+        onClick={handleStartTrial}
+        disabled={loading}
+        className="w-full bg-gradient-to-r from-brand-purple to-brand-pink hover:from-brand-purple-dark hover:to-brand-pink text-white"
+      >
+        {loading ? 'Loading...' : 'Start 7-Day Free Trial'}
+      </Button>
+
+      <div className="flex items-center justify-center gap-4 mt-3 text-[10px] text-gray-400">
+        <span>No charge for 7 days</span>
+        <span>Cancel anytime</span>
+        <span>14-day money-back</span>
+      </div>
+
+      {/* Secondary CTA */}
+      <button
+        type="button"
+        onClick={onContinueFree}
+        className="mt-4 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+      >
+        Continue with Free Plan
+      </button>
+    </div>
+  );
+}
+
 /* ------------------------------------------------------------------ */
 /*  Main page                                                          */
 /* ------------------------------------------------------------------ */
@@ -645,17 +758,19 @@ export default function OnboardingPage() {
         console.error('Plan generation failed, continuing to dashboard');
       }
 
-      router.push('/dashboard');
+      // Go to premium offer step instead of dashboard
+      setSlideDirection('left');
+      setCurrentStep(TOTAL_STEPS);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred.');
       setSubmitting(false);
     }
-  }, [data, router]);
+  }, [data]);
 
   // Auto-submit when reaching the final step
-  const handleGoToFinalStep = useCallback(() => {
+  const handleGoToGenerating = useCallback(() => {
     setSlideDirection('left');
-    setCurrentStep(TOTAL_STEPS);
+    setCurrentStep(TOTAL_STEPS - 1); // Go to generating step (6)
     // Submit after a short delay so the UI updates first
     setTimeout(() => {
       submitOnboarding();
@@ -669,9 +784,9 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-[calc(100vh-8rem)] flex flex-col">
       {/* Progress bar - hide on welcome and generating steps */}
-      {currentStep > 1 && currentStep < TOTAL_STEPS && (
+      {currentStep > 1 && currentStep < TOTAL_STEPS - 1 && (
         <div className="max-w-2xl mx-auto w-full px-4">
-          <OnboardingProgressBar currentStep={currentStep - 1} totalSteps={TOTAL_STEPS - 2} />
+          <OnboardingProgressBar currentStep={currentStep - 1} totalSteps={TOTAL_STEPS - 3} />
         </div>
       )}
 
@@ -698,10 +813,13 @@ export default function OnboardingPage() {
             <StepHealth data={data} onChange={updateData} onNext={goNext} onBack={goBack} />
           )}
           {currentStep === 5 && (
-            <StepGoals data={data} onChange={updateData} onNext={handleGoToFinalStep} onBack={goBack} />
+            <StepGoals data={data} onChange={updateData} onNext={handleGoToGenerating} onBack={goBack} />
           )}
           {currentStep === 6 && (
             <StepGenerating error={error} onRetry={handleRetry} />
+          )}
+          {currentStep === 7 && (
+            <StepPremiumOffer data={data} onContinueFree={() => router.push('/dashboard')} />
           )}
         </div>
       </div>

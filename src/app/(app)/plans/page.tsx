@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { PlanCard, type PlanCardData } from '@/components/plans/plan-card';
-import { UpgradePrompt } from '@/components/subscription/upgrade-prompt';
+import { PricingModal } from '@/components/subscription/pricing-modal';
 
 /* ------------------------------------------------------------------ */
 /*  Default plan definitions                                           */
@@ -225,12 +225,15 @@ export default function PlansPage() {
       )}
 
       {/* Upgrade modal */}
-      {showUpgrade && (
-        <UpgradePrompt
-          feature="all 5 personalized wellness plans with daily action items and progress tracking"
-          onClose={() => setShowUpgrade(false)}
-        />
-      )}
+      <PricingModal
+        open={showUpgrade}
+        onClose={() => setShowUpgrade(false)}
+        context={{
+          headline: 'Unlock your full wellness toolkit',
+          body: 'Your nutrition plan is just the start. Get exercise, sleep, stress, and supplement plans tailored to your menopause stage.',
+          icon: '🌿',
+        }}
+      />
     </div>
   );
 }
