@@ -5,12 +5,22 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+function friendlyAuthError(msg: string): string {
+  const lower = msg.toLowerCase()
+  if (lower.includes('rate limit')) return 'Too many attempts. Please try again in a few minutes.'
+  if (lower.includes('invalid login') || lower.includes('invalid credentials')) return 'Incorrect email or password. Please try again.'
+  if (lower.includes('not confirmed')) return 'email_not_confirmed'
+  return 'Something went wrong. Please try again.'
+}
+
 export default function LoginForm() {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [resending, setResending] = useState(false)
+  const [resendSuccess, setResendSuccess] = useState(false)
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -31,7 +41,9 @@ export default function LoginForm() {
       })
 
       if (authError) {
-        setError(authError.message)
+        const friendly = friendlyAuthError(authError.message)
+        setError(friendly)
+        setResendSuccess(false)
         return
       }
 
@@ -67,6 +79,57 @@ export default function LoginForm() {
     }
   }
 
+  async function handleResendConfirmation() {
+    if (!email.trim()) {
+      setError('Please enter your email address first.')
+      return
+    }
+    setResending(true)
+    try {
+      const supabase = createClient()
+      const { error: resendError } = await supabase.auth.resend({
+        type: 'signup',
+        email: email.trim(),
+      })
+      if (resendError) {
+        setError(friendlyAuthError(resendError.message))
+      } else {
+        setResendSuccess(true)
+        setError(null)
+      }
+    } catch {
+      setError('Failed to resend confirmation email. Please try again.')
+    } finally {
+      setResending(false)
+    }
+  }
+
+  async function handleForgotPassword() {
+    if (!email.trim()) {
+      setError('Please enter your email address first, then click Forgot password.')
+      return
+    }
+    setLoading(true)
+    try {
+      const supabase = createClient()
+      const { error: resetError } = await supabase.auth.resetPasswordForEmail(
+        email.trim(),
+        { redirectTo: `${window.location.origin}/auth/callback?next=/settings` }
+      )
+      if (resetError) {
+        setError(friendlyAuthError(resetError.message))
+      } else {
+        setError(null)
+        setResendSuccess(false)
+        alert('Password reset link sent! Check your email.')
+      }
+    } catch {
+      setError('Failed to send reset email. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <div>
       <h2 className="mb-1 text-center text-2xl font-semibold text-brand-dark">
@@ -76,13 +139,34 @@ export default function LoginForm() {
         Sign in to your MenoMind account
       </p>
 
+      {/* Resend confirmation success */}
+      {resendSuccess && (
+        <div role="status" className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+          Confirmation email sent! Check your inbox and click the link to verify your account.
+        </div>
+      )}
+
       {/* Error display */}
       {error && (
         <div
           role="alert"
           className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
-          {error}
+          {error === 'email_not_confirmed' ? (
+            <div>
+              <p>Please confirm your email first. Check your inbox for a verification link.</p>
+              <button
+                type="button"
+                onClick={handleResendConfirmation}
+                disabled={resending}
+                className="mt-2 text-sm font-medium text-brand-purple hover:text-brand-purple-dark underline disabled:opacity-60"
+              >
+                {resending ? 'Sending...' : 'Resend confirmation email'}
+              </button>
+            </div>
+          ) : (
+            error
+          )}
         </div>
       )}
 
@@ -147,12 +231,21 @@ export default function LoginForm() {
           </div>
 
           <div>
-            <label
-              htmlFor="login-password"
-              className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Password
-            </label>
+            <div className="mb-1 flex items-center justify-between">
+              <label
+                htmlFor="login-password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                className="text-xs font-medium text-brand-purple transition-colors hover:text-brand-purple-dark"
+              >
+                Forgot password?
+              </button>
+            </div>
             <input
               id="login-password"
               type="password"

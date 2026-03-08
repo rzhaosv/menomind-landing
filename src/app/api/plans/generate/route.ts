@@ -26,7 +26,8 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { planType } = body as { planType: PlanType }
+    const rawType = (body.planType || body.type || '') as string
+    const planType = rawType.toLowerCase().replace(/s$/, '') as PlanType
 
     if (!planType || !VALID_PLAN_TYPES.includes(planType)) {
       return NextResponse.json(

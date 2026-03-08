@@ -88,6 +88,126 @@ const QUIZ_QUESTIONS = [
   },
 ]
 
+// Symptom category data for personalized results
+const SYMPTOM_CATEGORIES = {
+  cognitive: {
+    label: 'Emotional & Cognitive',
+    icon: '🧠',
+    symptoms: {
+      'Anxiety or panic attacks': {
+        explanation: 'Hormonal fluctuations directly affect your nervous system. This is not "just stress."',
+        prevalence: 62,
+      },
+      'Irritability or rage': {
+        explanation: 'Estrogen drops affect serotonin regulation, causing intense emotional reactions that feel out of character.',
+        prevalence: 70,
+      },
+      'Brain fog or memory issues': {
+        explanation: 'Estrogen plays a key role in cognitive function. Many women describe feeling like they\'re "losing their mind."',
+        prevalence: 60,
+      },
+      'Feeling down or emotionally flat': {
+        explanation: 'Hormonal shifts can affect mood-regulating neurotransmitters, leading to emotional numbness or sadness.',
+        prevalence: 45,
+      },
+    },
+  },
+  vasomotor: {
+    label: 'Vasomotor Symptoms',
+    icon: '🌡️',
+    symptoms: {
+      'Hot flashes': {
+        explanation: 'Your body\'s thermostat is affected by changing estrogen levels, causing sudden waves of heat.',
+        prevalence: 75,
+      },
+      'Night sweats': {
+        explanation: 'The same temperature dysregulation that causes hot flashes intensifies during sleep.',
+        prevalence: 68,
+      },
+      'Heart palpitations': {
+        explanation: 'Estrogen fluctuations can affect heart rhythm. Often mistaken for anxiety or cardiac issues.',
+        prevalence: 40,
+      },
+      'Dizziness': {
+        explanation: 'Hormonal changes affect blood pressure regulation and inner ear function.',
+        prevalence: 35,
+      },
+    },
+  },
+  somatic: {
+    label: 'Physical & Sleep',
+    icon: '😴',
+    symptoms: {
+      'Sleep disruption': {
+        explanation: 'Progesterone — your natural sleep hormone — declines during perimenopause, disrupting your sleep architecture.',
+        prevalence: 72,
+      },
+      'Fatigue / low energy': {
+        explanation: 'Hormonal shifts affect your metabolism and energy production at a cellular level.',
+        prevalence: 78,
+      },
+      'Joint or muscle pain': {
+        explanation: 'Estrogen has anti-inflammatory properties. As levels drop, joint and muscle pain can increase.',
+        prevalence: 55,
+      },
+      'Weight gain (especially midsection)': {
+        explanation: 'Hormonal changes shift fat distribution and slow metabolism — this isn\'t about willpower.',
+        prevalence: 65,
+      },
+    },
+  },
+  periods: {
+    label: 'Menstrual Changes',
+    icon: '📅',
+    symptoms: {
+      'Becoming irregular': {
+        explanation: 'Irregular cycles are one of the earliest and most reliable signs of perimenopause.',
+        prevalence: 80,
+      },
+      'Heavier or lighter than usual': {
+        explanation: 'Fluctuating hormones cause unpredictable changes in menstrual flow.',
+        prevalence: 65,
+      },
+      'Skipping months': {
+        explanation: 'As ovulation becomes less regular, periods may come and go unpredictably.',
+        prevalence: 50,
+      },
+      'Stopped completely': {
+        explanation: 'If periods have stopped for 12+ consecutive months, you may have reached menopause.',
+        prevalence: 30,
+      },
+    },
+  },
+}
+
+// Personalized action plans based on symptom categories
+const ACTION_PLANS: Record<string, { title: string; description: string }[]> = {
+  cognitive: [
+    { title: 'Daily mindfulness protocol for hormonal anxiety', description: 'A 10-minute evidence-based routine designed specifically for perimenopause-related anxiety.' },
+    { title: 'Cognitive support nutrition guide', description: 'Foods and supplements that support brain function during hormonal transitions.' },
+    { title: 'Stress-hormone balancing exercise plan', description: 'Movement patterns that reduce cortisol and support estrogen balance.' },
+    { title: 'Sleep-mood connection optimization', description: 'How improving your sleep directly reduces anxiety and brain fog.' },
+  ],
+  vasomotor: [
+    { title: 'Hot flash trigger identification protocol', description: 'Track and identify your personal triggers to reduce frequency by up to 40%.' },
+    { title: 'Temperature regulation techniques', description: 'Evidence-based cooling strategies and breathing exercises for immediate relief.' },
+    { title: 'Night sweat sleep environment guide', description: 'Optimize your sleep setup to minimize disruption from night sweats.' },
+    { title: 'Dietary triggers elimination plan', description: 'Common foods that worsen vasomotor symptoms and what to eat instead.' },
+  ],
+  somatic: [
+    { title: 'Evening wind-down protocol for hormonal sleep disruption', description: 'A step-by-step routine that works with your changing hormones, not against them.' },
+    { title: 'Anti-inflammatory nutrition plan', description: 'Reduce joint pain and fatigue through targeted dietary changes.' },
+    { title: 'Energy restoration exercise guide', description: 'Movement that boosts energy without overtaxing your system.' },
+    { title: 'Weight management hormonal strategy', description: 'Why traditional diets fail in perimenopause and what actually works.' },
+  ],
+  general: [
+    { title: 'Perimenopause symptom tracking starter guide', description: 'Learn what to track and how to spot patterns in your symptoms.' },
+    { title: 'Doctor visit preparation checklist', description: 'Everything you need to advocate for yourself at your next appointment.' },
+    { title: 'Hormone health daily routine', description: 'Morning and evening routines that support hormonal balance.' },
+    { title: 'Perimenopause nutrition foundations', description: 'Key nutrients your body needs more of during this transition.' },
+  ],
+}
+
 const TESTIMONIALS = [
   {
     name: 'Michelle T.',
@@ -122,7 +242,12 @@ export function LandingPage() {
   const [showResult, setShowResult] = useState(false)
   const [email, setEmail] = useState('')
   const [showExitPopup, setShowExitPopup] = useState(false)
-  const [exitShown, setExitShown] = useState(false)
+  const [exitShown, setExitShown] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return sessionStorage.getItem('menomind_exit_shown') === '1'
+    }
+    return false
+  })
   const quizRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -132,6 +257,7 @@ export function LandingPage() {
       if (scrollPercent > 0.7) {
         setShowExitPopup(true)
         setExitShown(true)
+        sessionStorage.setItem('menomind_exit_shown', '1')
       }
     }
     window.addEventListener('scroll', handleScroll)
@@ -193,6 +319,79 @@ export function LandingPage() {
     return 'low'
   }
 
+  // Get all reported symptoms across categories
+  function getReportedSymptoms() {
+    const reported: { category: string; symptom: string; explanation: string; prevalence: number }[] = []
+    const categories = ['cognitive', 'vasomotor', 'somatic', 'periods'] as const
+
+    for (const cat of categories) {
+      const answers = quizAnswers[cat] || []
+      if (answers.length === 0 || answers.includes('None of these') || answers.includes('No changes')) continue
+
+      const catData = SYMPTOM_CATEGORIES[cat]
+      for (const answer of answers) {
+        const symptomData = catData.symptoms[answer as keyof typeof catData.symptoms]
+        if (symptomData) {
+          reported.push({
+            category: cat,
+            symptom: answer,
+            explanation: symptomData.explanation,
+            prevalence: symptomData.prevalence,
+          })
+        }
+      }
+    }
+    return reported
+  }
+
+  // Get the total symptom count for score display
+  function getSymptomScore() {
+    const reported = getReportedSymptoms()
+    const total = Object.values(SYMPTOM_CATEGORIES).reduce(
+      (sum, cat) => sum + Object.keys(cat.symptoms).length, 0
+    )
+    return { reported: reported.length, total }
+  }
+
+  // Get action plans based on most prominent symptom category
+  function getPersonalizedPlans() {
+    const categoryCounts: Record<string, number> = {}
+    const categories = ['cognitive', 'vasomotor', 'somatic'] as const
+
+    for (const cat of categories) {
+      const answers = quizAnswers[cat] || []
+      if (answers.includes('None of these')) continue
+      categoryCounts[cat] = answers.length
+    }
+
+    const topCategory = Object.entries(categoryCounts)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] || 'general'
+
+    return ACTION_PLANS[topCategory] || ACTION_PLANS.general
+  }
+
+  // Get relevant testimonial based on symptoms
+  function getRelevantTestimonials() {
+    const hasAnxiety = quizAnswers.cognitive?.includes('Anxiety or panic attacks')
+    const hasBrainFog = quizAnswers.cognitive?.includes('Brain fog or memory issues')
+    const hasSleep = quizAnswers.somatic?.includes('Sleep disruption')
+
+    // Prioritize testimonials that match user's symptoms
+    const sorted = [...TESTIMONIALS].sort((a, b) => {
+      let scoreA = 0, scoreB = 0
+      if (hasAnxiety || hasBrainFog) {
+        if (a.name === 'Michelle T.') scoreA += 2
+        if (b.name === 'Michelle T.') scoreB += 2
+      }
+      if (hasSleep) {
+        if (a.name === 'Diane K.') scoreA += 2
+        if (b.name === 'Diane K.') scoreB += 2
+      }
+      return scoreB - scoreA
+    })
+    return sorted.slice(0, 2)
+  }
+
   const resultLevel = getResultLevel()
   const resultConfig = {
     low: {
@@ -222,8 +421,16 @@ export function LandingPage() {
     <div className="min-h-screen bg-brand-cream">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-brand-cream/95 backdrop-blur-sm border-b border-brand-purple/[0.08] px-5 py-4">
-        <div className="max-w-[720px] mx-auto flex justify-center">
+        <div className="max-w-[720px] mx-auto flex items-center justify-between">
           <span className="text-2xl font-bold text-brand-purple tracking-tight">MenoMind</span>
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="text-sm font-medium text-gray-600 hover:text-brand-purple transition-colors">
+              Sign In
+            </Link>
+            <Link href="/signup" className="text-sm font-semibold bg-brand-purple text-white px-4 py-2 rounded-lg hover:bg-brand-purple-dark transition-colors">
+              Get Started Free
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -398,7 +605,7 @@ export function LandingPage() {
 
       {/* Quiz Section */}
       <section ref={quizRef} className="py-16 px-5 bg-white" id="quiz">
-        <div className="max-w-[520px] mx-auto">
+        <div className={`${showResult ? 'max-w-[640px]' : 'max-w-[520px]'} mx-auto`}>
           {quizStep === -1 ? (
             <div className="text-center">
               <h2 className="text-2xl sm:text-3xl font-bold mb-4">
@@ -412,26 +619,187 @@ export function LandingPage() {
               </button>
             </div>
           ) : showResult ? (
-            <div className="text-center">
-              <h2 className="text-2xl font-bold mb-6">Your Results</h2>
-              <div className={`${resultConfig[resultLevel].bg} ${resultConfig[resultLevel].border} border-2 rounded-2xl p-6 mb-6`}>
-                <p className={`text-lg font-bold ${resultConfig[resultLevel].color} mb-2`}>
-                  {resultConfig[resultLevel].label}
-                </p>
-                <p className="text-gray-700 text-sm">
-                  {resultConfig[resultLevel].message}
-                </p>
+            <div className="max-w-[600px] mx-auto">
+              {/* Section 1: Personalized Symptom Score */}
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
+                Your Perimenopause Symptom Profile
+              </h2>
+
+              {(() => {
+                const { reported, total } = getSymptomScore()
+                const percentage = Math.round((reported / total) * 100)
+                const scoreColors = {
+                  low: { ring: 'text-green-500', track: 'text-green-100' },
+                  moderate: { ring: 'text-yellow-500', track: 'text-yellow-100' },
+                  strong: { ring: 'text-red-500', track: 'text-red-100' },
+                }
+                const severityLabels = { low: 'Mild', moderate: 'Moderate', strong: 'Significant' }
+                const colors = scoreColors[resultLevel]
+
+                return (
+                  <div className={`${resultConfig[resultLevel].bg} ${resultConfig[resultLevel].border} border-2 rounded-2xl p-8 mb-8 text-center`}>
+                    {/* Circular Progress Ring */}
+                    <div className="relative w-32 h-32 mx-auto mb-4">
+                      <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
+                        <circle cx="60" cy="60" r="50" fill="none" strokeWidth="10"
+                          className={colors.track} stroke="currentColor" />
+                        <circle cx="60" cy="60" r="50" fill="none" strokeWidth="10"
+                          className={colors.ring} stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeDasharray={`${percentage * 3.14} ${314 - percentage * 3.14}`} />
+                      </svg>
+                      <div className="absolute inset-0 flex flex-col items-center justify-center">
+                        <span className={`text-2xl font-bold ${resultConfig[resultLevel].color}`}>
+                          {reported}
+                        </span>
+                        <span className="text-xs text-gray-500">of {total}</span>
+                      </div>
+                    </div>
+                    <p className={`text-lg font-bold ${resultConfig[resultLevel].color} mb-2`}>
+                      {severityLabels[resultLevel]} Symptom Level
+                    </p>
+                    <p className="text-gray-700 text-sm">
+                      Based on your answers, you&apos;re experiencing {reported} common perimenopause symptom{reported !== 1 ? 's' : ''}.
+                    </p>
+                    <p className="text-gray-600 text-sm mt-2">
+                      {resultConfig[resultLevel].message}
+                    </p>
+                  </div>
+                )
+              })()}
+
+              {/* Section 2: Symptom Breakdown */}
+              <div className="mb-8">
+                <h3 className="text-lg font-bold mb-4">What Your Symptoms Tell Us</h3>
+                <div className="space-y-3">
+                  {(['cognitive', 'vasomotor', 'somatic', 'periods'] as const).map((catKey) => {
+                    const cat = SYMPTOM_CATEGORIES[catKey]
+                    const answers = quizAnswers[catKey] || []
+                    const hasSymptoms = answers.length > 0 && !answers.includes('None of these') && !answers.includes('No changes')
+
+                    if (!hasSymptoms) {
+                      return (
+                        <div key={catKey} className="p-4 rounded-xl bg-gray-50 border border-gray-100 opacity-60">
+                          <div className="flex items-center gap-2">
+                            <span>{cat.icon}</span>
+                            <span className="font-medium text-gray-400 text-sm">{cat.label}</span>
+                            <span className="text-xs text-gray-400 ml-auto">Not reported</span>
+                          </div>
+                        </div>
+                      )
+                    }
+
+                    return (
+                      <div key={catKey} className="p-4 rounded-xl bg-white border-2 border-brand-purple/20 shadow-sm">
+                        <div className="flex items-center gap-2 mb-3">
+                          <span>{cat.icon}</span>
+                          <span className="font-semibold text-sm">{cat.label}</span>
+                        </div>
+                        <div className="space-y-2">
+                          {answers.map((answer) => {
+                            const data = cat.symptoms[answer as keyof typeof cat.symptoms]
+                            if (!data) return null
+                            return (
+                              <div key={answer} className="pl-6">
+                                <p className="text-sm font-medium text-brand-purple">{answer}</p>
+                                <p className="text-xs text-gray-600 mt-0.5">{data.explanation}</p>
+                                <p className="text-xs text-gray-400 mt-0.5">
+                                  {data.prevalence}% of women in your age group report this
+                                </p>
+                              </div>
+                            )
+                          })}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
+
+              {/* Section 3: Personalized Action Plan Preview */}
+              <div className="mb-8">
+                <h3 className="text-lg font-bold mb-4">Your Personalized Action Plan</h3>
+                <div className="space-y-3">
+                  {getPersonalizedPlans().map((plan, i) => (
+                    <div
+                      key={i}
+                      className={`p-4 rounded-xl border ${
+                        i < 2
+                          ? 'bg-white border-gray-200'
+                          : 'bg-gray-50 border-gray-100 relative overflow-hidden'
+                      }`}
+                    >
+                      {i >= 2 && (
+                        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 flex items-center justify-center">
+                          <span className="bg-brand-purple text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
+                            🔒 Unlock with Premium
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex items-start gap-3">
+                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
+                          i < 2 ? 'bg-brand-purple text-white' : 'bg-gray-300 text-white'
+                        }`}>
+                          {i + 1}
+                        </span>
+                        <div>
+                          <p className="text-sm font-semibold">{plan.title}</p>
+                          <p className="text-xs text-gray-600 mt-0.5">{plan.description}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Section 4: CTA Block */}
+              <div className="mb-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <Link
+                    href="/signup"
+                    className="block bg-green-600 hover:bg-green-700 text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
+                  >
+                    Start Tracking Free
+                    <span className="block text-xs font-normal text-green-100 mt-1">
+                      No credit card required
+                    </span>
+                  </Link>
+                  <Link
+                    href="/signup?plan=premium"
+                    className="block border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
+                  >
+                    Get Full Access
+                    <span className="block text-xs font-normal mt-1 opacity-80">
+                      7-day free trial · Cancel anytime
+                    </span>
+                  </Link>
+                </div>
+              </div>
+
+              {/* Section 5: Social Proof */}
               <div className="space-y-4">
-                <p className="text-gray-600 text-sm">
-                  Get personalized guidance, track your symptoms, and prepare for your next doctor&apos;s visit.
-                </p>
-                <Link href="/signup" className="btn-primary block">
-                  Create Your Free Account →
-                </Link>
-                <p className="text-xs text-gray-500">
-                  Free to start. No credit card required.
-                </p>
+                {getRelevantTestimonials().map((t) => (
+                  <div key={t.name} className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
+                    <Image
+                      src={t.image}
+                      alt={t.name}
+                      width={48}
+                      height={48}
+                      className="w-12 h-12 rounded-full object-cover shrink-0"
+                    />
+                    <div>
+                      <div className="flex items-center gap-1 mb-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <span key={star} className="text-yellow-400 text-sm">★</span>
+                        ))}
+                      </div>
+                      <p className="text-sm text-gray-600 italic">&quot;{t.quote}&quot;</p>
+                      <p className="text-xs text-gray-500 mt-2 font-medium">
+                        {t.name}, {t.age} — {t.location}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           ) : (
@@ -449,6 +817,13 @@ export function LandingPage() {
                   />
                 </div>
               </div>
+
+              {/* Micro-encouragement after Q4 */}
+              {quizStep >= 4 && (
+                <p className="text-xs text-brand-purple font-medium mb-3">
+                  Almost done! Your personalized results are being prepared.
+                </p>
+              )}
 
               <h3 className="text-xl font-bold mb-4">{QUIZ_QUESTIONS[quizStep].title}</h3>
               <div className="space-y-3">
@@ -488,7 +863,7 @@ export function LandingPage() {
                   className="btn-primary text-sm"
                   disabled={!quizAnswers[QUIZ_QUESTIONS[quizStep].id]?.length}
                 >
-                  {quizStep === QUIZ_QUESTIONS.length - 1 ? 'See Results' : 'Next →'}
+                  {quizStep === QUIZ_QUESTIONS.length - 1 ? 'See My Results →' : 'Next →'}
                 </button>
               </div>
             </div>

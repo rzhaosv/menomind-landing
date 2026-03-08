@@ -35,7 +35,7 @@ const PLAN_DEFINITIONS: Omit<PlanCardData, 'status' | 'progress'>[] = [
     icon: '🧘',
   },
   {
-    type: 'supplements',
+    type: 'supplement',
     title: 'Supplements',
     description: 'Curated supplement recommendations backed by research for menopause symptom relief.',
     icon: '💊',
@@ -125,7 +125,7 @@ export default function PlansPage() {
       const res = await fetch('/api/plans/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type }),
+        body: JSON.stringify({ planType: type }),
       });
 
       if (!res.ok) {

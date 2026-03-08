@@ -4,6 +4,16 @@ import { useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
+function friendlyAuthError(msg: string): string {
+  const lower = msg.toLowerCase()
+  if (lower.includes('rate limit')) return 'Too many attempts. Please try again in a few minutes.'
+  if (lower.includes('already registered') || lower.includes('already been registered')) return 'An account with this email already exists. Try logging in instead.'
+  if (lower.includes('not confirmed')) return 'Please confirm your email first. Check your inbox or click Resend below.'
+  if (lower.includes('invalid login')) return 'Incorrect email or password. Please try again.'
+  if (lower.includes('password') && lower.includes('weak')) return 'Password is too weak. Use at least 8 characters with a mix of letters and numbers.'
+  return msg
+}
+
 export default function SignupForm() {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -54,7 +64,7 @@ export default function SignupForm() {
       })
 
       if (authError) {
-        setError(authError.message)
+        setError(friendlyAuthError(authError.message))
         return
       }
 

@@ -35,7 +35,7 @@ const PLAN_META: Record<string, { title: string; icon: string }> = {
   exercise: { title: 'Exercise Plan', icon: '🏃‍♀️' },
   sleep: { title: 'Sleep Plan', icon: '😴' },
   stress: { title: 'Stress Management Plan', icon: '🧘' },
-  supplements: { title: 'Supplements Plan', icon: '💊' },
+  supplement: { title: 'Supplements Plan', icon: '💊' },
 };
 
 /* ------------------------------------------------------------------ */
@@ -136,7 +136,7 @@ export default function PlanDetailPage() {
       const res = await fetch('/api/plans/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: planType, regenerate: true }),
+        body: JSON.stringify({ planType, regenerate: true }),
       });
 
       if (!res.ok) {

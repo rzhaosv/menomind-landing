@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'MenoMind — Sign In',
+  title: {
+    template: 'MenoMind — %s',
+    default: 'MenoMind — Account',
+  },
   description: 'Sign in or create your MenoMind account.',
 }
 

@@ -1,8 +1,12 @@
 import Anthropic from '@anthropic-ai/sdk'
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY!,
-})
+function getClient() {
+  const apiKey = process.env.ANTHROPIC_API_KEY
+  if (!apiKey) {
+    throw new Error('ANTHROPIC_API_KEY is not configured. Please add it to your environment variables.')
+  }
+  return new Anthropic({ apiKey })
+}
 
 export interface ChatMessage {
   role: 'user' | 'assistant'
@@ -13,6 +17,7 @@ export async function* streamChatResponse(
   systemPrompt: string,
   messages: ChatMessage[]
 ) {
+  const anthropic = getClient()
   const stream = anthropic.messages.stream({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 4000,
@@ -43,6 +48,7 @@ export async function generatePlan(
   systemPrompt: string,
   userContext: string
 ): Promise<{ content: string; tokens: number }> {
+  const anthropic = getClient()
   const response = await anthropic.messages.create({
     model: 'claude-haiku-4-5-20251001',
     max_tokens: 4000,

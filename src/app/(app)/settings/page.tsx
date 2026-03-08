@@ -30,19 +30,21 @@ export default function SettingsPage() {
     try {
       const res = await fetch('/api/user/profile')
       if (res.ok) {
-        const data = await res.json()
+        const json = await res.json()
+        const userData = json.data || json.user || {}
+        const profileData = userData.user_profiles?.[0] || userData.user_profiles || json.profile || {}
         setProfile({
-          full_name: data.user?.full_name || '',
-          email: data.user?.email || '',
-          date_of_birth: data.user?.date_of_birth || '',
-          menopause_stage: data.user?.menopause_stage || 'unsure',
-          health_conditions: data.profile?.health_conditions
-            ? Object.keys(data.profile.health_conditions)
+          full_name: userData.full_name || '',
+          email: userData.email || '',
+          date_of_birth: userData.date_of_birth || '',
+          menopause_stage: userData.menopause_stage || 'unsure',
+          health_conditions: profileData.health_conditions
+            ? (Array.isArray(profileData.health_conditions) ? profileData.health_conditions : Object.keys(profileData.health_conditions))
             : [],
-          medications: data.profile?.medications
-            ? Object.keys(data.profile.medications)
+          medications: profileData.medications
+            ? (Array.isArray(profileData.medications) ? profileData.medications : Object.keys(profileData.medications))
             : [],
-          goals: data.profile?.goals || [],
+          goals: profileData.goals || [],
         })
       }
     } finally {

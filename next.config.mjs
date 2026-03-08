@@ -8,6 +8,15 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/symptoms',
+        destination: '/track',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

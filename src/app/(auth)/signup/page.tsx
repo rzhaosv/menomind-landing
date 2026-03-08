@@ -1,6 +1,9 @@
-'use client'
-
+import type { Metadata } from 'next'
 import SignupForm from '@/components/auth/signup-form'
+
+export const metadata: Metadata = {
+  title: 'Create Your Account',
+}
 
 export default function SignupPage() {
   return <SignupForm />

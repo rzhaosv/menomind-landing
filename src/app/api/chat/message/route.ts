@@ -197,9 +197,11 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error('POST /api/chat/message error:', error)
+    const message = error instanceof Error ? error.message : 'Internal server error'
+    const isConfig = message.includes('ANTHROPIC_API_KEY')
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      { error: isConfig ? 'AI service is not configured. Please contact support.' : 'Something went wrong. Please try again.' },
+      { status: isConfig ? 503 : 500 }
     )
   }
 }
