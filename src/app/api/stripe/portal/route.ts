@@ -32,7 +32,7 @@ export async function POST(request: Request) {
 
     const session = await createCustomerPortalSession({
       customerId: userData.stripe_customer_id,
-      returnUrl: `${origin}/dashboard/settings`,
+      returnUrl: `${origin}/settings/subscription`,
     })
 
     return NextResponse.json({ url: session.url })

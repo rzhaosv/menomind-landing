@@ -55,7 +55,7 @@ export async function POST(request: Request) {
       customerId: customer.id,
       priceId,
       userId: user.id,
-      returnUrl: `${origin}/dashboard/settings`,
+      returnUrl: `${origin}/settings/subscription`,
     })
 
     return NextResponse.json({ url: session.url })
