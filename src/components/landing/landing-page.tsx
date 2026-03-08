@@ -697,7 +697,7 @@ export function LandingPage() {
                         </div>
                         <div className="space-y-2">
                           {answers.map((answer) => {
-                            const data = cat.symptoms[answer as keyof typeof cat.symptoms]
+                            const data = (cat.symptoms as Record<string, { explanation: string; prevalence: number }>)[answer]
                             if (!data) return null
                             return (
                               <div key={answer} className="pl-6">
