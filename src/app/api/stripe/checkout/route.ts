@@ -24,12 +24,29 @@ export async function POST(request: Request) {
       )
     }
 
-    // Get user data for customer creation
-    const { data: userData } = await supabase
+    // Get user data for customer creation (ensure row exists)
+    let { data: userData } = await supabase
       .from('users')
       .select('email, full_name, stripe_customer_id')
       .eq('id', user.id)
       .single()
+
+    // If no public.users row exists yet (trigger may not have fired), create it
+    if (!userData) {
+      const { data: created } = await supabase
+        .from('users')
+        .upsert({
+          id: user.id,
+          email: user.email!,
+          full_name: user.user_metadata?.full_name || '',
+          subscription_tier: 'free',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+        .select('email, full_name, stripe_customer_id')
+        .single()
+      userData = created
+    }
 
     // Get or create Stripe customer
     const customer = await getOrCreateCustomer({
