@@ -122,33 +122,50 @@ function ChatInterface({
           throw new Error(errData?.error || `Request failed (${res.status})`);
         }
 
-        // If the response includes a new conversation ID
-        const newConvId = res.headers.get('X-Conversation-Id');
-        if (newConvId && !currentConversationId) {
-          setCurrentConversationId(newConvId);
-        }
-
-        // Handle streaming response
+        // Handle streaming SSE response
         const reader = res.body?.getReader();
         if (!reader) throw new Error('No response stream available');
 
         const decoder = new TextDecoder();
-        let accumulated = '';
+        let buffer = '';
+        let contentAccumulated = '';
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
-          const chunk = decoder.decode(value, { stream: true });
-          accumulated += chunk;
+          buffer += decoder.decode(value, { stream: true });
 
-          setMessages((prev) =>
-            prev.map((msg) =>
-              msg.id === assistantMessageId
-                ? { ...msg, content: accumulated }
-                : msg
-            )
-          );
+          // Parse SSE events from the buffer
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue;
+            try {
+              const payload = JSON.parse(line.slice(6));
+              if (payload.type === 'chunk' && payload.content) {
+                contentAccumulated += payload.content;
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === assistantMessageId
+                      ? { ...msg, content: contentAccumulated }
+                      : msg
+                  )
+                );
+              }
+              if (payload.conversationId && !currentConversationId) {
+                setCurrentConversationId(payload.conversationId);
+                onNewConversation?.();
+              }
+              if (payload.type === 'error') {
+                throw new Error(payload.error || 'Failed to generate response');
+              }
+            } catch (e) {
+              if (e instanceof SyntaxError) continue; // Skip malformed lines
+              throw e;
+            }
+          }
         }
       } catch (err) {
         if (err instanceof DOMException && err.name === 'AbortError') {
@@ -166,7 +183,7 @@ function ChatInterface({
         abortControllerRef.current = null;
       }
     },
-    [isStreaming, currentConversationId, onLimitReached]
+    [isStreaming, currentConversationId, onLimitReached, onNewConversation]
   );
 
   const handleSubmit = (e: React.FormEvent) => {

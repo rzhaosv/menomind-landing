@@ -31,21 +31,27 @@ export async function checkMessageLimit(userId: string): Promise<{
 
   // Count today's messages for free users
   const today = new Date().toISOString().split('T')[0]
-  const { count } = await supabase
-    .from('messages')
-    .select('id', { count: 'exact', head: true })
-    .eq('role', 'user')
-    .gte('created_at', `${today}T00:00:00`)
-    .lt('created_at', `${today}T23:59:59`)
-    .in(
-      'conversation_id',
-      supabase
-        .from('conversations')
-        .select('id')
-        .eq('user_id', userId) as unknown as string[]
-    )
 
-  const used = count ?? 0
+  // First get user's conversation IDs
+  const { data: convos } = await supabase
+    .from('conversations')
+    .select('id')
+    .eq('user_id', userId)
+
+  const convoIds = (convos || []).map((c) => c.id)
+
+  let used = 0
+  if (convoIds.length > 0) {
+    const { count } = await supabase
+      .from('messages')
+      .select('id', { count: 'exact', head: true })
+      .eq('role', 'user')
+      .gte('created_at', `${today}T00:00:00`)
+      .lt('created_at', `${today}T23:59:59`)
+      .in('conversation_id', convoIds)
+
+    used = count ?? 0
+  }
   const FREE_DAILY_LIMIT = 5
 
   return {
