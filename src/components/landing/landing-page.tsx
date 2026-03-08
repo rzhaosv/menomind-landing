@@ -330,7 +330,7 @@ export function LandingPage() {
 
       const catData = SYMPTOM_CATEGORIES[cat]
       for (const answer of answers) {
-        const symptomData = catData.symptoms[answer as keyof typeof catData.symptoms]
+        const symptomData = (catData.symptoms as Record<string, { explanation: string; prevalence: number }>)[answer]
         if (symptomData) {
           reported.push({
             category: cat,
