@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
-import { streamChatResponse, type ChatMessage } from '@/lib/ai/claude'
+import { streamChatResponse, type ChatMessage, type TokenUsage } from '@/lib/ai/claude'
 import { buildSystemPrompt } from '@/lib/ai/system-prompt'
 import { checkMessageLimit } from '@/lib/subscription/tier'
 import type { User, UserProfile, SymptomLog } from '@/types/database'
@@ -158,31 +158,40 @@ export async function POST(request: Request) {
           }
 
           // Save assistant response to DB
+          const tokenUsage = result.value as TokenUsage | undefined
           await supabase.from('messages').insert({
             conversation_id: activeConversationId,
             role: 'assistant',
             content: fullResponse,
-            tokens_used: result.value
-              ? (result.value as { inputTokens: number; outputTokens: number })
-                  .inputTokens +
-                (result.value as { inputTokens: number; outputTokens: number })
-                  .outputTokens
+            tokens_used: tokenUsage
+              ? tokenUsage.inputTokens + tokenUsage.outputTokens
               : null,
           })
 
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({ type: 'done', conversationId: activeConversationId })}\n\n`
+              `data: ${JSON.stringify({
+                type: 'done',
+                conversationId: activeConversationId,
+                model: tokenUsage?.model,
+                tier: tokenUsage?.tier,
+              })}\n\n`
             )
           )
           controller.close()
         } catch (error) {
           console.error('Streaming error:', error)
           const errMsg = error instanceof Error ? error.message : 'Unknown error'
-          const isApiKey = errMsg.includes('ANTHROPIC_API_KEY') || errMsg.includes('401') || errMsg.includes('authentication')
-          const userMessage = isApiKey
-            ? 'AI service is not configured. Please contact support.'
-            : `Failed to generate response: ${errMsg}`
+          let userMessage = 'Something went wrong. Please try again.'
+          if (errMsg.includes('ANTHROPIC_API_KEY')) {
+            userMessage = 'AI service is not configured. Please contact support.'
+          } else if (errMsg.includes('credit balance') || errMsg.includes('billing') || errMsg.includes('payment')) {
+            userMessage = 'AI service is temporarily unavailable. Please try again later.'
+          } else if (errMsg.includes('401') || errMsg.includes('authentication') || errMsg.includes('invalid.*api.*key')) {
+            userMessage = 'AI service is not configured. Please contact support.'
+          } else if (errMsg.includes('rate limit') || errMsg.includes('429')) {
+            userMessage = 'Too many requests. Please wait a moment and try again.'
+          }
           controller.enqueue(
             encoder.encode(
               `data: ${JSON.stringify({ type: 'error', error: userMessage })}\n\n`
