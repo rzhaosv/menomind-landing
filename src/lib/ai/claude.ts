@@ -13,6 +13,11 @@ export interface ChatMessage {
   content: string
 }
 
+export interface TokenUsage {
+  inputTokens: number
+  outputTokens: number
+}
+
 export async function* streamChatResponse(
   systemPrompt: string,
   messages: ChatMessage[]
