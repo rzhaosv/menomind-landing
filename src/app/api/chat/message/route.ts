@@ -178,9 +178,14 @@ export async function POST(request: Request) {
           controller.close()
         } catch (error) {
           console.error('Streaming error:', error)
+          const errMsg = error instanceof Error ? error.message : 'Unknown error'
+          const isApiKey = errMsg.includes('ANTHROPIC_API_KEY') || errMsg.includes('401') || errMsg.includes('authentication')
+          const userMessage = isApiKey
+            ? 'AI service is not configured. Please contact support.'
+            : `Failed to generate response: ${errMsg}`
           controller.enqueue(
             encoder.encode(
-              `data: ${JSON.stringify({ type: 'error', error: 'Failed to generate response' })}\n\n`
+              `data: ${JSON.stringify({ type: 'error', error: userMessage })}\n\n`
             )
           )
           controller.close()
