@@ -16,7 +16,11 @@ export interface ChatMessage {
 export interface TokenUsage {
   inputTokens: number
   outputTokens: number
+  model?: string
+  tier?: string
 }
+
+const CHAT_MODEL = 'claude-haiku-4-5-20251001'
 
 export async function* streamChatResponse(
   systemPrompt: string,
@@ -24,7 +28,7 @@ export async function* streamChatResponse(
 ) {
   const anthropic = getClient()
   const stream = anthropic.messages.stream({
-    model: 'claude-haiku-4-5-20251001',
+    model: CHAT_MODEL,
     max_tokens: 4000,
     system: systemPrompt,
     messages: messages.map((m) => ({
@@ -46,6 +50,8 @@ export async function* streamChatResponse(
   return {
     inputTokens: finalMessage.usage.input_tokens,
     outputTokens: finalMessage.usage.output_tokens,
+    model: CHAT_MODEL,
+    tier: 'free',
   }
 }
 
@@ -55,7 +61,7 @@ export async function generatePlan(
 ): Promise<{ content: string; tokens: number }> {
   const anthropic = getClient()
   const response = await anthropic.messages.create({
-    model: 'claude-haiku-4-5-20251001',
+    model: CHAT_MODEL,
     max_tokens: 4000,
     system: systemPrompt,
     messages: [{ role: 'user', content: userContext }],
