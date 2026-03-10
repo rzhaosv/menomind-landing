@@ -1,3 +1,9 @@
 {
-  "framework": "nextjs"
+  "buildCommand": null,
+  "outputDirectory": "public",
+  "framework": null,
+  "rewrites": [
+    { "source": "/quiz", "destination": "/quiz.html" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
