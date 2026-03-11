@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Is It Anxiety or Perimenopause? — Free 2-Minute Quiz | MenoMind</title>
+    <title>Is It Anxiety or Perimenopause? â Free 2-Minute Quiz | MenoMind</title>
     <meta name="description" content="Take this free 2-minute quiz to find out if your anxiety, brain fog, mood swings, or fatigue could be signs of perimenopause. No signup required.">
     <meta name="theme-color" content="#6B3F8D">
 
     <!-- Open Graph for sharing -->
     <meta property="og:title" content="Is It Anxiety or Perimenopause? Take the Free Quiz">
-    <meta property="og:description" content="I just found out my symptoms might be hormonal, not mental. Take this 2-minute quiz — no signup needed.">
+    <meta property="og:description" content="I just found out my symptoms might be hormonal, not mental. Take this 2-minute quiz â no signup needed.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.menomind.app/quiz">
     <meta property="og:image" content="https://www.menomind.app/og-quiz.png">
@@ -17,7 +17,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Is It Anxiety or Perimenopause? Take the Free Quiz">
-    <meta name="twitter:description" content="I just found out my symptoms might be hormonal, not mental. Take this 2-minute quiz — no signup needed.">
+    <meta name="twitter:description" content="I just found out my symptoms might be hormonal, not mental. Take this 2-minute quiz â no signup needed.">
 
     <!-- GA4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TS69CENYQ"></script>
@@ -289,6 +289,25 @@
             animation: fadeSlideIn 0.6s ease;
         }
         .result-screen.active { display: block; }
+        /* MANDATORY EMAIL GATE SCREEN */
+        .gate-screen {display:none;padding:60px 0;text-align:center;animation:fadeSlideIn 0.6s ease;}
+        .gate-screen.active{display:block;}
+        .gate-screen .gate-icon{width:80px;height:80px;border-radius:50%;background:linear-gradient(135deg,#6B3F8D,#8B5CB8);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:36px;color:white;}
+        .gate-screen h2{font-size:28px;font-weight:700;color:#1a1a2e;margin-bottom:12px;}
+        .gate-screen .gate-teaser{font-size:17px;color:#555;line-height:1.6;max-width:480px;margin:0 auto 32px;}
+        .gate-screen .gate-benefits{display:flex;flex-direction:column;gap:12px;max-width:400px;margin:0 auto 32px;text-align:left;}
+        .gate-screen .gate-benefit{display:flex;align-items:center;gap:12px;font-size:15px;color:#333;}
+        .gate-screen .gate-benefit .benefit-icon{width:32px;height:32px;border-radius:50%;background:#F0E6F6;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;}
+        .gate-screen .gate-email-form{max-width:420px;margin:0 auto;}
+        .gate-screen .gate-email-form input[type="email"]{width:100%;padding:16px 20px;font-size:16px;border:2px solid #E8DFF3;border-radius:12px;outline:none;margin-bottom:12px;box-sizing:border-box;transition:border-color 0.2s;}
+        .gate-screen .gate-email-form input:focus{border-color:#6B3F8D;}
+        .gate-screen .gate-email-form button{width:100%;padding:16px;font-size:17px;font-weight:700;background:linear-gradient(135deg,#6B3F8D,#8B5CB8);color:white;border:none;border-radius:12px;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s;}
+        .gate-screen .gate-email-form button:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(107,63,141,0.3);}
+        .gate-screen .gate-email-form button:disabled{opacity:0.7;cursor:not-allowed;transform:none;}
+        .gate-screen .gate-trust{font-size:13px;color:#888;margin-top:12px;}
+        .gate-screen .gate-trust span{margin:0 8px;}
+        .gate-screen .gate-error{color:#e74c3c;font-size:14px;margin-bottom:8px;display:none;}
+
 
         .result-badge {
             display: inline-flex;
@@ -904,12 +923,12 @@
                 <label class="option" onclick="selectRadio(this, 4, 'cycle', 2)">
                     <input type="radio" name="cycle" value="2">
                     <span class="option-check"></span>
-                    Yes — irregular, heavier, or lighter than before
+                    Yes â irregular, heavier, or lighter than before
                 </label>
                 <label class="option" onclick="selectRadio(this, 4, 'cycle', 0)">
                     <input type="radio" name="cycle" value="0">
                     <span class="option-check"></span>
-                    No — still the same as always
+                    No â still the same as always
                 </label>
                 <label class="option" onclick="selectRadio(this, 4, 'cycle', 0)">
                     <input type="radio" name="cycle" value="0">
@@ -942,7 +961,7 @@
                 <label class="option" onclick="selectRadio(this, 5, 'medical', 1)">
                     <input type="radio" name="medical" value="1">
                     <span class="option-check"></span>
-                    No — no doctor has ever brought it up
+                    No â no doctor has ever brought it up
                 </label>
                 <label class="option" onclick="selectRadio(this, 5, 'medical', 1)">
                     <input type="radio" name="medical" value="1">
@@ -955,7 +974,7 @@
         <!-- QUESTION 7: Impact -->
         <div class="question-card" data-q="6" id="q6">
             <h2>How much are these symptoms affecting your daily life?</h2>
-            <div class="question-hint">Be honest — there's no wrong answer.</div>
+            <div class="question-hint">Be honest â there's no wrong answer.</div>
             <div class="option-list">
                 <label class="option" onclick="selectRadio(this, 6, 'impact', 0)">
                     <input type="radio" name="impact" value="0">
@@ -965,17 +984,17 @@
                 <label class="option" onclick="selectRadio(this, 6, 'impact', 0)">
                     <input type="radio" name="impact" value="0">
                     <span class="option-check"></span>
-                    Somewhat — I'm managing but it's harder than it should be
+                    Somewhat â I'm managing but it's harder than it should be
                 </label>
                 <label class="option" onclick="selectRadio(this, 6, 'impact', 1)">
                     <input type="radio" name="impact" value="1">
                     <span class="option-check"></span>
-                    Significantly — it's affecting my work, relationships, or sleep
+                    Significantly â it's affecting my work, relationships, or sleep
                 </label>
                 <label class="option" onclick="selectRadio(this, 6, 'impact', 1)">
                     <input type="radio" name="impact" value="1">
                     <span class="option-check"></span>
-                    Severely — I feel like I'm losing myself
+                    Severely â I feel like I'm losing myself
                 </label>
             </div>
         </div>
@@ -987,7 +1006,31 @@
         </div>
 
         <!-- RESULT SCREEN -->
-        <div class="result-screen" id="resultScreen">
+        
+            <!-- MANDATORY EMAIL GATE -->
+            <div class="gate-screen" id="gateScreen">
+                <div class="gate-icon">&#10003;</div>
+                <h2>Your Results Are Ready!</h2>
+                <p class="gate-teaser">We analyzed your symptoms and identified your perimenopause indicator level. Enter your email to see your personalized results.</p>
+                <div class="gate-benefits">
+                    <div class="gate-benefit"><div class="benefit-icon">&#128202;</div><span>Your perimenopause indicator score & level</span></div>
+                    <div class="gate-benefit"><div class="benefit-icon">&#129504;</div><span>Personalized symptom cluster analysis</span></div>
+                    <div class="gate-benefit"><div class="benefit-icon">&#128172;</div><span>What to tell your doctor (copy-paste script)</span></div>
+                    <div class="gate-benefit"><div class="benefit-icon">&#128218;</div><span>Free guide: 5 Signs It's Perimenopause, Not Anxiety</span></div>
+                </div>
+                <div class="gate-email-form">
+                    <div class="gate-error" id="gateError">Please enter a valid email address</div>
+                    <input type="email" id="gateEmailInput" placeholder="Enter your email to see results">
+                    <button id="gateSubmitBtn" onclick="submitGateEmail()">See My Results</button>
+                </div>
+                <div class="gate-trust">
+                    <span>&#128274; Free forever</span>
+                    <span>&#10005; No spam</span>
+                    <span>&#9993; Unsubscribe anytime</span>
+                </div>
+            </div>
+
+<div class="result-screen" id="resultScreen">
             <div class="result-badge" id="resultBadge">
                 <span class="result-dot"></span>
                 <span id="badgeText"></span>
@@ -1044,7 +1087,7 @@
 
                 <div class="detail-card">
                     <h3>What to Tell Your Doctor</h3>
-                    <p>Bring this to your next appointment. Many women find it hard to describe what they're feeling — this gives you the words.</p>
+                    <p>Bring this to your next appointment. Many women find it hard to describe what they're feeling â this gives you the words.</p>
                     <div class="highlight" id="doctorScript"></div>
                 </div>
 
@@ -1059,12 +1102,12 @@
                 <h3>Want ongoing tracking & support?</h3>
                 <p>MenoMind helps you track symptoms, spot patterns, and get personalized AI guidance throughout your journey.</p>
                 <div class="upgrade-cards">
-                    <a href="https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00" class="upgrade-card" onclick="gtag('event','begin_checkout',{value:14.99,currency:'USD',items:[{item_name:'MenoMind Monthly',item_category:'quiz_funnel'}]})">
+                    <a href="#" class="upgrade-card" onclick="event.preventDefault(); openCheckoutModal('https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00', 'monthly')">
                         <div class="price">$14.99</div>
                         <div class="period">/month</div>
                         <div class="card-btn">Start Free Trial</div>
                     </a>
-                    <a href="https://buy.stripe.com/9B68wOawV5Kb1B42771kA01" class="upgrade-card featured" onclick="gtag('event','begin_checkout',{value:99,currency:'USD',items:[{item_name:'MenoMind Annual',item_category:'quiz_funnel'}]})">
+                    <a href="#" class="upgrade-card featured" onclick="event.preventDefault(); openCheckoutModal('https://buy.stripe.com/9B68wOawV5Kb1B42771kA01', 'annual')">
                         <div class="badge-tag">Save 44%</div>
                         <div class="price">$99</div>
                         <div class="period">/year</div>
@@ -1180,17 +1223,17 @@
                 level = 'low';
                 levelText = 'Low Perimenopause Indicators';
                 headline = 'Your symptoms show low indicators for perimenopause';
-                subtext = 'Based on your answers, perimenopause is less likely to be the primary cause right now — but symptoms can develop over time. Tracking is still worthwhile.';
+                subtext = 'Based on your answers, perimenopause is less likely to be the primary cause right now â but symptoms can develop over time. Tracking is still worthwhile.';
             } else if (score <= 7) {
                 level = 'moderate';
                 levelText = 'Moderate Perimenopause Indicators';
                 headline = 'Your symptoms are consistent with early perimenopause';
-                subtext = 'Your symptom profile suggests hormonal changes may be playing a role. Many women with this pattern find answers — and relief — once they know what to look for.';
+                subtext = 'Your symptom profile suggests hormonal changes may be playing a role. Many women with this pattern find answers â and relief â once they know what to look for.';
             } else {
                 level = 'strong';
                 levelText = 'Strong Perimenopause Indicators';
                 headline = 'Your symptoms strongly align with perimenopause';
-                subtext = 'Your symptom profile shows a clear pattern consistent with perimenopause. You\'re not imagining it — and you\'re not alone. Understanding what\'s happening is the first step to feeling like yourself again.';
+                subtext = 'Your symptom profile shows a clear pattern consistent with perimenopause. You\'re not imagining it â and you\'re not alone. Understanding what\'s happening is the first step to feeling like yourself again.';
             }
 
             // Build symptom clusters
@@ -1205,7 +1248,7 @@
             document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
             document.getElementById('progressWrapper').classList.remove('active');
             document.getElementById('quizNav').classList.remove('active');
-            document.getElementById('resultScreen').classList.add('active');
+            document.getElementById('gateScreen').classList.add('active');
 
             // Populate
             const badge = document.getElementById('resultBadge');
@@ -1241,8 +1284,7 @@
             // Build detailed content (hidden until email)
             buildDetailedResults(level, clusters, score);
 
-            // Confetti for strong
-            if (level === 'strong') triggerConfetti();
+            // Confetti moved to after email gate
 
             // Track
             gtag('event', 'quiz_complete', { event_category: 'engagement', event_label: level, value: score });
@@ -1258,7 +1300,7 @@
 
             if (level === 'strong') {
                 analysis = `<p>Your responses indicate <strong>${activeClusters.length} out of 4 symptom clusters</strong> associated with perimenopause. This is a significant pattern.</p>`;
-                analysis += `<div class="highlight">Perimenopause involves 4-10 years of hormonal fluctuation. What feels like anxiety, depression, or burnout is often your body responding to changing estrogen and progesterone levels. This is not "in your head" — it's biology.</div>`;
+                analysis += `<div class="highlight">Perimenopause involves 4-10 years of hormonal fluctuation. What feels like anxiety, depression, or burnout is often your body responding to changing estrogen and progesterone levels. This is not "in your head" â it's biology.</div>`;
                 activeClusters.forEach(c => {
                     analysis += `<p><strong>${c.name}:</strong> You reported ${c.count} symptom${c.count > 1 ? 's' : ''} in this category (${c.desc}). This cluster is commonly linked to fluctuating ${c.name === 'Cognitive & Mood' ? 'estrogen levels affecting neurotransmitter function' : c.name === 'Vasomotor' ? 'estrogen affecting your body\'s thermostat' : c.name === 'Sleep & Body' ? 'progesterone and cortisol changes' : 'hormonal regulation of your menstrual cycle'}.</p>`;
                 });
@@ -1279,7 +1321,7 @@
             if (answers.somatic > 0) symptomList.push('sleep disruption and fatigue');
             if (answers.cycle > 0) symptomList.push('changes in my menstrual cycle');
             script += symptomList.length > 0 ? symptomList.join(', ') : 'various symptoms that concern me';
-            script += '. I took an evidence-based symptom assessment and my results suggest these may be consistent with perimenopause. Could we discuss hormone testing — specifically FSH, estradiol, and thyroid levels — and whether hormonal changes might explain what I\'m experiencing?"';
+            script += '. I took an evidence-based symptom assessment and my results suggest these may be consistent with perimenopause. Could we discuss hormone testing â specifically FSH, estradiol, and thyroid levels â and whether hormonal changes might explain what I\'m experiencing?"';
             document.getElementById('doctorScript').textContent = script;
 
             // Next steps
@@ -1298,7 +1340,40 @@
             document.getElementById('nextSteps').innerHTML = steps;
         }
 
-        async function unlockResults() {
+        async 
+        async function submitGateEmail() {
+            const emailInput = document.getElementById('gateEmailInput');
+            const email = emailInput.value.trim();
+            const errorEl = document.getElementById('gateError');
+            const btn = document.getElementById('gateSubmitBtn');
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                errorEl.style.display = 'block';
+                emailInput.style.borderColor = '#e74c3c';
+                return;
+            }
+            errorEl.style.display = 'none';
+            emailInput.style.borderColor = '#E8DFF3';
+            btn.disabled = true;
+            btn.textContent = 'Loading your results...';
+            const r = window._quizResults;
+            try {
+                await fetch(SUPABASE_URL + '/rest/v1/email_leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ email: email, source: 'quiz_funnel', quiz_score: r.score, quiz_result: r.level + '_indicators' })
+                });
+            } catch(e) { console.error('Supabase error:', e); }
+            gtag('event', 'generate_lead', { method: 'quiz_email_gate', event_label: r.level, value: r.score });
+            if (typeof fbq === 'function') fbq('track', 'Lead', { content_name: 'quiz_email_gate', value: r.score });
+            document.getElementById('gateScreen').classList.remove('active');
+            document.getElementById('resultScreen').classList.add('active');
+            document.getElementById('detailedResults').classList.add('active');
+            document.getElementById('emailGate').style.display = 'none';
+            if (r.level === 'strong') triggerConfetti();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+function unlockResults() {
             const email = document.getElementById('emailInput').value;
             if (!email || !email.includes('@') || !email.includes('.')) {
                 document.getElementById('emailInput').style.borderColor = '#ff4444';
@@ -1370,6 +1445,46 @@
                 }, i * 40);
             }
         }
-    </script>
-</body>
+    
+        let pendingStripeUrl = '';
+        function openCheckoutModal(stripeUrl, plan) {
+            pendingStripeUrl = stripeUrl;
+            document.getElementById('checkoutModal').style.display = 'flex';
+            document.getElementById('checkoutEmail').focus();
+        }
+        async function submitCheckoutEmail() {
+            const email = document.getElementById('checkoutEmail').value.trim();
+            const errorEl = document.getElementById('checkoutError');
+            const btn = document.getElementById('checkoutBtn');
+            if (!email || !email.includes('@') || !email.includes('.')) { errorEl.style.display='block'; return; }
+            errorEl.style.display = 'none';
+            btn.disabled = true; btn.textContent = 'Redirecting...';
+            try {
+                await fetch(SUPABASE_URL + '/rest/v1/email_leads', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'return=minimal' },
+                    body: JSON.stringify({ email: email, source: 'checkout_intent' })
+                });
+            } catch(e) {}
+            gtag('event', 'generate_lead', { method: 'checkout_email' });
+            const sep = pendingStripeUrl.includes('?') ? '&' : '?';
+            window.location.href = pendingStripeUrl + sep + 'prefilled_email=' + encodeURIComponent(email);
+        }
+
+        </script>
+
+        <div id="checkoutModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;align-items:center;justify-content:center;">
+            <div style="background:white;border-radius:20px;padding:40px;max-width:440px;width:90%;text-align:center;position:relative;animation:fadeSlideIn 0.3s ease;">
+                <button onclick="document.getElementById('checkoutModal').style.display='none'" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#888;">&times;</button>
+                <div style="font-size:36px;margin-bottom:16px;">&#128274;</div>
+                <h3 style="font-size:22px;margin-bottom:8px;color:#1a1a2e;">Start Your Free Trial</h3>
+                <p style="color:#666;margin-bottom:24px;font-size:15px;">Enter your email so we can set up your account and send login details.</p>
+                <input type="email" id="checkoutEmail" placeholder="Your email address" style="width:100%;padding:14px 18px;font-size:16px;border:2px solid #E8DFF3;border-radius:12px;outline:none;margin-bottom:12px;box-sizing:border-box;">
+                <div id="checkoutError" style="color:#e74c3c;font-size:14px;margin-bottom:8px;display:none;">Please enter a valid email</div>
+                <button id="checkoutBtn" onclick="submitCheckoutEmail()" style="width:100%;padding:14px;font-size:16px;font-weight:700;background:linear-gradient(135deg,#6B3F8D,#8B5CB8);color:white;border:none;border-radius:12px;cursor:pointer;">Continue to Checkout</button>
+                <p style="font-size:12px;color:#999;margin-top:10px;">Your trial includes full access for 7 days.</p>
+            </div>
+        </div>
+
+    </body>
 </html>
