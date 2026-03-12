@@ -72,7 +72,7 @@ export async function POST(request: Request) {
       customerId: customer.id,
       priceId,
       userId: user.id,
-      returnUrl: `${origin}/dashboard/settings`,
+      returnUrl: `${origin}/success`,
     })
 
     return NextResponse.json({ url: session.url })
