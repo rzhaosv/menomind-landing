@@ -1950,9 +1950,6 @@
                     quizAnswers.age = parseInt(this.value);
                     updateOptionUI(this.parentElement);
                 });
-                input.parentElement.addEventListener('click', function() {
-                    input.click();
-                });
             });
 
             // Cognitive options
@@ -1969,10 +1966,6 @@
                     }
                     recalculateCognitive();
                     updateOptionUI(this.parentElement);
-                });
-                input.parentElement.addEventListener('click', function(e) {
-                    if (e.target === input) return;
-                    input.click();
                 });
             });
 
@@ -1991,10 +1984,6 @@
                     recalculateVasomotor();
                     updateOptionUI(this.parentElement);
                 });
-                input.parentElement.addEventListener('click', function(e) {
-                    if (e.target === input) return;
-                    input.click();
-                });
             });
 
             // Somatic options
@@ -2012,10 +2001,6 @@
                     recalculateSomatic();
                     updateOptionUI(this.parentElement);
                 });
-                input.parentElement.addEventListener('click', function(e) {
-                    if (e.target === input) return;
-                    input.click();
-                });
             });
 
             // Cycle options
@@ -2023,9 +2008,6 @@
                 input.addEventListener('change', function() {
                     quizAnswers.cycle = parseInt(this.value);
                     updateOptionUI(this.parentElement);
-                });
-                input.parentElement.addEventListener('click', function() {
-                    input.click();
                 });
             });
 
@@ -2035,9 +2017,6 @@
                     quizAnswers.medical = parseInt(this.value);
                     updateOptionUI(this.parentElement);
                 });
-                input.parentElement.addEventListener('click', function() {
-                    input.click();
-                });
             });
 
             // Impact options
@@ -2045,9 +2024,6 @@
                 input.addEventListener('change', function() {
                     quizAnswers.impact = parseInt(this.value);
                     updateOptionUI(this.parentElement);
-                });
-                input.parentElement.addEventListener('click', function() {
-                    input.click();
                 });
             });
         }
@@ -2077,6 +2053,30 @@
         }
 
         function updateOptionUI(optionElement) {
+            // For radio buttons, deselect siblings first
+            var input = optionElement.querySelector('input');
+            if (input && input.type === 'radio') {
+                var siblings = optionElement.parentElement.querySelectorAll('.quiz-option');
+                siblings.forEach(function(s) { s.classList.remove('selected'); });
+            }
+            // For checkboxes, toggle based on checked state
+            if (input && input.type === 'checkbox') {
+                if (input.checked) {
+                    optionElement.classList.add('selected');
+                } else {
+                    optionElement.classList.remove('selected');
+                }
+                // Sync all checkbox states in this group
+                var name = input.getAttribute('name');
+                optionElement.parentElement.querySelectorAll('input[name="' + name + '"]').forEach(function(i) {
+                    if (i.checked) {
+                        i.parentElement.classList.add('selected');
+                    } else {
+                        i.parentElement.classList.remove('selected');
+                    }
+                });
+                return;
+            }
             optionElement.classList.add('selected');
         }
 
