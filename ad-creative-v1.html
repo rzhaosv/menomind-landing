@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1080px;
+    height: 1080px;
+    background: #FDF6EE;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Playfair Display', Georgia, serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Subtle warm texture overlay */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(124,154,130,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(124,154,130,0.04) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .content {
+    position: relative;
+    z-index: 1;
+    padding: 0 120px;
+    width: 100%;
+  }
+
+  .checklist {
+    margin-bottom: 64px;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 28px;
+  }
+
+  .checkmark {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: rgba(124,154,130,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .checkmark svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .symptom {
+    font-size: 52px;
+    font-weight: 400;
+    color: #2C2C2C;
+    letter-spacing: -0.5px;
+  }
+
+  .hook {
+    font-size: 58px;
+    font-weight: 700;
+    color: #2C2C2C;
+    margin-top: 16px;
+    letter-spacing: -0.5px;
+  }
+
+  .bottom-bar {
+    position: absolute;
+    bottom: 60px;
+    left: 120px;
+    right: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 24px;
+    color: #6B3F8D;
+    letter-spacing: 0.5px;
+  }
+
+  .cta-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    color: #7C9A82;
+    letter-spacing: 0.3px;
+  }
+
+  /* Thin decorative line */
+  .divider {
+    position: absolute;
+    bottom: 110px;
+    left: 120px;
+    right: 120px;
+    height: 1px;
+    background: rgba(124,154,130,0.25);
+  }
+</style>
+</head>
+<body>
+  <div class="content">
+    <div class="checklist">
+      <div class="checklist-item">
+        <div class="checkmark">
+          <svg viewBox="0 0 20 20" fill="none" stroke="#7C9A82" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,10 8,14 16,6"/>
+          </svg>
+        </div>
+        <span class="symptom">Brain fog.</span>
+      </div>
+      <div class="checklist-item">
+        <div class="checkmark">
+          <svg viewBox="0 0 20 20" fill="none" stroke="#7C9A82" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,10 8,14 16,6"/>
+          </svg>
+        </div>
+        <span class="symptom">Night sweats.</span>
+      </div>
+      <div class="checklist-item">
+        <div class="checkmark">
+          <svg viewBox="0 0 20 20" fill="none" stroke="#7C9A82" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,10 8,14 16,6"/>
+          </svg>
+        </div>
+        <span class="symptom">Rage.</span>
+      </div>
+      <div class="checklist-item">
+        <div class="checkmark">
+          <svg viewBox="0 0 20 20" fill="none" stroke="#7C9A82" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,10 8,14 16,6"/>
+          </svg>
+        </div>
+        <span class="symptom">Anxiety.</span>
+      </div>
+    </div>
+    <div class="hook">Sound familiar?</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="bottom-bar">
+    <span class="logo">MenoMind</span>
+    <span class="cta-text">Free 2-min symptom check</span>
+  </div>
+</body>
+</html>

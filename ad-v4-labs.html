@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1920px;
+    background: #0F0F0F;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, #141218 0%, #0F0F0F 50%, #141218 100%);
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 0 80px;
+    width: 100%;
+  }
+  .lab-header {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 22px;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin-bottom: 60px;
+    text-align: center;
+  }
+  .lab-result {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 32px 40px;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 12px;
+  }
+  .lab-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 34px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.85);
+  }
+  .lab-status {
+    font-size: 30px;
+    font-weight: 600;
+    color: #4ADE80;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .lab-status .check {
+    width: 32px;
+    height: 32px;
+    background: rgba(74,222,128,0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .lab-status .check svg {
+    width: 18px;
+    height: 18px;
+  }
+  .and-yet {
+    text-align: center;
+    margin-top: 80px;
+    font-size: 48px;
+    font-weight: 700;
+    color: #E8C47C;
+    font-style: italic;
+  }
+  .and-yet-sub {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 30px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div class="content">
+    <div class="lab-header">Lab Results</div>
+
+    <div class="lab-result">
+      <span class="lab-name">TSH</span>
+      <span class="lab-status">
+        Normal
+        <span class="check">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,9 7,12 14,5"/>
+          </svg>
+        </span>
+      </span>
+    </div>
+
+    <div class="lab-result">
+      <span class="lab-name">CBC</span>
+      <span class="lab-status">
+        Normal
+        <span class="check">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,9 7,12 14,5"/>
+          </svg>
+        </span>
+      </span>
+    </div>
+
+    <div class="lab-result">
+      <span class="lab-name">Vitamin D</span>
+      <span class="lab-status">
+        Normal
+        <span class="check">
+          <svg viewBox="0 0 18 18" fill="none" stroke="#4ADE80" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="4,9 7,12 14,5"/>
+          </svg>
+        </span>
+      </span>
+    </div>
+
+    <div class="and-yet">And yet...</div>
+    <div class="and-yet-sub">you haven't slept through the<br>night in months.</div>
+  </div>
+</body>
+</html>

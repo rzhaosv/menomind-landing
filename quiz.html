@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Something Feels Off? Find Out What's Going On | MenoMind</title>
+    <meta name="description" content="You're not losing your mind. Take a free 2-minute symptom check to understand what's actually happening in your body. Private. No signup required.">
+    <meta name="theme-color" content="#6B3F8D">
+
+    <!-- Open Graph for sharing -->
+    <meta property="og:title" content="Something Feels Off? Take the Free Symptom Check">
+    <meta property="og:description" content="I just found out my symptoms might be hormonal, not mental. Take this 2-minute quiz — no signup needed.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.menomind.app/quiz">
+    <meta property="og:image" content="https://www.menomind.app/og-quiz.png">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Something Feels Off? Take the Free Symptom Check">
+    <meta name="twitter:description" content="I just found out my symptoms might be hormonal, not mental. Take this 2-minute quiz — no signup needed.">
+
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TS69CENYQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5TS69CENYQ');
+    </script>
+
+    <!-- Meta Pixel -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2166510774105785');
+        fbq('track', 'PageView');
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #FFFBF5;
+            color: #1A1A2E;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .quiz-header {
+            padding: 16px 20px;
+            background: #FFFBF5;
+            border-bottom: 1px solid rgba(107, 63, 141, 0.08);
+            text-align: center;
+        }
+        .quiz-header a {
+            font-size: 22px;
+            font-weight: 700;
+            color: #6B3F8D;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        /* MAIN CONTAINER */
+        .quiz-page {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* INTRO SCREEN */
+        .quiz-intro {
+            text-align: center;
+            padding: 48px 0 40px;
+        }
+        .quiz-intro h1 {
+            font-size: clamp(26px, 6vw, 38px);
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            color: #1A1A2E;
+            letter-spacing: -0.5px;
+        }
+        .quiz-intro h1 span {
+            color: #D65C8C;
+        }
+        .quiz-intro p {
+            font-size: 17px;
+            color: #555;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+        .quiz-intro .quiz-meta {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin: 24px 0 32px;
+            font-size: 14px;
+            color: #888;
+        }
+        .quiz-meta span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .start-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #D65C8C 0%, #6B3F8D 100%);
+            color: white;
+            padding: 18px 48px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 20px rgba(214, 92, 140, 0.3);
+        }
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px rgba(214, 92, 140, 0.4);
+        }
+        .social-proof {
+            margin-top: 24px;
+            font-size: 13px;
+            color: #999;
+        }
+        .social-proof strong { color: #6B3F8D; }
+
+        /* PROGRESS BAR */
+        .progress-wrapper {
+            display: none;
+            padding: 20px 0 8px;
+        }
+        .progress-wrapper.active { display: block; }
+        .progress-track {
+            height: 6px;
+            background: #E8DFF3;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #D65C8C, #6B3F8D);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #999;
+            margin-top: 8px;
+        }
+
+        /* QUESTION CARDS */
+        .question-card {
+            display: none;
+            padding: 32px 0;
+            animation: fadeSlideIn 0.4s ease;
+        }
+        .question-card.active { display: block; }
+        @keyframes fadeSlideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .question-card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .question-hint {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 24px;
+        }
+
+        /* OPTIONS */
+        .option-list { display: flex; flex-direction: column; gap: 10px; }
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 16px 20px;
+            background: white;
+            border: 2px solid #E8DFF3;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+        .option:hover {
+            border-color: #D65C8C;
+            background: rgba(214, 92, 140, 0.03);
+        }
+        .option.selected {
+            border-color: #D65C8C;
+            background: rgba(214, 92, 140, 0.06);
+        }
+        .option input { display: none; }
+        .option-check {
+            width: 22px;
+            height: 22px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .option-check.checkbox { border-radius: 6px; }
+        .option.selected .option-check {
+            border-color: #D65C8C;
+            background: #D65C8C;
+        }
+        .option.selected .option-check::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        .option.selected .option-check.checkbox::after {
+            content: '\2713';
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            width: auto;
+            height: auto;
+            background: none;
+            border-radius: 0;
+        }
+
+        /* NAV BUTTONS */
+        .quiz-nav {
+            display: none;
+            padding: 12px 0 40px;
+            gap: 12px;
+        }
+        .quiz-nav.active { display: flex; }
+        .nav-btn {
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+        .nav-btn.back {
+            background: transparent;
+            color: #888;
+            border: 2px solid #E8DFF3;
+        }
+        .nav-btn.back:hover { border-color: #ccc; color: #555; }
+        .nav-btn.next {
+            background: linear-gradient(135deg, #D65C8C, #6B3F8D);
+            color: white;
+            flex: 1;
+            box-shadow: 0 2px 12px rgba(214, 92, 140, 0.2);
+        }
+        .nav-btn.next:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(214, 92, 140, 0.3);
+        }
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* RESULT SCREEN */
+        .result-screen {
+            display: none;
+            padding: 40px 0 60px;
+            text-align: center;
+            animation: fadeSlideIn 0.6s ease;
+        }
+        .result-screen.active { display: block; }
+
+        .result-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .result-badge.low { background: #E8F5E9; color: #2E7D32; }
+        .result-badge.moderate { background: #FFF3E0; color: #E65100; }
+        .result-badge.strong { background: #FCE4EC; color: #C2185B; }
+
+        .result-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+        .result-badge.low .result-dot { background: #4CAF50; }
+        .result-badge.moderate .result-dot { background: #FF9800; }
+        .result-badge.strong .result-dot { background: #D65C8C; }
+
+        .result-headline {
+            font-size: clamp(24px, 6vw, 34px);
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 16px;
+            letter-spacing: -0.5px;
+        }
+        .result-subtext {
+            font-size: 17px;
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 520px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* SYMPTOM PREVIEW (free) */
+        .symptom-preview {
+            text-align: left;
+            background: white;
+            border: 1px solid #E8DFF3;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 32px;
+        }
+        .symptom-preview h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #6B3F8D;
+        }
+        .symptom-cluster {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0eaf5;
+        }
+        .symptom-cluster:last-child { border-bottom: none; }
+        .cluster-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .cluster-icon.active { background: rgba(214, 92, 140, 0.1); }
+        .cluster-icon.inactive { background: #f5f5f5; opacity: 0.5; }
+        .cluster-info { flex: 1; }
+        .cluster-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1A1A2E;
+        }
+        .cluster-status {
+            font-size: 13px;
+        }
+        .cluster-status.matched { color: #D65C8C; font-weight: 500; }
+        .cluster-status.clear { color: #aaa; }
+
+        /* EMAIL GATE */
+        .email-gate {
+            background: linear-gradient(135deg, #6B3F8D 0%, #4a2a6b 100%);
+            border-radius: 16px;
+            padding: 36px 28px;
+            margin-bottom: 28px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .email-gate::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            background: rgba(214, 92, 140, 0.15);
+            border-radius: 50%;
+        }
+        .email-gate h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        .email-gate p {
+            font-size: 15px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            position: relative;
+        }
+        .gate-features {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .gate-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            opacity: 0.95;
+        }
+        .gate-feature .check {
+            width: 20px;
+            height: 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+        .email-form {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+        .email-form input {
+            flex: 1;
+            padding: 14px 16px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            font-size: 16px;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+        .email-form input::placeholder { color: rgba(255,255,255,0.5); }
+        .email-form input:focus { border-color: rgba(255,255,255,0.4); }
+        .email-form button {
+            padding: 14px 24px;
+            background: #D65C8C;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .email-form button:hover {
+            background: #c9467c;
+            transform: translateY(-1px);
+        }
+        .email-privacy {
+            font-size: 12px;
+            opacity: 0.6;
+            margin-top: 10px;
+            position: relative;
+        }
+        .email-success {
+            display: none;
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+        }
+        .email-success .checkmark {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        .email-success h4 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        .email-success p {
+            font-size: 14px;
+            opacity: 0.8;
+            margin-bottom: 0;
+        }
+
+        /* DETAILED RESULTS (hidden until email) */
+        .detailed-results {
+            display: none;
+            text-align: left;
+            animation: fadeSlideIn 0.6s ease;
+        }
+        .detailed-results.active { display: block; }
+        .detail-card {
+            background: white;
+            border: 1px solid #E8DFF3;
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .detail-card h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1A1A2E;
+        }
+        .detail-card p {
+            font-size: 15px;
+            color: #555;
+            line-height: 1.7;
+        }
+        .detail-card .highlight {
+            background: rgba(214, 92, 140, 0.06);
+            border-left: 3px solid #D65C8C;
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin: 12px 0;
+            font-size: 14px;
+            color: #444;
+            line-height: 1.6;
+        }
+        .next-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .next-step {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: #6B3F8D;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+        .step-text {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.5;
+            padding-top: 3px;
+        }
+
+        /* SHARE SECTION */
+        .share-section {
+            text-align: center;
+            padding: 28px;
+            background: #F5F0FA;
+            border-radius: 16px;
+            margin-bottom: 28px;
+        }
+        .share-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .share-section p {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 16px;
+        }
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .share-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+        .share-btn:hover { transform: translateY(-1px); }
+        .share-btn.copy {
+            background: white;
+            color: #6B3F8D;
+            border: 2px solid #E8DFF3;
+        }
+        .share-btn.twitter { background: #1DA1F2; color: white; }
+        .share-btn.facebook { background: #4267B2; color: white; }
+        .share-btn.whatsapp { background: #25D366; color: white; }
+
+        /* CTA SECTION */
+        .upgrade-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .upgrade-section h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .upgrade-section p {
+            font-size: 15px;
+            color: #777;
+            margin-bottom: 24px;
+        }
+        .upgrade-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .upgrade-card {
+            background: white;
+            border: 2px solid #E8DFF3;
+            border-radius: 14px;
+            padding: 24px 16px;
+            text-decoration: none;
+            color: #1A1A2E;
+            transition: all 0.2s;
+            display: block;
+        }
+        .upgrade-card:hover {
+            border-color: #D65C8C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(214, 92, 140, 0.15);
+        }
+        .upgrade-card.featured {
+            border-color: #D65C8C;
+            background: linear-gradient(135deg, rgba(214, 92, 140, 0.04), rgba(107, 63, 141, 0.04));
+            position: relative;
+        }
+        .upgrade-card .badge-tag {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #D65C8C;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .upgrade-card .price {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+        .upgrade-card .period {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+        .upgrade-card .card-btn {
+            display: block;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .upgrade-card .card-btn { background: #6B3F8D; color: white; }
+        .upgrade-card.featured .card-btn { background: #D65C8C; color: white; }
+        .upgrade-guarantee {
+            font-size: 13px;
+            color: #999;
+        }
+
+        /* FOOTER */
+        .quiz-footer {
+            text-align: center;
+            padding: 32px 20px;
+            border-top: 1px solid #E8DFF3;
+            margin-top: 20px;
+        }
+        .quiz-footer p {
+            font-size: 13px;
+            color: #aaa;
+            line-height: 1.7;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+        .quiz-footer a {
+            color: #6B3F8D;
+            text-decoration: none;
+        }
+
+        /* CONFETTI */
+        .confetti {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            top: -10px;
+            z-index: 999;
+            animation: confettiFall 3s linear forwards;
+        }
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        /* MOBILE */
+        @media (max-width: 600px) {
+            .quiz-intro { padding: 32px 0; }
+            .quiz-intro h1 { font-size: 26px; }
+            .quiz-meta { flex-direction: column; gap: 8px; align-items: center; }
+            .email-form { flex-direction: column; }
+            .email-form input, .email-form button { width: 100%; }
+            .upgrade-cards { grid-template-columns: 1fr; }
+            .share-buttons { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="quiz-header">
+        <a href="/">MenoMind</a>
+    </div>
+
+    <div class="quiz-page">
+        <!-- INTRO SCREEN -->
+        <div class="quiz-intro" id="introScreen">
+            <h1>Could your symptoms be <span>perimenopause?</span></h1>
+            <p>Anxiety, brain fog, mood swings, and fatigue aren't always what they seem. Answer 7 quick questions to find out if your symptoms could be hormonal.</p>
+            <div class="quiz-meta">
+                <span>&#9202; 2 minutes</span>
+                <span>&#128274; No signup required</span>
+                <span>&#129657; Evidence-based</span>
+            </div>
+            <button class="start-btn" onclick="startQuiz()">Start the Quiz</button>
+            <div class="social-proof">Taken by <strong>12,847</strong> women this month</div>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-wrapper" id="progressWrapper">
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-label">
+                <span id="progressText">Question 1 of 7</span>
+                <span id="progressPct">14%</span>
+            </div>
+        </div>
+
+        <!-- QUESTION 1: Age -->
+        <div class="question-card" data-q="0" id="q0">
+            <h2>How old are you?</h2>
+            <div class="question-hint">Perimenopause can start as early as your mid-30s.</div>
+            <div class="option-list">
+                <label class="option" onclick="selectRadio(this, 0, 'age', 0)">
+                    <input type="radio" name="age" value="0">
+                    <span class="option-check"></span>
+                    Under 35
+                </label>
+                <label class="option" onclick="selectRadio(this, 0, 'age', 1)">
+                    <input type="radio" name="age" value="1">
+                    <span class="option-check"></span>
+                    35 - 39
+                </label>
+                <label class="option" onclick="selectRadio(this, 0, 'age', 1)">
+                    <input type="radio" name="age" value="1">
+                    <span class="option-check"></span>
+                    40 - 44
+                </label>
+                <label class="option" onclick="selectRadio(this, 0, 'age', 1)">
+                    <input type="radio" name="age" value="1">
+                    <span class="option-check"></span>
+                    45 - 49
+                </label>
+                <label class="option" onclick="selectRadio(this, 0, 'age', 1)">
+                    <input type="radio" name="age" value="1">
+                    <span class="option-check"></span>
+                    50 - 54
+                </label>
+                <label class="option" onclick="selectRadio(this, 0, 'age', 0)">
+                    <input type="radio" name="age" value="0">
+                    <span class="option-check"></span>
+                    55+
+                </label>
+            </div>
+        </div>
+
+        <!-- QUESTION 2: Cognitive/Mood -->
+        <div class="question-card" data-q="1" id="q1">
+            <h2>Have you noticed these in the last 6 months?</h2>
+            <div class="question-hint">Select all that apply.</div>
+            <div class="option-list">
+                <label class="option" onclick="toggleCheck(this, 'cognitive', 1)">
+                    <input type="checkbox" name="cognitive" value="1">
+                    <span class="option-check checkbox"></span>
+                    Brain fog or difficulty concentrating
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'cognitive', 1)">
+                    <input type="checkbox" name="cognitive" value="1">
+                    <span class="option-check checkbox"></span>
+                    Anxiety that seems to come from nowhere
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'cognitive', 1)">
+                    <input type="checkbox" name="cognitive" value="1">
+                    <span class="option-check checkbox"></span>
+                    Mood swings or irritability that aren't "you"
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'cognitive', 1)">
+                    <input type="checkbox" name="cognitive" value="1">
+                    <span class="option-check checkbox"></span>
+                    Feeling down or emotionally flat
+                </label>
+                <label class="option" onclick="selectNone(this, 'cognitive')">
+                    <input type="checkbox" name="cognitive" value="0">
+                    <span class="option-check checkbox"></span>
+                    None of these
+                </label>
+            </div>
+        </div>
+
+        <!-- QUESTION 3: Vasomotor -->
+        <div class="question-card" data-q="2" id="q2">
+            <h2>What about these physical symptoms?</h2>
+            <div class="question-hint">Select all that apply.</div>
+            <div class="option-list">
+                <label class="option" onclick="toggleCheck(this, 'vasomotor', 1)">
+                    <input type="checkbox" name="vasomotor" value="1">
+                    <span class="option-check checkbox"></span>
+                    Hot flashes or sudden warmth
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'vasomotor', 1)">
+                    <input type="checkbox" name="vasomotor" value="1">
+                    <span class="option-check checkbox"></span>
+                    Night sweats that disrupt sleep
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'vasomotor', 1)">
+                    <input type="checkbox" name="vasomotor" value="1">
+                    <span class="option-check checkbox"></span>
+                    Heart palpitations for no clear reason
+                </label>
+                <label class="option" onclick="selectNone(this, 'vasomotor')">
+                    <input type="checkbox" name="vasomotor" value="0">
+                    <span class="option-check checkbox"></span>
+                    None of these
+                </label>
+            </div>
+        </div>
+
+        <!-- QUESTION 4: Sleep/Somatic -->
+        <div class="question-card" data-q="3" id="q3">
+            <h2>How has your body been feeling?</h2>
+            <div class="question-hint">Select all that apply.</div>
+            <div class="option-list">
+                <label class="option" onclick="toggleCheck(this, 'somatic', 1)">
+                    <input type="checkbox" name="somatic" value="1">
+                    <span class="option-check checkbox"></span>
+                    Waking at 3am with a racing mind
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'somatic', 1)">
+                    <input type="checkbox" name="somatic" value="1">
+                    <span class="option-check checkbox"></span>
+                    Fatigue that sleep doesn't fix
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'somatic', 1)">
+                    <input type="checkbox" name="somatic" value="1">
+                    <span class="option-check checkbox"></span>
+                    Unexplained weight gain, especially around your belly
+                </label>
+                <label class="option" onclick="toggleCheck(this, 'somatic', 1)">
+                    <input type="checkbox" name="somatic" value="1">
+                    <span class="option-check checkbox"></span>
+                    Joint pain or stiffness
+                </label>
+                <label class="option" onclick="selectNone(this, 'somatic')">
+                    <input type="checkbox" name="somatic" value="0">
+                    <span class="option-check checkbox"></span>
+                    None of these
+                </label>
+            </div>
+        </div>
+
+        <!-- QUESTION 5: Cycle -->
+        <div class="question-card" data-q="4" id="q4">
+            <h2>Have your periods changed?</h2>
+            <div class="question-hint">Changes in your menstrual cycle are one of the earliest signs.</div>
+            <div class="option-list">
+                <label class="option" onclick="selectRadio(this, 4, 'cycle', 2)">
+                    <input type="radio" name="cycle" value="2">
+                    <span class="option-check"></span>
+                    Yes — irregular, heavier, or lighter than before
+                </label>
+                <label class="option" onclick="selectRadio(this, 4, 'cycle', 0)">
+                    <input type="radio" name="cycle" value="0">
+                    <span class="option-check"></span>
+                    No — still the same as always
+                </label>
+                <label class="option" onclick="selectRadio(this, 4, 'cycle', 0)">
+                    <input type="radio" name="cycle" value="0">
+                    <span class="option-check"></span>
+                    I'm not sure
+                </label>
+                <label class="option" onclick="selectRadio(this, 4, 'cycle', 2)">
+                    <input type="radio" name="cycle" value="2">
+                    <span class="option-check"></span>
+                    I've stopped getting periods
+                </label>
+            </div>
+        </div>
+
+        <!-- QUESTION 6: Medical -->
+        <div class="question-card" data-q="5" id="q5">
+            <h2>Has a doctor discussed perimenopause with you?</h2>
+            <div class="question-hint">Many women go years without getting the right conversation.</div>
+            <div class="option-list">
+                <label class="option" onclick="selectRadio(this, 5, 'medical', 0)">
+                    <input type="radio" name="medical" value="0">
+                    <span class="option-check"></span>
+                    Yes, and I'm being treated
+                </label>
+                <label class="option" onclick="selectRadio(this, 5, 'medical', 0)">
+                    <input type="radio" name="medical" value="0">
+                    <span class="option-check"></span>
+                    Yes, but I'm not in treatment
+                </label>
+                <label class="option" onclick="selectRadio(this, 5, 'medical', 1)">
+                    <input type="radio" name="medical" value="1">
+                    <span class="option-check"></span>
+                    No — no doctor has ever brought it up
+                </label>
+                <label class="option" onclick="selectRadio(this, 5, 'medical', 1)">
+                    <input type="radio" name="medical" value="1">
+                    <span class="option-check"></span>
+                    I've tried to bring it up but felt dismissed
+                </label>
+            </div>
+        </div>
+
+        <!-- QUESTION 7: Impact -->
+        <div class="question-card" data-q="6" id="q6">
+            <h2>How much are these symptoms affecting your daily life?</h2>
+            <div class="question-hint">Be honest — there's no wrong answer.</div>
+            <div class="option-list">
+                <label class="option" onclick="selectRadio(this, 6, 'impact', 0)">
+                    <input type="radio" name="impact" value="0">
+                    <span class="option-check"></span>
+                    Barely noticeable
+                </label>
+                <label class="option" onclick="selectRadio(this, 6, 'impact', 0)">
+                    <input type="radio" name="impact" value="0">
+                    <span class="option-check"></span>
+                    Somewhat — I'm managing but it's harder than it should be
+                </label>
+                <label class="option" onclick="selectRadio(this, 6, 'impact', 1)">
+                    <input type="radio" name="impact" value="1">
+                    <span class="option-check"></span>
+                    Significantly — it's affecting my work, relationships, or sleep
+                </label>
+                <label class="option" onclick="selectRadio(this, 6, 'impact', 1)">
+                    <input type="radio" name="impact" value="1">
+                    <span class="option-check"></span>
+                    Severely — I feel like I'm losing myself
+                </label>
+            </div>
+        </div>
+
+        <!-- NAV BUTTONS -->
+        <div class="quiz-nav" id="quizNav">
+            <button class="nav-btn back" id="backBtn" onclick="goBack()" style="display:none;">Back</button>
+            <button class="nav-btn next" id="nextBtn" onclick="goNext()" disabled>Next</button>
+        </div>
+
+        <!-- RESULT SCREEN -->
+        <div class="result-screen" id="resultScreen">
+            <div class="result-badge" id="resultBadge">
+                <span class="result-dot"></span>
+                <span id="badgeText"></span>
+            </div>
+
+            <h2 class="result-headline" id="resultHeadline"></h2>
+            <p class="result-subtext" id="resultSubtext"></p>
+
+            <!-- Symptom preview (always shown) -->
+            <div class="symptom-preview" id="symptomPreview">
+                <h3>Your Symptom Profile</h3>
+                <div id="clusterList"></div>
+            </div>
+
+            <!-- SHARE SECTION -->
+            <div class="share-section" id="shareSection">
+                <h3>Know someone who might relate?</h3>
+                <p>1 in 3 women don't realize their symptoms could be hormonal. Share this quiz.</p>
+                <div class="share-buttons">
+                    <button class="share-btn copy" onclick="copyLink()">&#128279; Copy Link</button>
+                    <a class="share-btn whatsapp" id="waShare" href="#" target="_blank">WhatsApp</a>
+                    <a class="share-btn facebook" id="fbShare" href="#" target="_blank">Facebook</a>
+                    <a class="share-btn twitter" id="twShare" href="#" target="_blank">Twitter</a>
+                </div>
+            </div>
+
+            <!-- EMAIL GATE for detailed results -->
+            <div class="email-gate" id="emailGate">
+                <h3>Unlock Your Full Report</h3>
+                <p>Get your detailed symptom breakdown, what to say to your doctor, and a personalized next-steps guide.</p>
+                <div class="gate-features">
+                    <div class="gate-feature"><span class="check">&#10003;</span> Detailed symptom cluster analysis</div>
+                    <div class="gate-feature"><span class="check">&#10003;</span> What to tell your doctor (copy-paste script)</div>
+                    <div class="gate-feature"><span class="check">&#10003;</span> Free guide: "5 Signs It's Perimenopause, Not Anxiety"</div>
+                </div>
+                <div class="email-form" id="emailForm">
+                    <input type="email" id="emailInput" placeholder="Your email address">
+                    <button onclick="unlockResults()">Unlock Free</button>
+                </div>
+                <div class="email-privacy">No spam ever. Unsubscribe anytime.</div>
+                <div class="email-success" id="emailSuccess">
+                    <div class="checkmark">&#10003;</div>
+                    <h4>Check your inbox!</h4>
+                    <p>Your detailed report and free guide are on the way.</p>
+                </div>
+            </div>
+
+            <!-- DETAILED RESULTS (hidden until email) -->
+            <div class="detailed-results" id="detailedResults">
+                <div class="detail-card" id="detailAnalysis">
+                    <h3>Your Detailed Analysis</h3>
+                    <div id="detailContent"></div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>What to Tell Your Doctor</h3>
+                    <p>Bring this to your next appointment. Many women find it hard to describe what they're feeling — this gives you the words.</p>
+                    <div class="highlight" id="doctorScript"></div>
+                </div>
+
+                <div class="detail-card">
+                    <h3>Your Recommended Next Steps</h3>
+                    <div class="next-steps" id="nextSteps"></div>
+                </div>
+            </div>
+
+            <!-- UPGRADE CTA -->
+            <div class="upgrade-section" id="upgradeSection">
+                <h3>Ready to take control?</h3>
+                <p>Track symptoms over time, get AI-powered pattern insights, and generate doctor visit prep reports so you walk in with answers, not questions.</p>
+                <div class="upgrade-cards">
+                    <a href="https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00" class="upgrade-card" onclick="gtag('event','begin_checkout',{value:14.99,currency:'USD',items:[{item_name:'MenoMind Monthly',item_category:'quiz_funnel'}]})">
+                        <div class="price">$14.99</div>
+                        <div class="period">/month</div>
+                        <div class="card-btn">Start Free Trial</div>
+                    </a>
+                    <a href="https://buy.stripe.com/9B68wOawV5Kb1B42771kA01" class="upgrade-card featured" onclick="gtag('event','begin_checkout',{value:99,currency:'USD',items:[{item_name:'MenoMind Annual',item_category:'quiz_funnel'}]})">
+                        <div class="badge-tag">Save 44%</div>
+                        <div class="price">$99</div>
+                        <div class="period">/year</div>
+                        <div class="card-btn">Start Free Trial</div>
+                    </a>
+                </div>
+                <div class="upgrade-guarantee">14-day money-back guarantee. Cancel anytime.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="quiz-footer">
+        <p>This quiz is educational and does not constitute a medical diagnosis. Always consult with a healthcare provider for personalized medical advice.<br><br><a href="/">MenoMind</a> &middot; <a href="/#privacy">Privacy</a> &middot; <a href="/#terms">Terms</a></p>
+    </div>
+
+    <script>
+        // SUPABASE
+        const SUPABASE_URL = 'https://yfqedijcojghqzphmqkj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmcWVkaWpjb2pnaHF6cGhtcWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NTg3NzEsImV4cCI6MjA4ODQzNDc3MX0.eLwGCY8Xd5estcAoO66Mfy-6b5ue16P6qqjgPc2KYxk';
+
+        // STATE
+        let currentQ = -1; // -1 = intro
+        let answers = { age:0, cognitive:0, vasomotor:0, somatic:0, cycle:0, medical:0, impact:0 };
+        let answered = [false, false, false, false, false, false, false];
+
+        function startQuiz() {
+            document.getElementById('introScreen').style.display = 'none';
+            document.getElementById('progressWrapper').classList.add('active');
+            document.getElementById('quizNav').classList.add('active');
+            currentQ = 0;
+            showQuestion(0);
+            gtag('event', 'quiz_start', { event_category: 'engagement' });
+        }
+
+        function selectRadio(el, qIndex, field, value) {
+            // Deselect siblings
+            el.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            answers[field] = value;
+            answered[qIndex] = true;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function toggleCheck(el, field, value) {
+            const qCard = el.closest('.question-card');
+            const qIndex = parseInt(qCard.dataset.q);
+            // Deselect "none" option
+            const noneOpt = qCard.querySelector('.option:last-child');
+            if (noneOpt) { noneOpt.classList.remove('selected'); noneOpt.querySelector('input').checked = false; }
+
+            el.classList.toggle('selected');
+            const input = el.querySelector('input');
+            input.checked = el.classList.contains('selected');
+
+            // Recalculate
+            let total = 0;
+            qCard.querySelectorAll('.option.selected input[value="1"]').forEach(() => total++);
+            answers[field] = total;
+            answered[qIndex] = true;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function selectNone(el, field) {
+            const qCard = el.closest('.question-card');
+            const qIndex = parseInt(qCard.dataset.q);
+            // Deselect all others
+            qCard.querySelectorAll('.option').forEach(o => { o.classList.remove('selected'); o.querySelector('input').checked = false; });
+            el.classList.add('selected');
+            el.querySelector('input').checked = true;
+            answers[field] = 0;
+            answered[qIndex] = true;
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function showQuestion(idx) {
+            document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+            document.getElementById('q' + idx).classList.add('active');
+            currentQ = idx;
+
+            // Update progress
+            const pct = Math.round(((idx + 1) / 7) * 100);
+            document.getElementById('progressFill').style.width = pct + '%';
+            document.getElementById('progressText').textContent = 'Question ' + (idx + 1) + ' of 7';
+            document.getElementById('progressPct').textContent = pct + '%';
+
+            // Nav buttons
+            document.getElementById('backBtn').style.display = idx === 0 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = idx === 6 ? 'See My Results' : 'Next';
+            document.getElementById('nextBtn').disabled = !answered[idx];
+        }
+
+        function goNext() {
+            if (!answered[currentQ]) return;
+            gtag('event', 'quiz_progress', { event_category: 'engagement', event_label: 'q' + (currentQ + 1) });
+            if (currentQ < 6) {
+                showQuestion(currentQ + 1);
+            } else {
+                showResults();
+            }
+        }
+
+        function goBack() {
+            if (currentQ > 0) showQuestion(currentQ - 1);
+        }
+
+        function showResults() {
+            // Fire Meta Pixel Lead event on quiz completion
+            if (typeof fbq === 'function') {
+                fbq('track', 'Lead');
+            }
+            // Calculate score
+            let score = answers.age + answers.cognitive + answers.vasomotor + answers.somatic + answers.cycle + answers.medical + answers.impact;
+
+            let level, levelText, headline, subtext;
+            if (score <= 3) {
+                level = 'low';
+                levelText = 'Low Perimenopause Indicators';
+                headline = 'Your symptoms show low indicators for perimenopause';
+                subtext = 'Based on your answers, perimenopause is less likely to be the primary cause right now — but symptoms can develop over time. Tracking is still worthwhile.';
+            } else if (score <= 7) {
+                level = 'moderate';
+                levelText = 'Moderate Perimenopause Indicators';
+                headline = 'Your symptoms are consistent with early perimenopause';
+                subtext = 'Your symptom profile suggests hormonal changes may be playing a role. Many women with this pattern find answers — and relief — once they know what to look for.';
+            } else {
+                level = 'strong';
+                levelText = 'Strong Perimenopause Indicators';
+                headline = 'Your symptoms strongly align with perimenopause';
+                subtext = 'Your symptom profile shows a clear pattern consistent with perimenopause. You\'re not imagining it — and you\'re not alone. Understanding what\'s happening is the first step to feeling like yourself again.';
+            }
+
+            // Build symptom clusters
+            const clusters = [
+                { name: 'Cognitive & Mood', icon: '&#129504;', active: answers.cognitive > 0, count: answers.cognitive, desc: 'brain fog, anxiety, mood swings' },
+                { name: 'Vasomotor', icon: '&#128293;', active: answers.vasomotor > 0, count: answers.vasomotor, desc: 'hot flashes, night sweats, palpitations' },
+                { name: 'Sleep & Body', icon: '&#128564;', active: answers.somatic > 0, count: answers.somatic, desc: 'insomnia, fatigue, weight gain, joint pain' },
+                { name: 'Menstrual Changes', icon: '&#128197;', active: answers.cycle > 0, count: answers.cycle, desc: 'irregular, heavier, lighter, or stopped' }
+            ];
+
+            // Hide quiz, show results
+            document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+            document.getElementById('progressWrapper').classList.remove('active');
+            document.getElementById('quizNav').classList.remove('active');
+            document.getElementById('resultScreen').classList.add('active');
+
+            // Populate
+            const badge = document.getElementById('resultBadge');
+            badge.className = 'result-badge ' + level;
+            document.getElementById('badgeText').textContent = levelText;
+            document.getElementById('resultHeadline').textContent = headline;
+            document.getElementById('resultSubtext').textContent = subtext;
+
+            // Symptom clusters
+            let clusterHTML = '';
+            clusters.forEach(c => {
+                clusterHTML += `
+                    <div class="symptom-cluster">
+                        <div class="cluster-icon ${c.active ? 'active' : 'inactive'}">${c.icon}</div>
+                        <div class="cluster-info">
+                            <div class="cluster-name">${c.name}</div>
+                            <div class="cluster-status ${c.active ? 'matched' : 'clear'}">${c.active ? c.count + ' symptom' + (c.count > 1 ? 's' : '') + ' matched' : 'No symptoms reported'}</div>
+                        </div>
+                    </div>`;
+            });
+            document.getElementById('clusterList').innerHTML = clusterHTML;
+
+            // Share links
+            const shareText = encodeURIComponent('I just found out my symptoms might be hormonal, not mental. Take this free 2-minute quiz:');
+            const shareUrl = encodeURIComponent('https://www.menomind.app/quiz');
+            document.getElementById('waShare').href = 'https://wa.me/?text=' + shareText + '%20' + shareUrl;
+            document.getElementById('fbShare').href = 'https://www.facebook.com/sharer/sharer.php?u=' + shareUrl;
+            document.getElementById('twShare').href = 'https://twitter.com/intent/tweet?text=' + shareText + '&url=' + shareUrl;
+
+            // Store results for detailed section
+            window._quizResults = { score, level, clusters, answers: {...answers} };
+
+            // Build detailed content (hidden until email)
+            buildDetailedResults(level, clusters, score);
+
+            // Confetti for strong
+            if (level === 'strong') triggerConfetti();
+
+            // Track
+            gtag('event', 'quiz_complete', { event_category: 'engagement', event_label: level, value: score });
+
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function buildDetailedResults(level, clusters, score) {
+            // Analysis content
+            let analysis = '';
+            const activeClusters = clusters.filter(c => c.active);
+
+            if (level === 'strong') {
+                analysis = `<p>Your responses indicate <strong>${activeClusters.length} out of 4 symptom clusters</strong> associated with perimenopause. This is a significant pattern.</p>`;
+                analysis += `<div class="highlight">Perimenopause involves 4-10 years of hormonal fluctuation. What feels like anxiety, depression, or burnout is often your body responding to changing estrogen and progesterone levels. This is not "in your head" — it's biology.</div>`;
+                activeClusters.forEach(c => {
+                    analysis += `<p><strong>${c.name}:</strong> You reported ${c.count} symptom${c.count > 1 ? 's' : ''} in this category (${c.desc}). This cluster is commonly linked to fluctuating ${c.name === 'Cognitive & Mood' ? 'estrogen levels affecting neurotransmitter function' : c.name === 'Vasomotor' ? 'estrogen affecting your body\'s thermostat' : c.name === 'Sleep & Body' ? 'progesterone and cortisol changes' : 'hormonal regulation of your menstrual cycle'}.</p>`;
+                });
+            } else if (level === 'moderate') {
+                analysis = `<p>Your responses show <strong>${activeClusters.length} active symptom cluster${activeClusters.length > 1 ? 's' : ''}</strong>. While not as pronounced as a strong indicator, this pattern is worth monitoring and discussing with your doctor.</p>`;
+                analysis += `<div class="highlight">Perimenopause symptoms can be subtle at first and intensify over months or years. Many women in the moderate range discover they've been dismissing early signals. Early awareness gives you more options.</div>`;
+            } else {
+                analysis = `<p>Your symptom profile is currently showing lower perimenopause indicators. However, hormonal transitions are gradual and symptoms can emerge at any time.</p>`;
+                analysis += `<div class="highlight">Even with a low score, tracking your symptoms over time can help you spot changes early. Many women wish they'd started tracking sooner.</div>`;
+            }
+            document.getElementById('detailContent').innerHTML = analysis;
+
+            // Doctor script
+            let script = '"I\'ve been experiencing ';
+            const symptomList = [];
+            if (answers.cognitive > 0) symptomList.push('brain fog and unexplained anxiety');
+            if (answers.vasomotor > 0) symptomList.push('hot flashes and night sweats');
+            if (answers.somatic > 0) symptomList.push('sleep disruption and fatigue');
+            if (answers.cycle > 0) symptomList.push('changes in my menstrual cycle');
+            script += symptomList.length > 0 ? symptomList.join(', ') : 'various symptoms that concern me';
+            script += '. I took an evidence-based symptom assessment and my results suggest these may be consistent with perimenopause. Could we discuss hormone testing — specifically FSH, estradiol, and thyroid levels — and whether hormonal changes might explain what I\'m experiencing?"';
+            document.getElementById('doctorScript').textContent = script;
+
+            // Next steps
+            let steps = '';
+            const stepData = [
+                { text: 'Save this result and bring it to your next doctor\'s appointment. Having specifics helps you advocate for yourself.' },
+                { text: 'Request blood work: FSH, estradiol, TSH, and a complete hormone panel. These can confirm hormonal shifts.' },
+                { text: 'Start tracking your symptoms daily. Patterns over weeks are more revealing than any single day.' }
+            ];
+            if (level === 'strong') {
+                stepData.push({ text: 'Consider asking about hormone therapy (HT) options. Current evidence supports HT as safe and effective for most women in perimenopause.' });
+            }
+            stepData.forEach((s, i) => {
+                steps += `<div class="next-step"><div class="step-num">${i + 1}</div><div class="step-text">${s.text}</div></div>`;
+            });
+            document.getElementById('nextSteps').innerHTML = steps;
+        }
+
+        async function unlockResults() {
+            const email = document.getElementById('emailInput').value;
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                document.getElementById('emailInput').style.borderColor = '#ff4444';
+                document.getElementById('emailInput').setAttribute('placeholder', 'Please enter a valid email');
+                return;
+            }
+
+            const r = window._quizResults;
+            // Save to Supabase
+            try {
+                await fetch(SUPABASE_URL + '/rest/v1/email_leads', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': 'Bearer ' + SUPABASE_KEY,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        source: 'quiz_funnel',
+                        quiz_score: r.score,
+                        quiz_result: r.level + '_indicators'
+                    })
+                });
+            } catch(e) {}
+
+            // Track
+            gtag('event', 'generate_lead', { method: 'quiz_email_gate', event_label: r.level, value: r.score });
+
+            // Show success, hide form
+            document.getElementById('emailForm').style.display = 'none';
+            document.querySelector('.gate-features').style.display = 'none';
+            document.querySelector('.email-gate p').style.display = 'none';
+            document.querySelector('.email-privacy').style.display = 'none';
+            document.getElementById('emailSuccess').style.display = 'block';
+            document.querySelector('.email-gate h3').textContent = 'Results Unlocked!';
+
+            // Show detailed results
+            document.getElementById('detailedResults').classList.add('active');
+
+            // Scroll to detailed
+            setTimeout(() => {
+                document.getElementById('detailedResults').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 500);
+        }
+
+        function copyLink() {
+            navigator.clipboard.writeText('https://www.menomind.app/quiz').then(() => {
+                const btn = document.querySelector('.share-btn.copy');
+                btn.innerHTML = '&#10003; Copied!';
+                setTimeout(() => { btn.innerHTML = '&#128279; Copy Link'; }, 2000);
+            });
+            gtag('event', 'share', { method: 'copy_link', content_type: 'quiz' });
+        }
+
+        function triggerConfetti() {
+            const colors = ['#D65C8C', '#6B3F8D', '#007A87', '#FFA500', '#4CAF50'];
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const c = document.createElement('div');
+                    c.className = 'confetti';
+                    c.style.left = Math.random() * 100 + '%';
+                    c.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    c.style.width = (4 + Math.random() * 6) + 'px';
+                    c.style.height = (4 + Math.random() * 6) + 'px';
+                    document.body.appendChild(c);
+                    setTimeout(() => c.remove(), 3000);
+                }, i * 40);
+            }
+        }
+    </script>
+</body>
+</html>

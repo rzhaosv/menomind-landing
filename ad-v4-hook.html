@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1920px;
+    background: #0D0D0D;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Simulated blurred video background */
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #1a1520 0%, #0d0d0d 40%, #151218 100%);
+    opacity: 1;
+  }
+  /* Warm light leak */
+  body::after {
+    content: '';
+    position: absolute;
+    top: 200px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(214,164,100,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 0 80px;
+    text-align: center;
+  }
+  .hook-text {
+    font-size: 72px;
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 1.15;
+    letter-spacing: -1px;
+    text-transform: uppercase;
+  }
+  .hook-text .highlight {
+    color: #E8C47C;
+  }
+  .divider {
+    width: 60px;
+    height: 3px;
+    background: #E8C47C;
+    margin: 40px auto;
+  }
+  .sub {
+    font-size: 32px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div class="content">
+    <div class="hook-text">
+      THIS IS FOR<br>EVERY WOMAN<br>IN HER <span class="highlight">LATE 30s</span>
+    </div>
+    <div class="divider"></div>
+    <div class="sub">who was told her labs were "normal"</div>
+  </div>
+</body>
+</html>

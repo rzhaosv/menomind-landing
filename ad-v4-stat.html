@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1920px;
+    background: #0F0F0F;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, #1a1218 0%, #0f0f0f 50%, #18151a 100%);
+  }
+  .content {
+    position: relative;
+    z-index: 2;
+    padding: 0 80px;
+    text-align: center;
+  }
+  .label {
+    font-size: 24px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    margin-bottom: 40px;
+  }
+  .stat-line {
+    font-size: 80px;
+    font-weight: 900;
+    color: #FFFFFF;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+  .stat-line .num {
+    color: #E8C47C;
+    font-size: 120px;
+  }
+  .stat-detail {
+    font-size: 38px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.4;
+    margin-top: 40px;
+  }
+  .stat-detail .emphasis {
+    color: #E8C47C;
+    font-weight: 700;
+  }
+  .footnote {
+    margin-top: 60px;
+    font-size: 24px;
+    color: rgba(255,255,255,0.3);
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+  <div class="content">
+    <div class="label">What most doctors aren't testing for</div>
+    <div class="stat-line">Perimenopause<br>can start at <span class="num">35</span></div>
+    <div class="stat-detail">It affects over <span class="emphasis">34 different<br>symptoms</span></div>
+    <div class="footnote">The standard blood panel<br>doesn't catch it.</div>
+  </div>
+</body>
+</html>

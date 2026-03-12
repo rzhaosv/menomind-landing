@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Playfair+Display:wght@500;600&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px;
+    height: 1080px;
+    background: #FAFAFA;
+    font-family: 'Inter', -apple-system, sans-serif;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .content {
+    width: 100%;
+    padding: 0 80px;
+  }
+
+  .recent-label {
+    font-size: 18px;
+    font-weight: 500;
+    color: #999;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-item {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 28px;
+    background: #FFFFFF;
+    border: 1px solid #E8E8E8;
+    border-radius: 28px;
+    margin-bottom: 14px;
+    transition: all 0.2s;
+  }
+
+  .search-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    color: #9AA0A6;
+  }
+
+  .search-text {
+    font-size: 22px;
+    color: #3C3C3C;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  .clock-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    color: #C0C0C0;
+    margin-left: auto;
+  }
+
+  .answer-line {
+    margin-top: 48px;
+    text-align: center;
+    padding: 0 40px;
+  }
+
+  .answer-text {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 36px;
+    font-weight: 500;
+    color: #2C2C2C;
+    line-height: 1.35;
+  }
+
+  .bottom-bar {
+    position: absolute;
+    bottom: 48px;
+    left: 80px;
+    right: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 22px;
+    color: #6B3F8D;
+  }
+
+  .cta-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 20px;
+    color: #7C9A82;
+  }
+
+  .divider-line {
+    position: absolute;
+    bottom: 96px;
+    left: 80px;
+    right: 80px;
+    height: 1px;
+    background: #E8E8E8;
+  }
+</style>
+</head>
+<body>
+  <div class="content">
+    <div class="recent-label">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#999" stroke-width="1.5">
+        <circle cx="9" cy="9" r="7.5"/>
+        <polyline points="9,5 9,9 12,11"/>
+      </svg>
+      Recent searches
+    </div>
+
+    <div class="search-item">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="#9AA0A6" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="16" y1="16" x2="21" y2="21"/>
+      </svg>
+      <span class="search-text">why can't I sleep through the night anymore</span>
+      <svg class="clock-icon" viewBox="0 0 20 20" fill="none" stroke="#C0C0C0" stroke-width="1.5">
+        <circle cx="10" cy="10" r="8"/>
+        <polyline points="10,6 10,10 13,12"/>
+      </svg>
+    </div>
+
+    <div class="search-item">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="#9AA0A6" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="16" y1="16" x2="21" y2="21"/>
+      </svg>
+      <span class="search-text">sudden anxiety in your late 30s</span>
+      <svg class="clock-icon" viewBox="0 0 20 20" fill="none" stroke="#C0C0C0" stroke-width="1.5">
+        <circle cx="10" cy="10" r="8"/>
+        <polyline points="10,6 10,10 13,12"/>
+      </svg>
+    </div>
+
+    <div class="search-item">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="#9AA0A6" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="16" y1="16" x2="21" y2="21"/>
+      </svg>
+      <span class="search-text">rage for no reason at 40</span>
+      <svg class="clock-icon" viewBox="0 0 20 20" fill="none" stroke="#C0C0C0" stroke-width="1.5">
+        <circle cx="10" cy="10" r="8"/>
+        <polyline points="10,6 10,10 13,12"/>
+      </svg>
+    </div>
+
+    <div class="search-item">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="#9AA0A6" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="16" y1="16" x2="21" y2="21"/>
+      </svg>
+      <span class="search-text">brain fog at 40 — is this normal</span>
+      <svg class="clock-icon" viewBox="0 0 20 20" fill="none" stroke="#C0C0C0" stroke-width="1.5">
+        <circle cx="10" cy="10" r="8"/>
+        <polyline points="10,6 10,10 13,12"/>
+      </svg>
+    </div>
+
+    <div class="search-item">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="#9AA0A6" stroke-width="2" stroke-linecap="round">
+        <circle cx="11" cy="11" r="7"/>
+        <line x1="16" y1="16" x2="21" y2="21"/>
+      </svg>
+      <span class="search-text">is it normal to sweat at night at 38</span>
+      <svg class="clock-icon" viewBox="0 0 20 20" fill="none" stroke="#C0C0C0" stroke-width="1.5">
+        <circle cx="10" cy="10" r="8"/>
+        <polyline points="10,6 10,10 13,12"/>
+      </svg>
+    </div>
+
+    <div class="answer-line">
+      <div class="answer-text">There might be one answer<br>to all of these.</div>
+    </div>
+  </div>
+
+  <div class="divider-line"></div>
+  <div class="bottom-bar">
+    <span class="logo">MenoMind</span>
+    <span class="cta-text">Free 2-min symptom check</span>
+  </div>
+</body>
+</html>
