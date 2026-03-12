@@ -144,17 +144,24 @@ function ChatInterface({
 
         // Handle streaming SSE response
         const reader = res.body?.getReader();
+        console.log('[MenoMind] reader:', !!reader, 'body:', !!res.body);
         if (!reader) throw new Error('No response stream available');
 
         const decoder = new TextDecoder();
         let buffer = '';
         let contentAccumulated = '';
+        let chunkCount = 0;
 
         while (true) {
           const { done, value } = await reader.read();
-          if (done) break;
+          if (done) {
+            console.log('[MenoMind] stream done, total chunks:', chunkCount, 'content length:', contentAccumulated.length);
+            break;
+          }
 
-          buffer += decoder.decode(value, { stream: true });
+          const rawText = decoder.decode(value, { stream: true });
+          buffer += rawText;
+          if (chunkCount === 0) console.log('[MenoMind] first raw chunk:', rawText.slice(0, 100));
 
           // Parse SSE events from the buffer
           const lines = buffer.split('\n');
@@ -165,6 +172,7 @@ function ChatInterface({
             try {
               const payload = JSON.parse(line.slice(6));
               if (payload.type === 'chunk' && payload.content) {
+                chunkCount++;
                 contentAccumulated += payload.content;
                 setMessages((prev) =>
                   prev.map((msg) =>
@@ -178,10 +186,13 @@ function ChatInterface({
                 setCurrentConversationId(payload.conversationId);
                 onNewConversation?.();
               }
-              if (payload.type === 'done' && payload.showTrialOffer && anonymous && !trialOfferDismissed) {
-                setShowTrialOffer(true);
-                if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-                  (window as any).gtag('event', 'chat_paywall_shown', { messageCount: payload.messageCount });
+              if (payload.type === 'done') {
+                console.log('[MenoMind] done event:', payload);
+                if (payload.showTrialOffer && anonymous && !trialOfferDismissed) {
+                  setShowTrialOffer(true);
+                  if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+                    (window as any).gtag('event', 'chat_paywall_shown', { messageCount: payload.messageCount });
+                  }
                 }
               }
               if (payload.type === 'error') {
