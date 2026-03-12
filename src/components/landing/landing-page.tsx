@@ -754,26 +754,15 @@ export function LandingPage() {
 
               {/* Section 4: CTA Block */}
               <div className="mb-8">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Link
-                    href="/signup"
-                    className="block bg-green-600 hover:bg-green-700 text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
-                  >
-                    Start Tracking Free
-                    <span className="block text-xs font-normal text-green-100 mt-1">
-                      No credit card required
-                    </span>
-                  </Link>
-                  <Link
-                    href="/signup?plan=premium"
-                    className="block border-2 border-brand-purple text-brand-purple hover:bg-brand-purple hover:text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
-                  >
-                    Get Full Access
-                    <span className="block text-xs font-normal mt-1 opacity-80">
-                      7-day free trial · Cancel anytime
-                    </span>
-                  </Link>
-                </div>
+                <Link
+                  href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
+                  className="block bg-brand-purple hover:bg-brand-purple-dark text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
+                >
+                  Talk to your AI companion
+                  <span className="block text-xs font-normal text-purple-200 mt-1">
+                    Free &middot; No account needed &middot; Get personalized answers now
+                  </span>
+                </Link>
               </div>
 
               {/* Section 5: Social Proof */}

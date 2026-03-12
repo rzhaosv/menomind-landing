@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MessageBubble, type ChatMessage } from './message-bubble';
 import { SuggestedPrompts } from './suggested-prompts';
+import { EmailCapturePrompt } from './email-capture-prompt';
 import { useAppUser } from '@/components/layout/app-shell';
 
 interface ChatInterfaceProps {
@@ -11,6 +12,9 @@ interface ChatInterfaceProps {
   onNewConversation?: () => void;
   messageLimit?: { used: number; max: number } | null;
   onLimitReached?: () => void;
+  anonymous?: boolean;
+  quizContext?: { symptoms: string[]; level: string };
+  onEmailCapture?: (email: string) => void;
 }
 
 function TypingIndicator() {
@@ -38,6 +42,9 @@ function ChatInterface({
   onNewConversation,
   messageLimit,
   onLimitReached,
+  anonymous = false,
+  quizContext,
+  onEmailCapture,
 }: ChatInterfaceProps) {
   const appUser = useAppUser();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
@@ -45,6 +52,9 @@ function ChatInterface({
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
+  const [userMessageCount, setUserMessageCount] = useState(0);
+  const [showEmailCapture, setShowEmailCapture] = useState(false);
+  const [emailCaptured, setEmailCaptured] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -102,13 +112,15 @@ function ChatInterface({
       try {
         abortControllerRef.current = new AbortController();
 
-        const res = await fetch('/api/chat/message', {
+        const endpoint = anonymous ? '/api/chat/anonymous' : '/api/chat/message';
+        const payload = anonymous
+          ? { message: trimmed, quizSymptoms: quizContext?.symptoms, quizLevel: quizContext?.level }
+          : { conversationId: currentConversationId, message: trimmed };
+
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            conversationId: currentConversationId,
-            message: trimmed,
-          }),
+          body: JSON.stringify(payload),
           signal: abortControllerRef.current.signal,
         });
 
@@ -180,12 +192,18 @@ function ChatInterface({
         setMessages((prev) =>
           prev.filter((msg) => msg.id !== assistantMessageId)
         );
+        // Show email capture after 3 user messages in anonymous mode
+        const newCount = userMessageCount + 1;
+        setUserMessageCount(newCount);
+        if (anonymous && !emailCaptured && newCount === 3) {
+          setShowEmailCapture(true);
+        }
       } finally {
         setIsStreaming(false);
         abortControllerRef.current = null;
       }
     },
-    [isStreaming, currentConversationId, onLimitReached, onNewConversation]
+    [isStreaming, currentConversationId, onLimitReached, onNewConversation, anonymous, quizContext, userMessageCount, emailCaptured]
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -236,6 +254,18 @@ function ChatInterface({
             ))}
             {isStreaming && messages[messages.length - 1]?.content === '' && (
               <TypingIndicator />
+            )}
+            {showEmailCapture && !emailCaptured && (
+              <EmailCapturePrompt
+                quizSymptoms={quizContext?.symptoms}
+                quizLevel={quizContext?.level}
+                onDismiss={() => setShowEmailCapture(false)}
+                onSubmit={(email) => {
+                  setEmailCaptured(true);
+                  setShowEmailCapture(false);
+                  onEmailCapture?.(email);
+                }}
+              />
             )}
             <div ref={messagesEndRef} />
           </div>

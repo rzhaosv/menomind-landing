@@ -570,40 +570,13 @@ function StepGenerating({ error, onRetry }: { error: string | null; onRetry: () 
   );
 }
 
-function StepPremiumOffer({
+function StepComplete({
   data,
-  onContinueFree,
+  onStartChat,
 }: {
   data: OnboardingData;
-  onContinueFree: () => void;
+  onStartChat: () => void;
 }) {
-  const [loading, setLoading] = useState(false);
-
-  const priceId = process.env.NEXT_PUBLIC_STRIPE_PRICE_ANNUAL;
-
-  async function handleStartTrial() {
-    if (!priceId) {
-      onContinueFree();
-      return;
-    }
-    setLoading(true);
-    try {
-      const res = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId }),
-      });
-      const result = await res.json();
-      if (result.url) {
-        window.location.href = result.url;
-      } else {
-        onContinueFree();
-      }
-    } catch {
-      onContinueFree();
-    }
-  }
-
   const symptomCount = data.symptoms.length;
   const goalCount = data.goals.length;
 
@@ -620,21 +593,20 @@ function StepPremiumOffer({
         Good news — there&apos;s a lot we can do.
       </h2>
       <p className="text-gray-600 mb-6">
-        Based on what you told us, we&apos;ve put together a plan that addresses your {symptomCount} symptom{symptomCount !== 1 ? 's' : ''} and {goalCount} goal{goalCount !== 1 ? 's' : ''}. And this is just the starting point.
+        Based on what you told us, we&apos;ve put together a plan that addresses your {symptomCount} symptom{symptomCount !== 1 ? 's' : ''} and {goalCount} goal{goalCount !== 1 ? 's' : ''}. Your AI companion already knows your context and is ready to help.
       </p>
 
-      {/* What they get with premium */}
+      {/* What they get */}
       <div className="bg-brand-purple/5 border-2 border-brand-purple/20 rounded-2xl p-6 mb-6 text-left">
         <p className="text-sm font-bold text-brand-purple mb-3 uppercase tracking-wide">
-          Unlock your full plan with Premium
+          What&apos;s ready for you
         </p>
         <ul className="space-y-2.5">
           {[
-            'Unlimited AI conversations about your symptoms',
-            'All 5 personalized wellness plans',
-            'Full symptom history & trend analysis',
-            'Doctor visit prep reports',
-            'Weekly AI insights personalized to your data',
+            'AI companion that knows your symptoms & goals',
+            'Personalized wellness plan based on your profile',
+            'Daily symptom tracking & trend analysis',
+            '5 free AI conversations per day',
           ].map((feature) => (
             <li key={feature} className="flex items-start gap-2 text-sm text-gray-700">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6B3F8D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0 mt-0.5" aria-hidden="true">
@@ -644,41 +616,20 @@ function StepPremiumOffer({
             </li>
           ))}
         </ul>
-
-        <div className="mt-4 pt-4 border-t border-brand-purple/10 text-center">
-          <div className="flex items-baseline justify-center gap-2">
-            <span className="text-sm text-gray-400 line-through">$14.99/mo</span>
-            <span className="text-2xl font-bold text-brand-dark">$8.25</span>
-            <span className="text-sm text-gray-500">/mo</span>
-          </div>
-          <p className="text-xs text-gray-400">Billed as $99/year · Save $80</p>
-        </div>
       </div>
 
       {/* Primary CTA */}
       <Button
         size="lg"
-        onClick={handleStartTrial}
-        disabled={loading}
+        onClick={onStartChat}
         className="w-full bg-gradient-to-r from-brand-purple to-brand-pink hover:from-brand-purple-dark hover:to-brand-pink text-white"
       >
-        {loading ? 'Loading...' : 'Start 7-Day Free Trial'}
+        Start your first conversation
       </Button>
 
-      <div className="flex items-center justify-center gap-4 mt-3 text-[10px] text-gray-400">
-        <span>No charge for 7 days</span>
-        <span>Cancel anytime</span>
-        <span>14-day money-back</span>
-      </div>
-
-      {/* Secondary CTA */}
-      <button
-        type="button"
-        onClick={onContinueFree}
-        className="mt-4 text-sm text-gray-400 hover:text-gray-600 transition-colors"
-      >
-        Continue with Free Plan
-      </button>
+      <p className="text-xs text-gray-400 mt-3">
+        5 free AI messages per day included with your account
+      </p>
     </div>
   );
 }
@@ -819,7 +770,7 @@ export default function OnboardingPage() {
             <StepGenerating error={error} onRetry={handleRetry} />
           )}
           {currentStep === 7 && (
-            <StepPremiumOffer data={data} onContinueFree={() => router.push('/dashboard')} />
+            <StepComplete data={data} onStartChat={() => router.push('/chat')} />
           )}
         </div>
       </div>
