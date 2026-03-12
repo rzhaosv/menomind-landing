@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Perimenopause Screening Results — MenoMind</title>
+    <title>Your Results — MenoMind</title>
     <meta name="robots" content="noindex, nofollow">
     <meta name="theme-color" content="#6B3F8D">
 
-    <!-- GA4 -->
+    <!-- GA4 + Google Ads -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TS69CENYQ"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
@@ -30,15 +30,12 @@
         fbq('init', '2166510774105785');
         fbq('track', 'PageView');
     </script>
-    <noscript><img height="1" width="1" style="display:none"
-        src="https://www.facebook.com/tr?id=2166510774105785&ev=PageView&noscript=1"
-    /></noscript>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #FFFBF5;
             color: #1A1A2E;
             line-height: 1.6;
@@ -46,13 +43,13 @@
         }
 
         .header {
-            padding: 16px 20px;
+            padding: 14px 20px;
             background: #FFFBF5;
             border-bottom: 1px solid rgba(107, 63, 141, 0.08);
             text-align: center;
         }
         .header a {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             color: #6B3F8D;
             text-decoration: none;
@@ -60,170 +57,340 @@
         }
 
         .container {
-            max-width: 640px;
+            max-width: 600px;
             margin: 0 auto;
-            padding: 40px 20px 60px;
+            padding: 0 20px 80px;
         }
 
-        .error-state {
+        /* ── Phase 1: Results ── */
+        .results-phase {
+            padding-top: 32px;
+        }
+        .results-eyebrow {
             text-align: center;
-            padding: 60px 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #6B3F8D;
+            margin-bottom: 8px;
         }
-        .error-state h1 {
-            font-size: 24px;
-            color: #1A1A2E;
-            margin-bottom: 12px;
-        }
-        .error-state p {
-            color: #666;
-            margin-bottom: 24px;
-        }
-
-        /* Result header */
-        .result-header {
+        .results-headline {
             text-align: center;
-            margin-bottom: 32px;
-        }
-        .result-header h1 {
-            font-size: clamp(22px, 5vw, 28px);
+            font-size: clamp(24px, 6vw, 32px);
             font-weight: 800;
             color: #1A1A2E;
-            margin-bottom: 8px;
             letter-spacing: -0.5px;
+            margin-bottom: 6px;
+            line-height: 1.2;
         }
-        .result-header p {
-            color: #666;
-            font-size: 15px;
-        }
-
-        /* Indicator badge */
-        .indicator-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 20px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 16px;
-            margin: 16px 0 8px;
-        }
-        .indicator-badge .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-
-        /* Cards */
-        .card {
-            background: white;
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        }
-        .card h2 {
-            font-size: 17px;
-            font-weight: 700;
-            color: #6B3F8D;
-            margin-bottom: 12px;
-        }
-        .card p {
-            font-size: 15px;
-            color: #444;
-        }
-
-        /* Score breakdown */
-        .score-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 16px;
-        }
-        .score-item {
-            background: #F8F4FC;
-            border-radius: 12px;
-            padding: 14px;
+        .results-subhead {
             text-align: center;
-        }
-        .score-item .label {
-            font-size: 12px;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .score-item .value {
-            font-size: 20px;
-            font-weight: 700;
-            color: #6B3F8D;
-        }
-        .score-item.active {
-            background: linear-gradient(135deg, #f0e6f6, #e8f5f5);
-            border: 1px solid rgba(107, 63, 141, 0.15);
-        }
-        .score-item.inactive {
-            opacity: 0.5;
-        }
-
-        /* Symptom clusters */
-        .symptom-tag {
-            display: inline-block;
-            background: #F0E6F6;
-            color: #6B3F8D;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            margin: 4px 4px 4px 0;
-        }
-
-        /* What this means */
-        .explainer {
             font-size: 15px;
-            color: #444;
-            line-height: 1.7;
-        }
-        .explainer strong {
-            color: #1A1A2E;
+            color: #777;
+            margin-bottom: 28px;
         }
 
-        /* Next steps */
-        .step {
-            display: flex;
-            gap: 14px;
-            margin-bottom: 18px;
-            align-items: flex-start;
-        }
-        .step:last-child { margin-bottom: 0; }
-        .step-num {
-            width: 28px;
-            height: 28px;
-            min-width: 28px;
-            background: rgba(107, 63, 141, 0.1);
-            border-radius: 50%;
+        /* Indicator pill */
+        .indicator-pill {
             display: flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        .indicator-pill .pulse {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.3); }
+        }
+        .indicator-pill .label {
             font-weight: 700;
-            font-size: 13px;
-            color: #6B3F8D;
-        }
-        .step-text h3 {
             font-size: 15px;
-            font-weight: 600;
-            color: #1A1A2E;
-            margin-bottom: 2px;
-        }
-        .step-text p {
-            font-size: 14px;
-            color: #666;
         }
 
-        /* CTA */
-        .cta-section {
+        /* Symptom connection cards */
+        .connection-card {
+            background: white;
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+            border-left: 4px solid #6B3F8D;
+        }
+        .connection-card h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 6px;
+        }
+        .connection-card p {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .connection-card .tag {
+            display: inline-block;
+            background: #F0E6F6;
+            color: #6B3F8D;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        /* ── Transition to AI ── */
+        .ai-transition {
             text-align: center;
-            margin: 32px 0 16px;
+            padding: 36px 0 20px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+        .ai-transition.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .ai-transition .divider {
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(90deg, #6B3F8D, #D65C8C);
+            margin: 0 auto 20px;
+            border-radius: 2px;
+        }
+        .ai-transition p {
+            font-size: 14px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        /* ── Phase 2: AI Chat ── */
+        .chat-phase {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.8s ease;
+        }
+        .chat-phase.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 4px 24px rgba(107, 63, 141, 0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #6B3F8D, #8B5FB5);
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .chat-avatar {
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+        }
+        .chat-header-text h4 {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .chat-header-text span {
+            color: rgba(255,255,255,0.7);
+            font-size: 11px;
+        }
+
+        .chat-messages {
+            padding: 20px;
+            min-height: 120px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .chat-bubble {
+            max-width: 88%;
+            padding: 14px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.5s ease;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .bubble-ai {
+            background: #F4F0F8;
+            color: #1A1A2E;
+            border-bottom-left-radius: 6px;
+        }
+        .bubble-user {
+            background: linear-gradient(135deg, #6B3F8D, #8B5FB5);
+            color: white;
+            margin-left: auto;
+            border-bottom-right-radius: 6px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 5px;
+            padding: 14px 18px;
+            max-width: 70px;
+        }
+        .typing-indicator span {
+            width: 8px; height: 8px;
+            background: #C4B0D6;
+            border-radius: 50%;
+            animation: typingBounce 1.4s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-6px); }
+        }
+
+        .chat-input-area {
+            border-top: 1px solid #F0ECF4;
+            padding: 14px 16px;
+            display: flex;
+            gap: 10px;
+        }
+        .chat-input {
+            flex: 1;
+            border: 1px solid #E8E0F0;
+            border-radius: 24px;
+            padding: 10px 16px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s;
+            background: #FAFAFA;
+        }
+        .chat-input:focus {
+            border-color: #6B3F8D;
+            background: white;
+        }
+        .chat-input::placeholder { color: #BBB; }
+        .chat-send {
+            width: 40px; height: 40px;
+            border: none;
+            background: linear-gradient(135deg, #6B3F8D, #D65C8C);
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .chat-send:hover { transform: scale(1.05); }
+        .chat-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .chat-send svg { width: 18px; height: 18px; }
+
+        /* ── Email Capture Overlay ── */
+        .email-gate {
+            display: none;
+            padding: 20px;
+            text-align: center;
+        }
+        .email-gate.active {
+            display: block;
+            animation: fadeInUp 0.5s ease;
+        }
+        .email-gate-card {
+            background: linear-gradient(135deg, #F8F4FC, #FFF5F8);
+            border-radius: 16px;
+            padding: 28px 24px;
+            border: 1px solid rgba(107, 63, 141, 0.1);
+        }
+        .email-gate h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1A1A2E;
+            margin-bottom: 6px;
+        }
+        .email-gate p {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 16px;
+        }
+        .email-form {
+            display: flex;
+            gap: 8px;
+        }
+        .email-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #E0D6EC;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+        }
+        .email-input:focus { border-color: #6B3F8D; }
+        .email-submit {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #6B3F8D, #D65C8C);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .email-submit:disabled { opacity: 0.6; }
+        .email-skip {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 12px;
+            color: #AAA;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-family: inherit;
+        }
+        .email-skip:hover { color: #888; }
+        .email-success {
+            display: none;
+            padding: 16px;
+            text-align: center;
+        }
+        .email-success.active {
+            display: block;
+            animation: fadeInUp 0.4s ease;
+        }
+        .email-success p {
+            font-size: 14px;
+            color: #4A7C6F;
+            font-weight: 500;
+        }
+
+        /* ── Bottom CTA ── */
+        .bottom-cta {
+            text-align: center;
+            padding: 32px 0 16px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.6s ease;
+        }
+        .bottom-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
         .cta-button {
             display: inline-block;
@@ -240,22 +407,28 @@
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(107, 63, 141, 0.3);
         }
-        .cta-secondary {
+        .cta-sub {
             display: block;
-            margin-top: 12px;
-            font-size: 14px;
-            color: #6B3F8D;
-            text-decoration: none;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #AAA;
         }
 
         .disclaimer {
             text-align: center;
-            font-size: 12px;
-            color: #aaa;
+            font-size: 11px;
+            color: #bbb;
             margin-top: 32px;
-            padding-top: 24px;
-            border-top: 1px solid rgba(0,0,0,0.06);
+            padding-top: 20px;
+            border-top: 1px solid rgba(0,0,0,0.04);
         }
+
+        .error-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .error-state h1 { font-size: 22px; margin-bottom: 10px; }
+        .error-state p { color: #666; margin-bottom: 24px; font-size: 15px; }
     </style>
 </head>
 <body>
@@ -263,184 +436,412 @@
         <a href="/">MenoMind</a>
     </header>
 
-    <div class="container" id="resultsContainer">
+    <div class="container" id="app">
         <!-- Populated by JS -->
     </div>
 
     <script>
-        var MONTHLY_LINK = 'https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00';
-        var ANNUAL_LINK = 'https://buy.stripe.com/9B68wOawV5Kb1B42771kA01';
+        var SUPABASE_URL = 'https://yfqedijcojghqzphmqkj.supabase.co';
+        var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmcWVkaWpjb2pnaHF6cGhtcWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NTg3NzEsImV4cCI6MjA4ODQzNDc3MX0.eLwGCY8Xd5estcAoO66Mfy-6b5ue16P6qqjgPc2KYxk';
+        var EDGE_FN_URL = SUPABASE_URL + '/functions/v1/anonymous-chat';
+
+        // State
+        var chatMessages = [];
+        var messageCount = 0;
+        var emailCaptured = false;
+        var quizData = null;
 
         function decodeToken(token) {
             try {
                 var base64 = token.replace(/-/g, '+').replace(/_/g, '/');
                 while (base64.length % 4) base64 += '=';
-                var json = atob(base64);
-                return JSON.parse(json);
-            } catch(e) {
-                return null;
-            }
+                return JSON.parse(atob(base64));
+            } catch(e) { return null; }
         }
 
-        function renderResults(data) {
+        // ── Symptom connection explanations ──
+        var CONNECTIONS = {
+            cognitive: {
+                title: 'Your mood and thinking patterns are shifting',
+                body: 'The anxiety, brain fog, or mood swings you reported are among the earliest and most misunderstood signs of hormonal change. Estrogen directly affects your brain\u2019s serotonin and working memory \u2014 when it fluctuates, your mind feels it first.',
+                tag: 'Cognitive & Mood'
+            },
+            vasomotor: {
+                title: 'Your body temperature regulation is disrupted',
+                body: 'Hot flashes, night sweats, or heart palpitations happen when fluctuating estrogen confuses your hypothalamus \u2014 your body\u2019s thermostat. It\u2019s not anxiety. It\u2019s not \"stress.\" It\u2019s a specific biological mechanism.',
+                tag: 'Vasomotor'
+            },
+            somatic: {
+                title: 'Your sleep and body are sending signals',
+                body: 'The fatigue, aches, or sleep disruption you described often get blamed on aging or stress. But progesterone \u2014 your body\u2019s natural sedative \u2014 is one of the first hormones to decline. That\u2019s why 3am wake-ups feel different now.',
+                tag: 'Sleep & Body'
+            },
+            cycle: {
+                title: 'Your cycle is telling a story',
+                body: 'Changes in period timing, flow, or skipped cycles are your body\u2019s most direct signal. Irregular cycles in your late 30s and 40s aren\u2019t random \u2014 they\u2019re often the clearest marker of perimenopause.',
+                tag: 'Cycle Changes'
+            }
+        };
+
+        // ── Build first AI message from quiz data ──
+        function buildFirstAIMessage(data) {
+            var answers = data.a;
+            var score = data.s;
+            var symptoms = [];
+            if (answers.cognitive > 0) symptoms.push('cognitive');
+            if (answers.vasomotor > 0) symptoms.push('vasomotor');
+            if (answers.somatic > 0) symptoms.push('somatic');
+            if (answers.cycle > 0) symptoms.push('cycle');
+
+            // Strong indicators — multiple symptom clusters
+            if (score > 7 && symptoms.length >= 3) {
+                return "I can see from your results that you\u2019re dealing with a LOT right now \u2014 the mood shifts, the body symptoms, the sleep disruption. Here\u2019s what I want you to know: these aren\u2019t separate problems. They\u2019re connected. Your hormones are doing something very specific right now, and once you understand what, a lot of this starts to make sense.\n\nWhat\u2019s been the hardest part for you lately? The thing that made you take this quiz today?";
+            }
+            // Strong indicators — fewer clusters
+            if (score > 7) {
+                if (symptoms.indexOf('cognitive') !== -1) {
+                    return "Your results show some really strong patterns, especially around the mood and cognitive changes. That thing where your brain just\u2026 isn\u2019t working the way it used to? Where you lose words mid-sentence or feel anxious for no reason you can explain?\n\nThere\u2019s a very specific biological reason that happens. And it\u2019s not you losing your edge.\n\nCan I ask \u2014 when did you first start noticing the brain fog or anxiety? Was it gradual, or did it feel like it came out of nowhere?";
+                }
+                if (symptoms.indexOf('vasomotor') !== -1) {
+                    return "Your results are showing a strong pattern \u2014 especially the hot flashes or night sweats. I know those can feel alarming, especially when they come with heart palpitations or drenching sweats at 3am.\n\nYour body\u2019s thermostat is being directly affected by estrogen fluctuations right now. It\u2019s not anxiety. It\u2019s not \"just stress.\" It\u2019s a real, specific mechanism \u2014 and it\u2019s very treatable.\n\nHow long has the worst of it been going on?";
+                }
+                return "Your results are telling a clear story. The combination of symptoms you reported \u2014 they\u2019re not random, and they\u2019re not \"just stress.\" What you\u2019re describing is a recognizable pattern that millions of women go through, and almost none of them get told what\u2019s actually happening.\n\nWhat\u2019s been bothering you the most? I want to start with what matters to YOU, not just what the quiz says.";
+            }
+            // Moderate indicators
+            if (score > 3) {
+                if (symptoms.indexOf('cognitive') !== -1) {
+                    return "Your results show some patterns worth paying attention to \u2014 especially around the mood and cognitive changes. A lot of women in their late 30s and 40s start noticing things like brain fog, anxiety that wasn\u2019t there before, or just feeling\u2026 off. And almost none of them connect it to their hormones.\n\nI\u2019d love to understand your experience better. What\u2019s been the thing that\u2019s bothered you most recently?";
+                }
+                return "Your results are showing some patterns that are worth paying attention to. They may or may not be perimenopause \u2014 but the fact that you\u2019re noticing these changes and took the time to check tells me something is feeling different.\n\nCan you tell me more about what prompted you to take this quiz? What\u2019s been feeling off lately?";
+            }
+            // Low indicators
+            return "Your results are on the lower end right now, which is actually useful information. It could mean you\u2019re early in the transition, or that your symptoms haven\u2019t fully developed yet.\n\nBut something made you take this quiz. That instinct matters. What\u2019s been going on that made you wonder?";
+        }
+
+        // ── Render the page ──
+        function render(data) {
+            quizData = data;
             var answers = data.a;
             var totalScore = data.s;
 
-            var level, levelText, color, bgColor;
+            var level, levelText, pillBg, pillColor;
             if (totalScore <= 3) {
-                level = 'low';
-                levelText = 'Low Indicators';
-                color = '#4CAF50';
-                bgColor = 'rgba(76, 175, 80, 0.1)';
+                level = 'low'; levelText = 'Early-stage patterns detected';
+                pillBg = 'rgba(76, 175, 80, 0.08)'; pillColor = '#4A8C50';
             } else if (totalScore <= 7) {
-                level = 'moderate';
-                levelText = 'Moderate Indicators';
-                color = '#FFA500';
-                bgColor = 'rgba(255, 165, 0, 0.1)';
+                level = 'moderate'; levelText = 'Hormonal patterns detected';
+                pillBg = 'rgba(255, 165, 0, 0.08)'; pillColor = '#C87D1A';
             } else {
-                level = 'strong';
-                levelText = 'Strong Indicators';
-                color = '#D65C8C';
-                bgColor = 'rgba(214, 92, 140, 0.1)';
+                level = 'strong'; levelText = 'Strong hormonal patterns detected';
+                pillBg = 'rgba(107, 63, 141, 0.08)'; pillColor = '#6B3F8D';
             }
 
-            var symptoms = [];
-            if (answers.cognitive > 0) symptoms.push('Cognitive & Mood');
-            if (answers.vasomotor > 0) symptoms.push('Vasomotor (Hot Flashes & Night Sweats)');
-            if (answers.somatic > 0) symptoms.push('Sleep & Body');
-            if (answers.cycle > 0) symptoms.push('Period Changes');
+            // Build symptom connection cards
+            var activeSymptoms = [];
+            if (answers.cognitive > 0) activeSymptoms.push('cognitive');
+            if (answers.vasomotor > 0) activeSymptoms.push('vasomotor');
+            if (answers.somatic > 0) activeSymptoms.push('somatic');
+            if (answers.cycle > 0) activeSymptoms.push('cycle');
 
-            var description;
-            if (level === 'strong') {
-                description = 'Based on your answers, your symptoms show strong indicators consistent with perimenopause. Many women with this symptom profile find relief once they understand what\'s happening in their body.';
-            } else if (level === 'moderate') {
-                description = 'Based on your answers, your symptoms show moderate indicators consistent with perimenopause. While your experience may vary, it\'s worth discussing these patterns with your healthcare provider.';
-            } else {
-                description = 'Based on your answers, you\'re showing lower indicators for perimenopause, but your symptoms are still worth tracking. Hormonal transitions are unique to each woman, and symptoms can develop over time.';
+            var cardsHtml = '';
+            for (var i = 0; i < activeSymptoms.length; i++) {
+                var c = CONNECTIONS[activeSymptoms[i]];
+                cardsHtml += '<div class="connection-card"><h3>' + c.title + '</h3><p>' + c.body + '</p><span class="tag">' + c.tag + '</span></div>';
+            }
+            if (activeSymptoms.length === 0) {
+                cardsHtml = '<div class="connection-card"><h3>Your body may be in the early stages of transition</h3><p>Even low-level changes are worth tracking. Perimenopause can begin years before noticeable symptoms, and early awareness is the biggest advantage you can give yourself.</p><span class="tag">Monitoring</span></div>';
             }
 
-            var whatThisMeans;
-            if (level === 'strong') {
-                whatThisMeans = '<strong>What this means:</strong> Perimenopause typically involves 4\u201310 years of hormonal fluctuation. What feels like anxiety, depression, or burnout may actually be your body telling you something specific is changing. Getting answers is the first step to getting relief.';
-            } else if (level === 'moderate') {
-                whatThisMeans = '<strong>What this means:</strong> Your symptoms may or may not be perimenopause-related \u2014 hormonal changes can coexist with stress, life events, and other factors. A conversation with your doctor can help clarify what\'s happening.';
-            } else {
-                whatThisMeans = '<strong>What this means:</strong> Even if perimenopause isn\'t your primary concern right now, it\'s helpful to track your symptoms over time. Many women don\'t recognize the connection until patterns become clearer.';
+            // Multi-symptom connection callout
+            var connectionCallout = '';
+            if (activeSymptoms.length >= 2) {
+                connectionCallout = '<div class="connection-card" style="border-left-color:#D65C8C;background:#FFFBF8;">' +
+                    '<h3>\u26A1 These symptoms are connected</h3>' +
+                    '<p>You reported symptoms across ' + activeSymptoms.length + ' different categories. Most women \u2014 and many doctors \u2014 treat these as separate issues. But they\u2019re driven by the same hormonal shifts. Understanding the connection changes everything.</p></div>';
             }
 
-            var categories = [
-                { key: 'cognitive', label: 'Cognitive & Mood' },
-                { key: 'vasomotor', label: 'Vasomotor' },
-                { key: 'somatic', label: 'Sleep & Body' },
-                { key: 'cycle', label: 'Cycle Changes' },
-                { key: 'impact', label: 'Life Impact' }
-            ];
+            var symptomNames = activeSymptoms.map(function(s) { return CONNECTIONS[s].tag; });
 
-            var scoreGridHtml = '';
-            for (var i = 0; i < categories.length; i++) {
-                var cat = categories[i];
-                var val = answers[cat.key] || 0;
-                var cls = val > 0 ? 'active' : 'inactive';
-                scoreGridHtml += '<div class="score-item ' + cls + '">' +
-                    '<div class="label">' + cat.label + '</div>' +
-                    '<div class="value">' + val + '</div>' +
-                    '</div>';
-            }
-
-            var symptomsHtml = '';
-            if (symptoms.length > 0) {
-                for (var j = 0; j < symptoms.length; j++) {
-                    symptomsHtml += '<span class="symptom-tag">' + symptoms[j] + '</span>';
-                }
-            } else {
-                symptomsHtml = '<span style="color:#888;font-size:14px;">General wellness monitoring recommended</span>';
-            }
-
-            var html = '' +
-                '<div class="result-header">' +
-                    '<h1>Your Perimenopause Screening Results</h1>' +
-                    '<p>Here\'s what your quiz responses tell us.</p>' +
-                    '<div class="indicator-badge" style="background:' + bgColor + ';color:' + color + ';">' +
-                        '<span class="dot" style="background:' + color + ';"></span>' +
-                        levelText + ' Detected' +
+            document.getElementById('app').innerHTML =
+                // Phase 1: Results
+                '<div class="results-phase">' +
+                    '<div class="results-eyebrow">Your screening results</div>' +
+                    '<h1 class="results-headline">Here\u2019s what your body is telling you</h1>' +
+                    '<p class="results-subhead">Based on the symptoms you reported</p>' +
+                    '<div class="indicator-pill" style="background:' + pillBg + ';">' +
+                        '<span class="pulse" style="background:' + pillColor + ';"></span>' +
+                        '<span class="label" style="color:' + pillColor + ';">' + levelText + '</span>' +
                     '</div>' +
+                    cardsHtml +
+                    connectionCallout +
                 '</div>' +
 
-                '<div class="card">' +
-                    '<h2>Your Assessment</h2>' +
-                    '<p>' + description + '</p>' +
+                // Transition
+                '<div class="ai-transition" id="aiTransition">' +
+                    '<div class="divider"></div>' +
+                    '<p>Your AI companion reviewed your results</p>' +
                 '</div>' +
 
-                '<div class="card">' +
-                    '<h2>Matched Symptom Clusters</h2>' +
-                    '<div>' + symptomsHtml + '</div>' +
-                '</div>' +
-
-                '<div class="card">' +
-                    '<h2>Score Breakdown</h2>' +
-                    '<p style="font-size:14px;color:#888;margin-bottom:4px;">Total score: ' + totalScore + '</p>' +
-                    '<div class="score-grid">' + scoreGridHtml + '</div>' +
-                '</div>' +
-
-                '<div class="card">' +
-                    '<div class="explainer">' + whatThisMeans + '</div>' +
-                '</div>' +
-
-                '<div class="card">' +
-                    '<h2>What You Can Do Next</h2>' +
-                    '<div class="step">' +
-                        '<div class="step-num">1</div>' +
-                        '<div class="step-text">' +
-                            '<h3>Talk to your doctor</h3>' +
-                            '<p>Bring these results to your next appointment. Ask about a hormone panel (FSH, estradiol) to get a clearer picture.</p>' +
+                // Phase 2: AI Chat
+                '<div class="chat-phase" id="chatPhase">' +
+                    '<div class="chat-container">' +
+                        '<div class="chat-header">' +
+                            '<div class="chat-avatar">\uD83E\uDDE0</div>' +
+                            '<div class="chat-header-text">' +
+                                '<h4>MenoMind AI</h4>' +
+                                '<span>Your perimenopause companion</span>' +
+                            '</div>' +
                         '</div>' +
-                    '</div>' +
-                    '<div class="step">' +
-                        '<div class="step-num">2</div>' +
-                        '<div class="step-text">' +
-                            '<h3>Start tracking daily</h3>' +
-                            '<p>A single quiz is a snapshot. Daily tracking reveals the patterns your doctor needs to see.</p>' +
+                        '<div class="chat-messages" id="chatMessages"></div>' +
+                        '<div class="email-gate" id="emailGate">' +
+                            '<div class="email-gate-card">' +
+                                '<h3>Before we continue\u2026</h3>' +
+                                '<p>I\u2019d love to keep this conversation going. Drop your email and I\u2019ll check in with you in a few days.</p>' +
+                                '<form class="email-form" id="emailForm" onsubmit="handleEmailSubmit(event)">' +
+                                    '<input type="email" class="email-input" id="emailInput" placeholder="your@email.com" required>' +
+                                    '<button type="submit" class="email-submit" id="emailBtn">Continue</button>' +
+                                '</form>' +
+                                '<button class="email-skip" onclick="skipEmail()">Skip for now</button>' +
+                            '</div>' +
                         '</div>' +
-                    '</div>' +
-                    '<div class="step">' +
-                        '<div class="step-num">3</div>' +
-                        '<div class="step-text">' +
-                            '<h3>Learn what\'s connected</h3>' +
-                            '<p>Brain fog + anxiety + insomnia aren\'t separate problems \u2014 they\'re often the same hormonal shift showing up in different ways.</p>' +
+                        '<div class="email-success" id="emailSuccess">' +
+                            '<p>\u2705 Got it \u2014 I\u2019ll be in touch.</p>' +
+                        '</div>' +
+                        '<div class="chat-input-area" id="chatInputArea">' +
+                            '<input type="text" class="chat-input" id="chatInput" placeholder="Type your response\u2026" onkeydown="if(event.key===\'Enter\')sendMessage()">' +
+                            '<button class="chat-send" id="chatSendBtn" onclick="sendMessage()">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>' +
+                            '</button>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +
 
-                '<div class="cta-section">' +
-                    '<a href="/try?symptoms=' + encodeURIComponent(symptoms.join(',')) + '&level=' + encodeURIComponent(level) + '" class="cta-button" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'quiz_to_chat\')">Talk to MenoMind AI \u2014 Free</a>' +
-                    '<a href="/pricing" class="cta-secondary">Get your full plan \u2014 $1 for the first week</a>' +
+                // Bottom CTA
+                '<div class="bottom-cta" id="bottomCta">' +
+                    '<a href="https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00" class="cta-button" onclick="gtag(\'event\',\'begin_checkout\',{value:14.99,currency:\'USD\',items:[{item_name:\'MenoMind Monthly\'}]});gtag(\'event\',\'conversion\',{send_to:\'AW-17830146300/5acJCJviioccEPzhibZC\',value:14.99,currency:\'USD\'});">Get Your Full Wellness Plan</a>' +
+                    '<span class="cta-sub">$14.99/mo \u2022 7-day free trial \u2022 Cancel anytime</span>' +
                 '</div>' +
 
                 '<div class="disclaimer">' +
-                    'This screening is for educational purposes only and is not a medical diagnosis. ' +
-                    'Always consult with a qualified healthcare provider about your symptoms.' +
+                    'This screening is for educational purposes only and is not a medical diagnosis.<br>' +
+                    'Always consult with a qualified healthcare provider.' +
                 '</div>';
 
-            document.getElementById('resultsContainer').innerHTML = html;
+            // Track results view
+            gtag('event', 'quiz_results_view', { level: level, score: totalScore, symptoms: symptomNames.join(',') });
+            if (typeof fbq === 'function') fbq('trackCustom', 'QuizResults', { level: level, score: totalScore });
+
+            // Animate in the AI chat after a delay
+            setTimeout(function() {
+                document.getElementById('aiTransition').classList.add('visible');
+            }, 800);
+
+            setTimeout(function() {
+                document.getElementById('chatPhase').classList.add('visible');
+                // Show typing indicator then first message
+                showTyping(function() {
+                    var firstMsg = buildFirstAIMessage(data);
+                    addBubble('ai', firstMsg);
+                    chatMessages.push({ role: 'assistant', content: firstMsg });
+                    gtag('event', 'ai_first_message_shown', { level: level });
+                });
+            }, 1600);
         }
 
+        // ── Chat functions ──
+        function showTyping(callback) {
+            var messagesEl = document.getElementById('chatMessages');
+            var typingEl = document.createElement('div');
+            typingEl.className = 'typing-indicator';
+            typingEl.innerHTML = '<span></span><span></span><span></span>';
+            messagesEl.appendChild(typingEl);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+
+            var delay = 1200 + Math.random() * 800;
+            setTimeout(function() {
+                typingEl.remove();
+                if (callback) callback();
+            }, delay);
+        }
+
+        function addBubble(type, text) {
+            var messagesEl = document.getElementById('chatMessages');
+            var bubble = document.createElement('div');
+            bubble.className = 'chat-bubble bubble-' + (type === 'ai' ? 'ai' : 'user');
+            // Convert newlines to <br> for AI messages
+            bubble.innerHTML = text.replace(/\n/g, '<br>');
+            messagesEl.appendChild(bubble);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function sendMessage() {
+            var input = document.getElementById('chatInput');
+            var msg = input.value.trim();
+            if (!msg) return;
+
+            messageCount++;
+            input.value = '';
+            addBubble('user', msg);
+            chatMessages.push({ role: 'user', content: msg });
+
+            gtag('event', 'chat_message_sent', { message_number: messageCount });
+
+            // After first user message, show email gate
+            if (!emailCaptured && messageCount === 1) {
+                document.getElementById('chatInputArea').style.display = 'none';
+                document.getElementById('emailGate').classList.add('active');
+                gtag('event', 'email_gate_shown');
+                return;
+            }
+
+            // Otherwise, call AI
+            callAI();
+        }
+
+        function callAI() {
+            var sendBtn = document.getElementById('chatSendBtn');
+            var input = document.getElementById('chatInput');
+            sendBtn.disabled = true;
+            input.disabled = true;
+
+            var symptoms = [];
+            if (quizData.a.cognitive > 0) symptoms.push('Cognitive & Mood');
+            if (quizData.a.vasomotor > 0) symptoms.push('Vasomotor');
+            if (quizData.a.somatic > 0) symptoms.push('Somatic');
+            if (quizData.a.cycle > 0) symptoms.push('Cycle Changes');
+
+            var level = quizData.s <= 3 ? 'low' : quizData.s <= 7 ? 'moderate' : 'strong';
+
+            showTyping(function() {
+                fetch(EDGE_FN_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY
+                    },
+                    body: JSON.stringify({
+                        messages: chatMessages,
+                        quizSymptoms: symptoms,
+                        quizLevel: level
+                    })
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    if (data.response) {
+                        addBubble('ai', data.response);
+                        chatMessages.push({ role: 'assistant', content: data.response });
+                    } else {
+                        addBubble('ai', 'I\u2019m here with you. Tell me more about what you\u2019ve been experiencing.');
+                    }
+                    sendBtn.disabled = false;
+                    input.disabled = false;
+                    input.focus();
+
+                    // Show bottom CTA after 2nd AI response
+                    if (chatMessages.filter(function(m) { return m.role === 'assistant'; }).length >= 2) {
+                        document.getElementById('bottomCta').classList.add('visible');
+                    }
+                })
+                .catch(function() {
+                    addBubble('ai', 'I want to keep talking with you about this. If you\u2019re experiencing these symptoms, you deserve answers \u2014 and you\u2019re not imagining any of it.');
+                    sendBtn.disabled = false;
+                    input.disabled = false;
+                });
+            });
+        }
+
+        // ── Email functions ──
+        function handleEmailSubmit(e) {
+            e.preventDefault();
+            var email = document.getElementById('emailInput').value.trim();
+            if (!email) return;
+
+            var btn = document.getElementById('emailBtn');
+            btn.disabled = true;
+            btn.textContent = 'Saving\u2026';
+
+            var symptoms = [];
+            if (quizData.a.cognitive > 0) symptoms.push('Cognitive & Mood');
+            if (quizData.a.vasomotor > 0) symptoms.push('Vasomotor');
+            if (quizData.a.somatic > 0) symptoms.push('Somatic');
+            if (quizData.a.cycle > 0) symptoms.push('Cycle Changes');
+            var level = quizData.s <= 3 ? 'low' : quizData.s <= 7 ? 'moderate' : 'strong';
+
+            // Save to Supabase
+            fetch(SUPABASE_URL + '/rest/v1/email_leads', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+                    'Prefer': 'return=minimal'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    source: 'results_chat',
+                    quiz_score: quizData.s,
+                    quiz_result: level
+                })
+            }).then(function() {
+                completeEmailCapture();
+            }).catch(function() {
+                // Still continue even if save fails
+                completeEmailCapture();
+            });
+
+            // Track conversions
+            gtag('event', 'generate_lead', { method: 'results_chat' });
+            gtag('event', 'conversion', {
+                'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC',
+                'value': 1.0,
+                'currency': 'USD'
+            });
+            if (typeof fbq === 'function') fbq('track', 'Lead');
+        }
+
+        function completeEmailCapture() {
+            emailCaptured = true;
+            document.getElementById('emailGate').classList.remove('active');
+            document.getElementById('emailGate').style.display = 'none';
+            document.getElementById('emailSuccess').classList.add('active');
+
+            setTimeout(function() {
+                document.getElementById('emailSuccess').classList.remove('active');
+                document.getElementById('emailSuccess').style.display = 'none';
+                document.getElementById('chatInputArea').style.display = 'flex';
+                document.getElementById('chatInput').focus();
+                // Now call AI to respond to the message that triggered the email gate
+                callAI();
+            }, 1500);
+        }
+
+        function skipEmail() {
+            emailCaptured = true; // Don't ask again
+            document.getElementById('emailGate').classList.remove('active');
+            document.getElementById('emailGate').style.display = 'none';
+            document.getElementById('chatInputArea').style.display = 'flex';
+            document.getElementById('chatInput').focus();
+            gtag('event', 'email_gate_skipped');
+            callAI();
+        }
+
+        // ── Error state ──
         function renderError() {
-            document.getElementById('resultsContainer').innerHTML =
+            document.getElementById('app').innerHTML =
                 '<div class="error-state">' +
                     '<h1>Results not found</h1>' +
-                    '<p>This link may have expired or is invalid. Take the quiz to get your personalized results.</p>' +
-                    '<a href="/quiz" class="cta-button">Take the Quiz</a>' +
+                    '<p>This link may have expired. Take the quiz to get your personalized results.</p>' +
+                    '<a href="/#quiz" class="cta-button">Take the Quiz</a>' +
                 '</div>';
         }
 
-        // Parse token from URL
+        // ── Init ──
         var params = new URLSearchParams(window.location.search);
         var token = params.get('token');
-
         if (token) {
             var data = decodeToken(token);
             if (data && data.a) {
-                renderResults(data);
+                render(data);
             } else {
                 renderError();
             }
