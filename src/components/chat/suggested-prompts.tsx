@@ -3,11 +3,11 @@
 import React from 'react';
 
 const SUGGESTED_PROMPTS = [
-  { text: 'Why am I waking up at 3am?', icon: '🌙' },
-  { text: 'What supplements help with hot flashes?', icon: '🌡️' },
-  { text: 'Explain HRT pros and cons', icon: '💊' },
-  { text: 'How can I manage brain fog at work?', icon: '🧠' },
-  { text: 'Is my anxiety hormonal?', icon: '💭' },
+  { text: 'I keep waking up at 3am and can\'t fall back asleep', icon: '🌙' },
+  { text: 'Am I too young for this to be menopause?', icon: '🤔' },
+  { text: 'I don\'t feel like myself anymore', icon: '💭' },
+  { text: 'My brain fog is scaring me', icon: '🧠' },
+  { text: 'Is this anxiety or is it hormonal?', icon: '🫠' },
 ] as const;
 
 interface SuggestedPromptsProps {
@@ -35,10 +35,10 @@ function SuggestedPrompts({ onSelect }: SuggestedPromptsProps) {
       </div>
 
       <h2 className="text-xl font-semibold text-brand-dark mb-2">
-        How can I help you today?
+        What&apos;s been on your mind?
       </h2>
       <p className="text-sm text-gray-500 mb-8 text-center max-w-md">
-        Ask me anything about menopause, symptoms, treatments, or wellness. Choose a suggestion below or type your own question.
+        Whatever you&apos;re experiencing, I&apos;ve probably heard it before — and there&apos;s usually a reason for it.
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg">

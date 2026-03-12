@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MessageBubble, type ChatMessage } from './message-bubble';
 import { SuggestedPrompts } from './suggested-prompts';
+import { useAppUser } from '@/components/layout/app-shell';
 
 interface ChatInterfaceProps {
   conversationId?: string;
@@ -38,6 +39,7 @@ function ChatInterface({
   messageLimit,
   onLimitReached,
 }: ChatInterfaceProps) {
+  const appUser = useAppUser();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
@@ -211,7 +213,18 @@ function ChatInterface({
       {/* Messages area */}
       <div className="flex-1 overflow-y-auto px-4 py-6">
         {!hasMessages && !isStreaming ? (
-          <SuggestedPrompts onSelect={handlePromptSelect} />
+          <div className="max-w-3xl mx-auto">
+            <MessageBubble
+              message={{
+                id: 'welcome',
+                role: 'assistant',
+                content: `Hey${appUser?.name ? ` ${appUser.name.split(' ')[0]}` : ''}. Whatever brought you here today — you're in the right place. I help women make sense of what their bodies are doing during perimenopause and menopause. No judgment, no jargon, just real answers.\n\nWhat's been going on?`,
+                createdAt: new Date().toISOString(),
+              }}
+              isFirstAssistant={true}
+            />
+            <SuggestedPrompts onSelect={handlePromptSelect} />
+          </div>
         ) : (
           <div className="max-w-3xl mx-auto">
             {messages.map((msg, idx) => (

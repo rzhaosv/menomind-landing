@@ -1,8 +1,18 @@
 'use client';
 
-import React, { useState, useRef, useEffect, type ReactNode } from 'react';
+import React, { useState, useRef, useEffect, useContext, createContext, type ReactNode } from 'react';
 import { Avatar } from '../ui/avatar';
 import { NavLink, MobileTabLink, navItems, mobileTabItems } from './nav';
+
+/* ------------------------------------------------------------------ */
+/*  App User Context                                                    */
+/* ------------------------------------------------------------------ */
+
+const AppUserContext = createContext<AppShellUser | null>(null);
+
+export function useAppUser() {
+  return useContext(AppUserContext);
+}
 
 /* ------------------------------------------------------------------ */
 /*  Inline icons for header                                            */
@@ -130,6 +140,7 @@ function AppShell({ children, user, userName, userAvatar }: AppShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
+    <AppUserContext.Provider value={user ?? null}>
     <div className="min-h-screen bg-brand-cream">
       {/* -------- Mobile sidebar overlay -------- */}
       {sidebarOpen && (
@@ -220,6 +231,7 @@ function AppShell({ children, user, userName, userAvatar }: AppShellProps) {
         </div>
       </nav>
     </div>
+    </AppUserContext.Provider>
   );
 }
 
