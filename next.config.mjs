@@ -15,6 +15,11 @@ const nextConfig = {
         destination: '/track',
         permanent: true,
       },
+      {
+        source: '/quiz',
+        destination: '/#quiz',
+        permanent: true,
+      },
     ]
   },
 }

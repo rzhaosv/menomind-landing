@@ -14,7 +14,9 @@ interface TokenData {
 function parseToken(token: string | null): TokenData | null {
   if (!token) return null
   try {
-    const decoded = JSON.parse(atob(token))
+    // Handle both base64url (from email) and standard base64
+    const standardBase64 = token.replace(/-/g, '+').replace(/_/g, '/')
+    const decoded = JSON.parse(atob(standardBase64))
     if (
       Array.isArray(decoded.symptoms) &&
       typeof decoded.level === 'string' &&
