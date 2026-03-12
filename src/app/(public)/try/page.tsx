@@ -29,10 +29,10 @@ function TryChatContent() {
           <span className="font-semibold text-brand-dark">MenoMind</span>
         </Link>
         <Link
-          href="/signup"
+          href="/pricing"
           className="text-sm text-brand-purple font-medium hover:underline"
         >
-          Create free account
+          Get your full plan — $1
         </Link>
       </header>
 

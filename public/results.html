@@ -412,8 +412,8 @@
                 '</div>' +
 
                 '<div class="cta-section">' +
-                    '<a href="' + MONTHLY_LINK + '" class="cta-button">Start Tracking with MenoMind \u2014 $14.99/mo</a>' +
-                    '<a href="' + ANNUAL_LINK + '" class="cta-secondary">Or save 45% with the annual plan \u2014 $8.25/mo</a>' +
+                    '<a href="/try?symptoms=' + encodeURIComponent(symptoms.join(',')) + '&level=' + encodeURIComponent(level) + '" class="cta-button" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'quiz_to_chat\')">Talk to MenoMind AI \u2014 Free</a>' +
+                    '<a href="/pricing" class="cta-secondary">Get your full plan \u2014 $1 for the first week</a>' +
                 '</div>' +
 
                 '<div class="disclaimer">' +

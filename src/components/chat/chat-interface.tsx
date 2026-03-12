@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { MessageBubble, type ChatMessage } from './message-bubble';
 import { SuggestedPrompts } from './suggested-prompts';
 import { EmailCapturePrompt } from './email-capture-prompt';
+import { TrialOfferCard } from './trial-offer-card';
 import { useAppUser } from '@/components/layout/app-shell';
 
 interface ChatInterfaceProps {
@@ -55,6 +56,8 @@ function ChatInterface({
   const [userMessageCount, setUserMessageCount] = useState(0);
   const [showEmailCapture, setShowEmailCapture] = useState(false);
   const [emailCaptured, setEmailCaptured] = useState(false);
+  const [showTrialOffer, setShowTrialOffer] = useState(false);
+  const [trialOfferDismissed, setTrialOfferDismissed] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -172,6 +175,12 @@ function ChatInterface({
                 setCurrentConversationId(payload.conversationId);
                 onNewConversation?.();
               }
+              if (payload.type === 'done' && payload.showTrialOffer && anonymous && !trialOfferDismissed) {
+                setShowTrialOffer(true);
+                if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+                  (window as any).gtag('event', 'chat_paywall_shown', { messageCount: payload.messageCount });
+                }
+              }
               if (payload.type === 'error') {
                 throw new Error(payload.error || 'Failed to generate response');
               }
@@ -203,7 +212,7 @@ function ChatInterface({
         abortControllerRef.current = null;
       }
     },
-    [isStreaming, currentConversationId, onLimitReached, onNewConversation, anonymous, quizContext, userMessageCount, emailCaptured]
+    [isStreaming, currentConversationId, onLimitReached, onNewConversation, anonymous, quizContext, userMessageCount, emailCaptured, trialOfferDismissed]
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -264,6 +273,14 @@ function ChatInterface({
                   setEmailCaptured(true);
                   setShowEmailCapture(false);
                   onEmailCapture?.(email);
+                }}
+              />
+            )}
+            {showTrialOffer && !trialOfferDismissed && (
+              <TrialOfferCard
+                onDismiss={() => {
+                  setTrialOfferDismissed(true);
+                  setShowTrialOffer(false);
                 }}
               />
             )}

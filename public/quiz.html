@@ -563,45 +563,26 @@
 
                 <div class="result-description" id="whatThisMeans"></div>
 
-                <!-- EMAIL GATE -->
-                <div id="emailGateSection">
-                    <div style="background:var(--bg-primary);border-radius:16px;padding:28px;margin:20px 0;text-align:center;">
-                        <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Want your full personalized report?</h3>
-                        <p style="font-size:15px;color:var(--text-secondary);margin-bottom:16px;">Get your detailed symptom analysis, pattern breakdown, and a doctor-visit prep sheet sent to your inbox.</p>
-                        <input type="email" class="email-input" id="emailInput" placeholder="Enter your email" style="max-width:320px;margin:0 auto;display:block;" />
-                        <button class="cta-primary" style="margin-top:12px;font-size:15px;padding:14px 28px;" onclick="captureQuizEmail()">Send My Free Report</button>
-                        <div id="emailConfirmation" style="display:none;color:var(--trust-green);font-size:14px;margin-top:8px;font-weight:500;"></div>
+                <!-- PRIMARY CTA: Talk to AI -->
+                <div id="chatCtaSection">
+                    <div style="background:linear-gradient(135deg, rgba(107,63,141,0.08) 0%, rgba(214,92,140,0.08) 100%);border:1px solid rgba(107,63,141,0.15);border-radius:16px;padding:32px 24px;margin:20px 0;text-align:center;">
+                        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Want to understand what this means for you?</h3>
+                        <p style="font-size:15px;color:var(--text-secondary);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">Talk to MenoMind AI — it'll connect the dots between your symptoms in a way nobody has before. No signup required.</p>
+                        <a id="chatCtaButton" href="/try" style="display:inline-block;background:#D65C8C;color:white;padding:16px 36px;border-radius:10px;font-size:16px;font-weight:600;text-decoration:none;box-shadow:0 4px 15px rgba(214,92,140,0.3);transition:all 0.3s;" onclick="trackQuizToChat()">Talk to MenoMind — it's free</a>
+                        <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">90-second conversations that change everything</p>
                     </div>
                 </div>
 
-                <!-- WHAT HAPPENS NEXT -->
-                <div id="upgradeSection" style="display:none; text-align:center;">
-                    <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">What Happens Next</h3>
-                    <p style="color:var(--text-secondary); max-width:500px; margin:0 auto 24px;font-size:15px;">We just sent your personalized report to your inbox. Over the next two weeks, we'll send you:</p>
-                    <div style="text-align:left; max-width:440px; margin:0 auto; display:flex; flex-direction:column; gap:16px;">
-                        <div style="display:flex; align-items:flex-start; gap:12px;">
-                            <span style="background:var(--cta-bg); color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; font-weight:600;">1</span>
-                            <div>
-                                <strong style="color:var(--text-primary);">Why your symptoms are connected</strong>
-                                <p style="margin:4px 0 0; color:var(--text-secondary); font-size:14px;">The science behind what's happening — and why it's not "just stress."</p>
-                            </div>
+                <!-- SECONDARY: Email capture -->
+                <div id="emailGateSection" style="margin-top:8px;">
+                    <div style="text-align:center;padding:20px 0;">
+                        <p style="font-size:14px;color:var(--text-muted);margin-bottom:12px;">Or, get your report by email instead</p>
+                        <div style="display:flex;gap:8px;max-width:360px;margin:0 auto;">
+                            <input type="email" class="email-input" id="emailInput" placeholder="Enter your email" style="flex:1;" />
+                            <button class="cta-primary" style="font-size:14px;padding:12px 20px;white-space:nowrap;" onclick="captureQuizEmail()">Send Report</button>
                         </div>
-                        <div style="display:flex; align-items:flex-start; gap:12px;">
-                            <span style="background:var(--cta-bg); color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; font-weight:600;">2</span>
-                            <div>
-                                <strong style="color:var(--text-primary);">Your symptom pattern analysis</strong>
-                                <p style="margin:4px 0 0; color:var(--text-secondary); font-size:14px;">How your specific symptoms cluster and what that means.</p>
-                            </div>
-                        </div>
-                        <div style="display:flex; align-items:flex-start; gap:12px;">
-                            <span style="background:var(--cta-bg); color:white; border-radius:50%; width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:14px; font-weight:600;">3</span>
-                            <div>
-                                <strong style="color:var(--text-primary);">Your doctor visit script</strong>
-                                <p style="margin:4px 0 0; color:var(--text-secondary); font-size:14px;">Exactly what to say at your next appointment so you're taken seriously.</p>
-                            </div>
-                        </div>
+                        <div id="emailConfirmation" style="display:none;color:var(--trust-green);font-size:14px;margin-top:8px;font-weight:500;"></div>
                     </div>
-                    <p style="margin-top:24px; color:var(--text-muted); font-size:13px;">Check your inbox — your first report is already there.</p>
                 </div>
 
                 <div class="disclaimer">
@@ -884,12 +865,22 @@
 
             if (level === 'strong') triggerConfetti();
 
+            // Build /try URL with quiz context
+            var tryUrl = '/try?symptoms=' + encodeURIComponent(symptoms.join(',')) + '&level=' + encodeURIComponent(level);
+            var chatBtn = document.getElementById('chatCtaButton');
+            if (chatBtn) chatBtn.href = tryUrl;
+
             document.querySelectorAll('.quiz-question').forEach(function(q) { q.classList.remove('active'); });
             document.getElementById('resultsScreen').classList.add('active');
             document.getElementById('quizButtons').style.display = 'none';
 
             // Track quiz completion
             gtag('event', 'quiz_complete', { score: score, level: level });
+        }
+
+        function trackQuizToChat() {
+            gtag('event', 'quiz_to_chat', { level: document.getElementById('resultTitle').textContent });
+            if (typeof fbq === 'function') fbq('trackCustom', 'QuizToChat');
         }
 
         function triggerConfetti() {

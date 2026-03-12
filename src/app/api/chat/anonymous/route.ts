@@ -61,7 +61,7 @@ export async function POST(request: Request) {
       quizSymptoms && quizSymptoms.length > 0
         ? { symptoms: quizSymptoms, level: quizLevel || 'unknown' }
         : undefined
-    const systemPrompt = buildAnonymousSystemPrompt(quizContext)
+    const systemPrompt = buildAnonymousSystemPrompt(quizContext, count)
 
     // Keep only last N messages for context
     const chatMessages: ChatMessage[] = history.slice(-MAX_HISTORY)
@@ -94,16 +94,22 @@ export async function POST(request: Request) {
           history.push({ role: 'assistant', content: fullResponse })
 
           const tokenUsage = result.value as TokenUsage | undefined
+          // Strip [UPGRADE_CTA] marker from visible response, use it as signal
+          const hasUpgradeCta = fullResponse.includes('[UPGRADE_CTA]')
+          if (hasUpgradeCta) {
+            fullResponse = fullResponse.replace(/\s*\[UPGRADE_CTA\]\s*/g, '')
+            // Update the stored response without the marker
+            history[history.length - 1] = { role: 'assistant', content: fullResponse }
+          }
+
+          const phase = count <= 3 ? 'free' : 'conversion'
           const donePayload: Record<string, unknown> = {
             type: 'done',
             model: tokenUsage?.model,
             tier: tokenUsage?.tier,
             messageCount: count,
-          }
-
-          // After threshold, signal frontend to show soft account banner
-          if (count >= ACCOUNT_NUDGE_THRESHOLD) {
-            donePayload.showAccountBanner = true
+            phase,
+            showTrialOffer: hasUpgradeCta || (phase === 'conversion' && count >= 5),
           }
 
           controller.enqueue(

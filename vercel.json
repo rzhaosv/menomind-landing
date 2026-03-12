@@ -1,35 +1,12 @@
 {
-  "buildCommand": null,
-  "outputDirectory": "public",
-  "framework": null,
   "redirects": [
     {
       "source": "/quiz",
-      "destination": "/#quiz",
+      "destination": "/quiz.html",
       "permanent": false
     }
   ],
   "rewrites": [
-    {
-      "source": "/success",
-      "destination": "/success.html"
-    },
-    {
-      "source": "/privacy",
-      "destination": "/privacy.html"
-    },
-    {
-      "source": "/terms",
-      "destination": "/terms.html"
-    },
-    {
-      "source": "/contact",
-      "destination": "/contact.html"
-    },
-    {
-      "source": "/results",
-      "destination": "/results.html"
-    },
     {
       "source": "/blog",
       "destination": "/blog/index.html"
@@ -134,9 +111,5 @@
       "source": "/blog/is-hrt-safe",
       "destination": "/blog/is-hrt-safe.html"
     },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
   ]
 }

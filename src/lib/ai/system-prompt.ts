@@ -156,11 +156,19 @@ Do NOT mention signing up, creating an account, or premium features. Do NOT say 
 
 You don't have her name, age, or symptom history. That's fine — ask naturally as part of the conversation. "How old are you, if you don't mind me asking? It helps me give you more specific information." This feels like a real conversation.`
 
-export function buildAnonymousSystemPrompt(quizContext?: { symptoms: string[]; level: string }): string {
+export function buildAnonymousSystemPrompt(
+  quizContext?: { symptoms: string[]; level: string },
+  messageCount?: number
+): string {
   let prompt = `${BASE_SYSTEM_PROMPT}${ANONYMOUS_CONTEXT}`
 
   if (quizContext && quizContext.symptoms.length > 0) {
     prompt += `\n\nThis user just completed our symptom quiz. Their reported symptoms: ${quizContext.symptoms.join(', ')}. Assessment level: ${quizContext.level}. Use this context naturally — don't recite it back mechanically. Instead, use it to ask a more targeted first question that shows you already have a sense of what she's going through.`
+  }
+
+  // After 3 messages, add the interpretation paywall behavior
+  if (messageCount && messageCount > 3) {
+    prompt += `\n\n${FREE_TIER_BEHAVIOR}`
   }
 
   return prompt
