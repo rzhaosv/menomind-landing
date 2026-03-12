@@ -4,7 +4,7 @@
   "framework": null,
   "rewrites": [
     { "source": "/quiz", "destination": "/quiz.html" },
-        { "source": "/success", "destination": "/success.html" },
+    { "source": "/success", "destination": "/success.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
