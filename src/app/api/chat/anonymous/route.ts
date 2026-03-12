@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
 import { streamChatResponse, type ChatMessage, type TokenUsage } from '@/lib/ai/claude'
 import { buildAnonymousSystemPrompt } from '@/lib/ai/system-prompt'
 import { MAX_TOKENS_BY_SUBSCRIPTION } from '@/lib/ai/model-router'
@@ -10,27 +9,17 @@ const sessionMessages = new Map<string, ChatMessage[]>()
 const sessionMessageCounts = new Map<string, number>()
 
 const MAX_HISTORY = 10
-// Soft nudge threshold — after this many messages, suggest creating an account
-const ACCOUNT_NUDGE_THRESHOLD = 3
 
-function getOrCreateSessionId(): string {
-  const cookieStore = cookies()
-  const existing = cookieStore.get('anonymous_session')?.value
-  if (existing) return existing
-
-  const sessionId = randomUUID()
-  cookieStore.set('anonymous_session', sessionId, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 60 * 60 * 24 * 7, // 7 days
-  })
-  return sessionId
+function getSessionIdFromRequest(request: Request): { sessionId: string; isNew: boolean } {
+  const cookieHeader = request.headers.get('cookie') || ''
+  const match = cookieHeader.match(/anonymous_session=([^;]+)/)
+  if (match) return { sessionId: match[1], isNew: false }
+  return { sessionId: randomUUID(), isNew: true }
 }
 
 export async function POST(request: Request) {
   try {
-    const sessionId = getOrCreateSessionId()
+    const { sessionId, isNew } = getSessionIdFromRequest(request)
 
     const body = await request.json()
     const { message, quizSymptoms, quizLevel } = body as {
@@ -135,13 +124,16 @@ export async function POST(request: Request) {
       },
     })
 
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      },
-    })
+    const headers: Record<string, string> = {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      Connection: 'keep-alive',
+    }
+    if (isNew) {
+      headers['Set-Cookie'] = `anonymous_session=${sessionId}; HttpOnly; SameSite=Lax; Path=/; Max-Age=604800${process.env.NODE_ENV === 'production' ? '; Secure' : ''}`
+    }
+
+    return new Response(stream, { headers })
   } catch (error) {
     console.error('POST /api/chat/anonymous error:', error)
     return NextResponse.json(
