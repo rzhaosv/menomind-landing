@@ -62,9 +62,14 @@ function ChatInterface({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  // Sync initialMessages when they change (e.g., navigating to a different conversation)
+  // Sync initialMessages when navigating to a different conversation
+  const initialMessagesRef = useRef(initialMessages);
   useEffect(() => {
-    setMessages(initialMessages);
+    // Only reset if the actual content changed (not just a new [] reference)
+    if (JSON.stringify(initialMessages) !== JSON.stringify(initialMessagesRef.current)) {
+      initialMessagesRef.current = initialMessages;
+      setMessages(initialMessages);
+    }
   }, [initialMessages]);
 
   useEffect(() => {
@@ -87,7 +92,6 @@ function ChatInterface({
   const sendMessage = useCallback(
     async (messageText: string) => {
       const trimmed = messageText.trim();
-      console.log('[MenoMind] sendMessage called:', { trimmed, isStreaming });
       if (!trimmed || isStreaming) return;
 
       setError(null);
@@ -121,7 +125,6 @@ function ChatInterface({
           ? { message: trimmed, quizSymptoms: quizContext?.symptoms, quizLevel: quizContext?.level }
           : { conversationId: currentConversationId, message: trimmed };
 
-        console.log('[MenoMind] fetching:', endpoint, payload);
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -129,7 +132,6 @@ function ChatInterface({
           signal: abortControllerRef.current.signal,
         });
 
-        console.log('[MenoMind] response status:', res.status);
         if (!res.ok) {
           const errData = await res.json().catch(() => null);
           if (res.status === 429 && onLimitReached) {
@@ -144,24 +146,17 @@ function ChatInterface({
 
         // Handle streaming SSE response
         const reader = res.body?.getReader();
-        console.log('[MenoMind] reader:', !!reader, 'body:', !!res.body);
         if (!reader) throw new Error('No response stream available');
 
         const decoder = new TextDecoder();
         let buffer = '';
         let contentAccumulated = '';
-        let chunkCount = 0;
 
         while (true) {
           const { done, value } = await reader.read();
-          if (done) {
-            console.log('[MenoMind] stream done, total chunks:', chunkCount, 'content length:', contentAccumulated.length);
-            break;
-          }
+          if (done) break;
 
-          const rawText = decoder.decode(value, { stream: true });
-          buffer += rawText;
-          if (chunkCount === 0) console.log('[MenoMind] first raw chunk:', rawText.slice(0, 100));
+          buffer += decoder.decode(value, { stream: true });
 
           // Parse SSE events from the buffer
           const lines = buffer.split('\n');
@@ -172,7 +167,6 @@ function ChatInterface({
             try {
               const payload = JSON.parse(line.slice(6));
               if (payload.type === 'chunk' && payload.content) {
-                chunkCount++;
                 contentAccumulated += payload.content;
                 setMessages((prev) =>
                   prev.map((msg) =>
@@ -187,7 +181,6 @@ function ChatInterface({
                 onNewConversation?.();
               }
               if (payload.type === 'done') {
-                console.log('[MenoMind] done event:', payload);
                 if (payload.showTrialOffer && anonymous && !trialOfferDismissed) {
                   setShowTrialOffer(true);
                   if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
@@ -205,7 +198,6 @@ function ChatInterface({
           }
         }
       } catch (err) {
-        console.error('[MenoMind] sendMessage error:', err);
         if (err instanceof DOMException && err.name === 'AbortError') {
           return;
         }
