@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found — MenoMind</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#FAF7F2">
+
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TS69CENYQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5TS69CENYQ');
+        gtag('config', 'AW-17830146300');
+        gtag('event', 'page_not_found', { page_path: window.location.pathname });
+    </script>
+
+    <!-- Meta Pixel -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2166510774105785');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=2166510774105785&ev=PageView&noscript=1"
+    /></noscript>
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-primary: #FAF7F2;
+            --text-primary: #1a1a1a;
+            --text-secondary: #6B6356;
+            --text-muted: #9B9285;
+            --accent-warm: #C4956A;
+            --cta-bg: #1a1a1a;
+            --cta-text: #FFFFFF;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            padding: 16px 40px;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 100px 20px;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(28px, 5vw, 40px);
+            font-weight: 500;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+        }
+        .subtitle {
+            font-size: 17px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            line-height: 1.7;
+        }
+        .ctas {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .cta-primary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--cta-bg);
+            color: var(--cta-text);
+            padding: 16px 32px;
+            border-radius: 100px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+        .cta-primary:hover { opacity: 0.85; }
+        .cta-secondary {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: transparent;
+            color: var(--text-primary);
+            padding: 16px 32px;
+            border-radius: 100px;
+            border: 1.5px solid var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+        .cta-secondary:hover { background: rgba(0,0,0,0.03); }
+        @media (max-width: 480px) {
+            .ctas { flex-direction: column; }
+            .cta-primary, .cta-secondary { width: 100%; }
+            header { padding: 14px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">MenoMind</a>
+        </div>
+    </header>
+    <main class="container">
+        <h1>This page doesn't exist</h1>
+        <p class="subtitle">But we can help you figure out what's going on. Take our free 3-minute symptom assessment, or head back to the homepage.</p>
+        <div class="ctas">
+            <a href="/#quiz" class="cta-primary">Take the Free Symptom Quiz</a>
+            <a href="/" class="cta-secondary">Go to Homepage</a>
+        </div>
+    </main>
+</body>
+</html>

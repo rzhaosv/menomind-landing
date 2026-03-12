@@ -2251,6 +2251,12 @@
             }
             await saveEmailToSupabase(email, 'exit_popup');
             gtag('event', 'generate_lead', { method: 'exit_popup' });
+            if (typeof fbq === 'function') fbq('track', 'Lead');
+            gtag('event', 'conversion', {
+                'send_to': 'AW-17830146300/LEAD_CONVERSION_LABEL',
+                'value': 0,
+                'currency': 'USD'
+            });
             var btn = document.querySelector('#exitPopup button');
             btn.textContent = 'Sent!';
             btn.style.background = '#4A7C6F';
@@ -2271,6 +2277,11 @@
             await saveEmailToSupabase(email, 'quiz_results', totalScore, resultText, token);
             gtag('event', 'generate_lead', { method: 'quiz_email' });
             if (typeof fbq === 'function') fbq('track', 'Lead');
+            gtag('event', 'conversion', {
+                'send_to': 'AW-17830146300/LEAD_CONVERSION_LABEL',
+                'value': 0,
+                'currency': 'USD'
+            });
             document.getElementById('emailConfirmation').style.display = 'block';
             document.getElementById('emailConfirmation').style.color = '#4A7C6F';
             document.getElementById('emailConfirmation').textContent = 'Saved! Check your email for your personalized guide.';

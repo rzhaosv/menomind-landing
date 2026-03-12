@@ -14,27 +14,29 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-5TS69CENYQ');
-
-        // Google Ads Conversion Tracking
         gtag('config', 'AW-17830146300');
 
-        // Fire the Google Ads conversion event on page load
+        // Detect plan from URL parameters
+        var urlParams = new URLSearchParams(window.location.search);
+        var plan = urlParams.get('plan') || 'monthly';
+        var purchaseValue = plan === 'annual' ? 99 : 14.99;
+        var transactionId = urlParams.get('session_id') || ('T_' + Date.now());
+        var planName = 'MenoMind ' + (plan === 'annual' ? 'Annual' : 'Monthly');
+
+        // Google Ads Purchase conversion
         gtag('event', 'conversion', {
             'send_to': 'AW-17830146300/yWOPCKOguIYcEPzhibZC',
-            'value': 14.99,
+            'value': purchaseValue,
             'currency': 'USD',
-            'transaction_id': new URLSearchParams(window.location.search).get('session_id') || ''
+            'transaction_id': transactionId
         });
 
-        // Fire GA4 purchase event
+        // GA4 purchase event
         gtag('event', 'purchase', {
             currency: 'USD',
-            value: 0, // Stripe doesn't pass amount in URL by default
-            transaction_id: new URLSearchParams(window.location.search).get('session_id') || '',
-            items: [{
-                item_name: 'MenoMind Subscription',
-                item_category: 'subscription'
-            }]
+            value: purchaseValue,
+            transaction_id: transactionId,
+            items: [{ item_name: planName, price: purchaseValue }]
         });
     </script>
 
@@ -50,7 +52,7 @@
         'https://connect.facebook.net/en_US/fbevents.js');
         fbq('init', '2166510774105785');
         fbq('track', 'PageView');
-        fbq('track', 'Purchase', {value: 14.99, currency: 'USD'});
+        fbq('track', 'Purchase', {value: plan === 'annual' ? 99 : 14.99, currency: 'USD'});
     </script>
     <noscript><img height="1" width="1" style="display:none"
         src="https://www.facebook.com/tr?id=2166510774105785&ev=PageView&noscript=1"

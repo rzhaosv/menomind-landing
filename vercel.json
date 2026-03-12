@@ -2,11 +2,14 @@
   "buildCommand": null,
   "outputDirectory": "public",
   "framework": null,
-  "rewrites": [
+  "redirects": [
     {
       "source": "/quiz",
-      "destination": "/quiz.html"
-    },
+      "destination": "/#quiz",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
     {
       "source": "/success",
       "destination": "/success.html"

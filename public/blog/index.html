@@ -24,6 +24,7 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-5TS69CENYQ');
+        gtag('config', 'AW-17830146300');
     </script>
 
     <!-- Meta Pixel -->
@@ -298,5 +299,22 @@
             </div>
         </div>
     </footer>
+    <script>
+        // Blog engagement tracking
+        var scrollDepth = 0;
+        window.addEventListener('scroll', function() {
+            var depth = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+            if (depth >= 25 && scrollDepth < 25) { scrollDepth = 25; gtag('event', 'scroll_depth', { percent: 25, page: document.title }); }
+            if (depth >= 50 && scrollDepth < 50) { scrollDepth = 50; gtag('event', 'scroll_depth', { percent: 50, page: document.title }); }
+            if (depth >= 75 && scrollDepth < 75) { scrollDepth = 75; gtag('event', 'scroll_depth', { percent: 75, page: document.title }); }
+            if (depth >= 90 && scrollDepth < 90) { scrollDepth = 90; gtag('event', 'scroll_depth', { percent: 90, page: document.title }); }
+        });
+        document.querySelectorAll('a[href*="quiz"], a[href*="menomind.app"]').forEach(function(link) {
+            link.addEventListener('click', function() {
+                gtag('event', 'blog_cta_click', { link_url: this.href, page: document.title });
+                if (typeof fbq === 'function') fbq('trackCustom', 'BlogCTAClick', { page: document.title });
+            });
+        });
+    </script>
 </body>
 </html>
