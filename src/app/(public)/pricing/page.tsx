@@ -10,17 +10,44 @@ export default function PricingPage() {
 
   async function handleSubscribe(priceType: 'monthly' | 'annual') {
     setLoading(priceType)
+
+    // Track conversion events
+    if (typeof window !== 'undefined') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const w = window as any;
+      if (typeof w.gtag === 'function') {
+        w.gtag('event', 'pricing_trial_click', { plan: priceType });
+        w.gtag('event', 'conversion', {
+          'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC',
+          'value': 1.0,
+          'currency': 'USD',
+        });
+      }
+      if (typeof w.fbq === 'function') {
+        w.fbq('track', 'InitiateCheckout');
+      }
+    }
+
     try {
+      // Try authenticated checkout first, fall back to anonymous trial
       const priceId =
         priceType === 'monthly'
           ? process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY
           : process.env.NEXT_PUBLIC_STRIPE_PRICE_ANNUAL
 
-      const res = await fetch('/api/stripe/checkout', {
+      let res = await fetch('/api/stripe/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ priceId: priceId || `price_${priceType}_placeholder` }),
       })
+
+      // If not authenticated, use the anonymous trial endpoint
+      if (res.status === 401) {
+        res = await fetch('/api/stripe/checkout-trial', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
 
       if (res.ok) {
         const { url } = await res.json()
