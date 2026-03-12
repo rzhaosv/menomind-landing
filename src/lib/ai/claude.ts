@@ -61,21 +61,23 @@ export interface TokenUsage {
 export async function* streamChatResponse(
   systemPrompt: string,
   messages: ChatMessage[],
-  tierOverride?: ModelTier
+  tierOverride?: ModelTier,
+  maxTokensOverride?: number
 ): AsyncGenerator<string, TokenUsage | undefined, unknown> {
   // Classify the latest user message to pick the right model
   const lastUserMessage = [...messages].reverse().find(m => m.role === 'user')
   const tier = tierOverride ?? (lastUserMessage ? classifyMessage(lastUserMessage.content) : 'haiku')
   const config = getModelConfig(tier)
+  const effectiveMaxTokens = maxTokensOverride ?? config.maxTokens
 
   if (config.provider === 'openai') {
     // OpenAI doesn't go through streaming path â fallback to haiku for chat
     // (nano is only used for structured tasks via generateStructured)
     const haikuConfig = getModelConfig('haiku')
-    return yield* streamAnthropicChat(systemPrompt, messages, haikuConfig.model, haikuConfig.maxTokens, 'haiku')
+    return yield* streamAnthropicChat(systemPrompt, messages, haikuConfig.model, maxTokensOverride ?? haikuConfig.maxTokens, 'haiku')
   }
 
-  return yield* streamAnthropicChat(systemPrompt, messages, config.model, config.maxTokens, tier)
+  return yield* streamAnthropicChat(systemPrompt, messages, config.model, effectiveMaxTokens, tier)
 }
 
 async function* streamAnthropicChat(

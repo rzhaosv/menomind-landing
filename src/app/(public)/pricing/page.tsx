@@ -6,6 +6,7 @@ import Link from 'next/link'
 export default function PricingPage() {
   const [annual, setAnnual] = useState(true)
   const [loading, setLoading] = useState<string | null>(null)
+  const [showWhyDollar, setShowWhyDollar] = useState(false)
 
   async function handleSubscribe(priceType: 'monthly' | 'annual') {
     setLoading(priceType)
@@ -30,23 +31,22 @@ export default function PricingPage() {
     }
   }
 
-  const features = [
-    'Unlimited AI conversations',
-    'Full symptom history & charts',
-    'Correlation analysis',
+  const premiumFeatures = [
+    'Unlimited AI conversations with full interpretation',
+    'Personalized action plans & strategies',
+    'Full symptom history & trend analysis',
+    'Correlation insights across symptoms',
     'All 5 personalized wellness plans',
     'Weekly AI-generated insights',
     'Doctor visit prep reports',
-    'Monthly summary exports',
-    'Priority support',
+    'Data export',
   ]
 
   const freeFeatures = [
-    '5 AI messages per day',
+    'Unlimited AI conversation (recognition mode)',
     'Daily symptom logging',
     '7-day trend view',
-    '1 starter wellness plan',
-    'Basic health Q&A',
+    'Pattern reflection & validation',
   ]
 
   return (
@@ -71,8 +71,7 @@ export default function PricingPage() {
             <span className="text-brand-purple">personalized to you</span>
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Start free, upgrade when you&apos;re ready. Every plan includes a 7-day
-            free trial of Premium.
+            Start with a conversation. Upgrade when you want answers.
           </p>
 
           {/* Toggle */}
@@ -124,7 +123,7 @@ export default function PricingPage() {
             <ul className="space-y-3">
               {freeFeatures.map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-gray-600">
-                  <span className="text-gray-400 mt-0.5">✓</span>
+                  <span className="text-gray-400 mt-0.5">&#10003;</span>
                   {feature}
                 </li>
               ))}
@@ -137,29 +136,50 @@ export default function PricingPage() {
               Most Popular
             </span>
             <h3 className="text-lg font-semibold text-brand-purple">Premium</h3>
-            <p className="text-4xl font-bold mt-2 mb-1">
-              {annual ? '$99' : '$14.99'}
-              <span className="text-base font-normal text-gray-500">
-                /{annual ? 'year' : 'month'}
-              </span>
+
+            {/* $1 trial pricing */}
+            <div className="mt-2 mb-1">
+              <span className="text-4xl font-bold">$1</span>
+              <span className="text-base font-normal text-gray-500"> for your first week</span>
+            </div>
+            <p className="text-sm text-gray-500 mb-4">
+              Then {annual ? '$99/year ($8.25/mo)' : '$14.99/month'}. Cancel anytime.
             </p>
-            {annual && (
-              <p className="text-sm text-gray-500 mb-4">
-                That&apos;s just $8.25/month
-              </p>
-            )}
-            {!annual && <div className="mb-4" />}
+
             <button
               onClick={() => handleSubscribe(annual ? 'annual' : 'monthly')}
-              className="btn-primary text-sm w-full mb-6"
+              className="btn-primary text-sm w-full mb-4"
               disabled={loading !== null}
             >
-              {loading ? 'Loading...' : 'Start 7-Day Free Trial'}
+              {loading ? 'Loading...' : 'Try it for $1'}
             </button>
+
+            {/* Trust signals */}
+            <div className="flex items-center justify-center gap-1 mb-6">
+              <span className="text-xs text-gray-500">
+                Cancel anytime in the first 7 days for a full refund
+              </span>
+              <button
+                onClick={() => setShowWhyDollar(!showWhyDollar)}
+                className="text-xs text-brand-purple hover:underline ml-2"
+              >
+                Why $1?
+              </button>
+            </div>
+
+            {/* Why $1 tooltip */}
+            {showWhyDollar && (
+              <div className="bg-purple-50 rounded-lg p-3 mb-4 text-xs text-gray-600 leading-relaxed">
+                We charge $1 instead of offering a free trial because we want members who
+                are genuinely ready to invest in understanding their body. You&apos;ll have
+                full access to everything for 7 days.
+              </div>
+            )}
+
             <ul className="space-y-3">
-              {features.map((feature) => (
+              {premiumFeatures.map((feature) => (
                 <li key={feature} className="flex items-start gap-2 text-sm text-gray-700">
-                  <span className="text-brand-purple mt-0.5">✓</span>
+                  <span className="text-brand-purple mt-0.5">&#10003;</span>
                   {feature}
                 </li>
               ))}
@@ -186,11 +206,25 @@ export default function PricingPage() {
             </details>
             <details className="card cursor-pointer">
               <summary className="font-semibold">
-                Can I cancel my subscription anytime?
+                What happens after the $1 trial week?
               </summary>
               <p className="mt-3 text-gray-600 text-sm">
-                Yes! You can cancel anytime from your Settings page. You&apos;ll
-                keep premium access until the end of your billing period.
+                After 7 days, your subscription continues at the regular price
+                ({annual ? '$99/year' : '$14.99/month'}). You can cancel anytime
+                before that and you&apos;ll only pay the $1. Your free account and
+                data stay intact either way.
+              </p>
+            </details>
+            <details className="card cursor-pointer">
+              <summary className="font-semibold">
+                What&apos;s the difference between free and premium chat?
+              </summary>
+              <p className="mt-3 text-gray-600 text-sm">
+                With the free plan, MenoMind listens to everything you share, reflects
+                your patterns back, and validates your experience — unlimited. Premium
+                unlocks the interpretation layer: personalized explanations of WHY your
+                symptoms are happening, action plans tailored to you, trend analysis,
+                doctor prep reports, and weekly insights.
               </p>
             </details>
             <details className="card cursor-pointer">
@@ -203,22 +237,12 @@ export default function PricingPage() {
                 any time.
               </p>
             </details>
-            <details className="card cursor-pointer">
-              <summary className="font-semibold">
-                What if the trial doesn&apos;t work for me?
-              </summary>
-              <p className="mt-3 text-gray-600 text-sm">
-                No worries! If you don&apos;t find value during your 7-day trial,
-                simply don&apos;t subscribe. Your free account and data stay intact.
-                We also offer a 14-day money-back guarantee on paid subscriptions.
-              </p>
-            </details>
           </div>
         </div>
 
         {/* Guarantee */}
         <div className="text-center mt-12 text-gray-500 text-sm">
-          <p>14-day money-back guarantee · Cancel anytime · Secure payments via Stripe</p>
+          <p>Full refund within 7 days · Cancel anytime · Secure payments via Stripe</p>
         </div>
       </main>
     </div>

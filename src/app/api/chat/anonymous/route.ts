@@ -2,14 +2,16 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { streamChatResponse, type ChatMessage, type TokenUsage } from '@/lib/ai/claude'
 import { buildAnonymousSystemPrompt } from '@/lib/ai/system-prompt'
+import { MAX_TOKENS_BY_SUBSCRIPTION } from '@/lib/ai/model-router'
 import { randomUUID } from 'crypto'
 
 // In-memory message store — ephemeral by design
 const sessionMessages = new Map<string, ChatMessage[]>()
 const sessionMessageCounts = new Map<string, number>()
 
-const MAX_MESSAGES = 10
 const MAX_HISTORY = 10
+// Soft nudge threshold — after this many messages, suggest creating an account
+const ACCOUNT_NUDGE_THRESHOLD = 3
 
 function getOrCreateSessionId(): string {
   const cookieStore = cookies()
@@ -41,17 +43,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 })
     }
 
-    // Check message count
-    const count = sessionMessageCounts.get(sessionId) || 0
-    if (count >= MAX_MESSAGES) {
-      return NextResponse.json(
-        {
-          error: "You've been great to talk to! Create a free account to keep our conversation going and unlock daily check-ins.",
-          limitReached: true,
-        },
-        { status: 429 }
-      )
-    }
+    // Track message count (no hard limit — conversation flows freely)
+    const count = (sessionMessageCounts.get(sessionId) || 0) + 1
+    sessionMessageCounts.set(sessionId, count)
 
     // Get or init message history
     if (!sessionMessages.has(sessionId)) {
@@ -61,7 +55,6 @@ export async function POST(request: Request) {
 
     // Add user message
     history.push({ role: 'user', content: message.trim() })
-    sessionMessageCounts.set(sessionId, count + 1)
 
     // Build system prompt
     const quizContext =
@@ -73,6 +66,9 @@ export async function POST(request: Request) {
     // Keep only last N messages for context
     const chatMessages: ChatMessage[] = history.slice(-MAX_HISTORY)
 
+    // Always use haiku for anonymous users (cost optimization)
+    const tierOverride = 'haiku' as const
+
     // Stream response
     const encoder = new TextEncoder()
     let fullResponse = ''
@@ -80,7 +76,7 @@ export async function POST(request: Request) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          const generator = streamChatResponse(systemPrompt, chatMessages)
+          const generator = streamChatResponse(systemPrompt, chatMessages, tierOverride, MAX_TOKENS_BY_SUBSCRIPTION.anonymous)
           let result = await generator.next()
 
           while (!result.done) {
@@ -98,15 +94,20 @@ export async function POST(request: Request) {
           history.push({ role: 'assistant', content: fullResponse })
 
           const tokenUsage = result.value as TokenUsage | undefined
+          const donePayload: Record<string, unknown> = {
+            type: 'done',
+            model: tokenUsage?.model,
+            tier: tokenUsage?.tier,
+            messageCount: count,
+          }
+
+          // After threshold, signal frontend to show soft account banner
+          if (count >= ACCOUNT_NUDGE_THRESHOLD) {
+            donePayload.showAccountBanner = true
+          }
+
           controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({
-                type: 'done',
-                model: tokenUsage?.model,
-                tier: tokenUsage?.tier,
-                messageCount: (sessionMessageCounts.get(sessionId) || 0),
-              })}\n\n`
-            )
+            encoder.encode(`data: ${JSON.stringify(donePayload)}\n\n`)
           )
           controller.close()
         } catch (error) {

@@ -48,6 +48,7 @@ export interface Message {
   role: MessageRole
   content: string
   tokens_used: number | null
+  cost_usd: number | null
   created_at: string
 }
 

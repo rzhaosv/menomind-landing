@@ -1,6 +1,9 @@
 import type Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
 
+// Grace period before downgrade on payment failure (3 days in ms)
+const GRACE_PERIOD_MS = 3 * 24 * 60 * 60 * 1000
+
 /**
  * Resolve the Supabase user ID from Stripe event metadata or customer ID.
  * Falls back to looking up by stripe_customer_id if metadata is missing.
@@ -90,6 +93,27 @@ export async function handleSubscriptionUpdated(
   const supabase = createAdminClient()
   const isActive = ['active', 'trialing'].includes(subscription.status)
 
+  // For past_due status, apply grace period — don't downgrade immediately
+  if (subscription.status === 'past_due') {
+    console.log(
+      `handleSubscriptionUpdated: User ${userId} is past_due — grace period active, keeping premium`
+    )
+
+    await supabase.from('subscription_events').insert({
+      user_id: userId,
+      event_type: 'customer.subscription.updated',
+      stripe_event_id: subscription.id,
+      data: {
+        status: subscription.status,
+        current_period_end: subscription.current_period_end,
+        cancel_at_period_end: subscription.cancel_at_period_end,
+        grace_period: true,
+      },
+    })
+
+    return // Keep premium during grace period
+  }
+
   const { error: updateError } = await supabase
     .from('users')
     .update({
@@ -165,7 +189,7 @@ export async function handleInvoicePaymentFailed(
   // Find user by Stripe customer ID
   const { data: user } = await supabase
     .from('users')
-    .select('id')
+    .select('id, email, full_name')
     .eq('stripe_customer_id', customerId)
     .single()
 
@@ -181,8 +205,20 @@ export async function handleInvoicePaymentFailed(
     data: {
       amount_due: invoice.amount_due,
       attempt_count: invoice.attempt_count,
+      grace_period_ends: new Date(Date.now() + GRACE_PERIOD_MS).toISOString(),
     },
   })
 
-  console.log(`handleInvoicePaymentFailed: User ${user.id} payment failed`)
+  // Send payment failure recovery email
+  try {
+    const { sendPaymentFailedEmail } = await import('@/lib/email/retention-sequences')
+    await sendPaymentFailedEmail(
+      user.email,
+      user.full_name || 'there'
+    )
+  } catch (error) {
+    console.error('handleInvoicePaymentFailed: Failed to send recovery email', error)
+  }
+
+  console.log(`handleInvoicePaymentFailed: User ${user.id} payment failed (attempt ${invoice.attempt_count})`)
 }

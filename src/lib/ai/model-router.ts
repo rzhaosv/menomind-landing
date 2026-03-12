@@ -48,6 +48,17 @@ export const MODEL_CONFIGS: Record<ModelTier, ModelConfig> = {
 }
 
 /**
+ * Response length caps by subscription tier.
+ * Free tier: shorter responses (keeps costs low, keeps her wanting more)
+ * Premium tier: thorough but not wasteful
+ */
+export const MAX_TOKENS_BY_SUBSCRIPTION: Record<string, number> = {
+  free: 600,     // ~150 words — enough for recognition + teaser
+  premium: 2000, // ~500 words — thorough interpretation + action plans
+  anonymous: 600,
+}
+
+/**
  * Keywords and patterns that indicate a message needs the more capable Sonnet model.
  * These are medical/clinical questions where accuracy matters most.
  */

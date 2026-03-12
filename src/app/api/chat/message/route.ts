@@ -2,7 +2,14 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { streamChatResponse, type ChatMessage, type TokenUsage } from '@/lib/ai/claude'
 import { buildSystemPrompt } from '@/lib/ai/system-prompt'
-import { checkMessageLimit } from '@/lib/subscription/tier'
+import { getUserTier, getChatMode } from '@/lib/subscription/tier'
+import { MAX_TOKENS_BY_SUBSCRIPTION, estimateCost } from '@/lib/ai/model-router'
+import {
+  isInterpretationRequest,
+  countUpgradePrompts,
+  MAX_UPGRADE_PROMPTS_PER_CONVERSATION,
+  UPGRADE_CTA_MARKER,
+} from '@/lib/ai/conversion-triggers'
 import type { User, UserProfile, SymptomLog } from '@/types/database'
 
 export async function POST(request: Request) {
@@ -30,18 +37,9 @@ export async function POST(request: Request) {
       )
     }
 
-    // Check message limits for free users
-    const limitCheck = await checkMessageLimit(authUser.id)
-    if (!limitCheck.allowed) {
-      return NextResponse.json(
-        {
-          error: 'Daily message limit reached',
-          used: limitCheck.used,
-          limit: limitCheck.limit,
-        },
-        { status: 429 }
-      )
-    }
+    // Get user tier — no daily limits, just feature gating
+    const tier = await getUserTier(authUser.id)
+    const chatMode = getChatMode(tier)
 
     // Get or create conversation
     let activeConversationId = conversationId
@@ -126,15 +124,39 @@ export async function POST(request: Request) {
     const profileData = profileResult.data as UserProfile | null
     const recentSymptoms = (symptomsResult.data || []) as SymptomLog[]
 
-    const systemPrompt = buildSystemPrompt(userData, profileData, recentSymptoms)
+    // Check if we should trigger upgrade prompt for free users
+    const existingMessages = messagesResult.data || []
+    const assistantMessages = existingMessages
+      .filter((m) => m.role === 'assistant')
+      .map((m) => m.content)
+
+    let shouldSuggestUpgrade = false
+    if (chatMode === 'recognition') {
+      const upgradeCount = countUpgradePrompts(assistantMessages)
+      if (
+        upgradeCount < MAX_UPGRADE_PROMPTS_PER_CONVERSATION &&
+        isInterpretationRequest(message)
+      ) {
+        shouldSuggestUpgrade = true
+      }
+    }
+
+    const systemPrompt = buildSystemPrompt(
+      userData,
+      profileData,
+      recentSymptoms,
+      chatMode
+    )
 
     // Build message history for context
-    const chatMessages: ChatMessage[] = (messagesResult.data || []).map(
-      (m) => ({
-        role: m.role as 'user' | 'assistant',
-        content: m.content,
-      })
-    )
+    const chatMessages: ChatMessage[] = existingMessages.map((m) => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.content,
+    }))
+
+    // For free tier: force haiku + cap response length for cost optimization
+    const tierOverride = chatMode === 'recognition' ? 'haiku' as const : undefined
+    const maxTokens = MAX_TOKENS_BY_SUBSCRIPTION[tier] ?? MAX_TOKENS_BY_SUBSCRIPTION.free
 
     // Stream response
     const encoder = new TextEncoder()
@@ -143,40 +165,57 @@ export async function POST(request: Request) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
-          const generator = streamChatResponse(systemPrompt, chatMessages)
+          const generator = streamChatResponse(systemPrompt, chatMessages, tierOverride, maxTokens)
           let result = await generator.next()
 
           while (!result.done) {
             const chunk = result.value
             fullResponse += chunk
-            controller.enqueue(
-              encoder.encode(
-                `data: ${JSON.stringify({ type: 'chunk', content: chunk, conversationId: activeConversationId })}\n\n`
+
+            // Strip the upgrade marker from streamed output
+            const cleanChunk = chunk.replace(UPGRADE_CTA_MARKER, '')
+            if (cleanChunk) {
+              controller.enqueue(
+                encoder.encode(
+                  `data: ${JSON.stringify({ type: 'chunk', content: cleanChunk, conversationId: activeConversationId })}\n\n`
+                )
               )
-            )
+            }
             result = await generator.next()
           }
 
-          // Save assistant response to DB
+          // Check if AI included upgrade CTA
+          const hasUpgradeCTA = fullResponse.includes(UPGRADE_CTA_MARKER)
+
+          // Save assistant response to DB (keep marker for counting)
           const tokenUsage = result.value as TokenUsage | undefined
+          const costUsd = tokenUsage
+            ? estimateCost(tokenUsage.tier, tokenUsage.inputTokens, tokenUsage.outputTokens)
+            : null
           await supabase.from('messages').insert({
             conversation_id: activeConversationId,
             role: 'assistant',
-            content: fullResponse,
+            content: fullResponse.trim(),
             tokens_used: tokenUsage
               ? tokenUsage.inputTokens + tokenUsage.outputTokens
               : null,
+            cost_usd: costUsd,
           })
 
+          // Send upgrade signal to frontend if relevant
+          const donePayload: Record<string, unknown> = {
+            type: 'done',
+            conversationId: activeConversationId,
+            model: tokenUsage?.model,
+            tier: tokenUsage?.tier,
+          }
+
+          if (hasUpgradeCTA || shouldSuggestUpgrade) {
+            donePayload.showUpgrade = true
+          }
+
           controller.enqueue(
-            encoder.encode(
-              `data: ${JSON.stringify({
-                type: 'done',
-                conversationId: activeConversationId,
-                model: tokenUsage?.model,
-                tier: tokenUsage?.tier,
-              })}\n\n`
-            )
+            encoder.encode(`data: ${JSON.stringify(donePayload)}\n\n`)
           )
           controller.close()
         } catch (error) {

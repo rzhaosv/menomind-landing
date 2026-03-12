@@ -1,6 +1,55 @@
 import { createClient } from '@/lib/supabase/server'
 
-export async function getUserTier(userId: string): Promise<'free' | 'premium'> {
+export type SubscriptionTier = 'free' | 'premium'
+export type ChatMode = 'recognition' | 'full'
+
+export type Feature =
+  | 'chat'
+  | 'interpretation'
+  | 'symptom_logging'
+  | 'trend_view'
+  | 'wellness_plans'
+  | 'doctor_reports'
+  | 'weekly_insights'
+  | 'data_export'
+  | 'conversation_history'
+  | 'correlation_analysis'
+
+export interface FeatureAccess {
+  allowed: boolean
+  chatMode: ChatMode
+  trendDays: number | 'unlimited'
+  maxWellnessPlans: number | 'unlimited'
+}
+
+const FEATURE_ACCESS: Record<SubscriptionTier, Record<Feature, boolean>> = {
+  free: {
+    chat: true,              // unlimited conversation
+    interpretation: false,   // gated — the paywall boundary
+    symptom_logging: true,
+    trend_view: true,        // limited to 7 days
+    wellness_plans: false,
+    doctor_reports: false,
+    weekly_insights: false,
+    data_export: false,
+    conversation_history: false,
+    correlation_analysis: false,
+  },
+  premium: {
+    chat: true,
+    interpretation: true,
+    symptom_logging: true,
+    trend_view: true,
+    wellness_plans: true,
+    doctor_reports: true,
+    weekly_insights: true,
+    data_export: true,
+    conversation_history: true,
+    correlation_analysis: true,
+  },
+}
+
+export async function getUserTier(userId: string): Promise<SubscriptionTier> {
   const supabase = createClient()
   const { data } = await supabase
     .from('users')
@@ -8,69 +57,38 @@ export async function getUserTier(userId: string): Promise<'free' | 'premium'> {
     .eq('id', userId)
     .single()
 
-  return (data?.subscription_tier as 'free' | 'premium') ?? 'free'
+  return (data?.subscription_tier as SubscriptionTier) ?? 'free'
 }
 
+export function checkFeatureAccess(
+  tier: SubscriptionTier,
+  feature: Feature
+): boolean {
+  return FEATURE_ACCESS[tier]?.[feature] ?? false
+}
+
+export function getChatMode(tier: SubscriptionTier): ChatMode {
+  return tier === 'premium' ? 'full' : 'recognition'
+}
+
+export function getTrendDays(tier: SubscriptionTier): number | 'unlimited' {
+  return tier === 'premium' ? 'unlimited' : 7
+}
+
+export function getMaxWellnessPlans(tier: SubscriptionTier): number {
+  return tier === 'premium' ? 5 : 0
+}
+
+export function isPremiumFeature(feature: string): boolean {
+  const tier: SubscriptionTier = 'free'
+  return !FEATURE_ACCESS[tier]?.[feature as Feature]
+}
+
+// Legacy compat — no longer enforces daily limits, just returns unlimited
 export async function checkMessageLimit(userId: string): Promise<{
   allowed: boolean
   used: number
   limit: number
 }> {
-  const supabase = createClient()
-
-  // Check tier
-  const { data: user } = await supabase
-    .from('users')
-    .select('subscription_tier')
-    .eq('id', userId)
-    .single()
-
-  if (user?.subscription_tier === 'premium') {
-    return { allowed: true, used: 0, limit: Infinity }
-  }
-
-  // Count today's messages for free users
-  const today = new Date().toISOString().split('T')[0]
-
-  // First get user's conversation IDs
-  const { data: convos } = await supabase
-    .from('conversations')
-    .select('id')
-    .eq('user_id', userId)
-
-  const convoIds = (convos || []).map((c) => c.id)
-
-  let used = 0
-  if (convoIds.length > 0) {
-    const { count } = await supabase
-      .from('messages')
-      .select('id', { count: 'exact', head: true })
-      .eq('role', 'user')
-      .gte('created_at', `${today}T00:00:00`)
-      .lt('created_at', `${today}T23:59:59`)
-      .in('conversation_id', convoIds)
-
-    used = count ?? 0
-  }
-  const FREE_DAILY_LIMIT = 5
-
-  return {
-    allowed: used < FREE_DAILY_LIMIT,
-    used,
-    limit: FREE_DAILY_LIMIT,
-  }
-}
-
-export function isPremiumFeature(feature: string): boolean {
-  const premiumFeatures = [
-    'unlimited_chat',
-    'full_history',
-    'correlation_analysis',
-    'monthly_reports',
-    'export_report',
-    'all_wellness_plans',
-    'weekly_insights',
-    'conversation_history',
-  ]
-  return premiumFeatures.includes(feature)
+  return { allowed: true, used: 0, limit: Infinity }
 }
