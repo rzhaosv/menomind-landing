@@ -3,8 +3,41 @@
   "outputDirectory": "public",
   "framework": null,
   "rewrites": [
-    { "source": "/quiz", "destination": "/quiz.html" },
-    { "source": "/success", "destination": "/success.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/quiz",
+      "destination": "/quiz.html"
+    },
+    {
+      "source": "/success",
+      "destination": "/success.html"
+    },
+    {
+      "source": "/blog",
+      "destination": "/blog/index.html"
+    },
+    {
+      "source": "/blog/waking-up-at-3am",
+      "destination": "/blog/waking-up-at-3am.html"
+    },
+    {
+      "source": "/blog/perimenopause-rage",
+      "destination": "/blog/perimenopause-rage.html"
+    },
+    {
+      "source": "/blog/perimenopause-brain-fog",
+      "destination": "/blog/perimenopause-brain-fog.html"
+    },
+    {
+      "source": "/blog/tinnitus-perimenopause",
+      "destination": "/blog/tinnitus-perimenopause.html"
+    },
+    {
+      "source": "/blog/blood-tests-normal-perimenopause",
+      "destination": "/blog/blood-tests-normal-perimenopause.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MenoMind Blog — Perimenopause Insights & Symptom Guides</title>
+    <meta name="description" content="Evidence-based articles about perimenopause symptoms, hormone fluctuations, and what you need to know. Learn about brain fog, insomnia, mood changes, and more.">
+    <meta name="theme-color" content="#6B3F8D">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="MenoMind Blog — Perimenopause Insights">
+    <meta property="og:description" content="Evidence-based articles about perimenopause symptoms and what's really happening in your body.">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="MenoMind Blog — Perimenopause Insights">
+    <meta name="twitter:description" content="Evidence-based articles about perimenopause symptoms and what's really happening in your body.">
+
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TS69CENYQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5TS69CENYQ');
+    </script>
+
+    <!-- Meta Pixel -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2166510774105785');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2166510774105785&ev=PageView&noscript=1" /></noscript>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FFFBF5;
+            color: #1A1A2E;
+            line-height: 1.6;
+        }
+
+        /* HEADER */
+        header {
+            padding: 20px;
+            background-color: #FFFBF5;
+            border-bottom: 1px solid rgba(107, 63, 141, 0.1);
+        }
+
+        .header-content {
+            max-width: 720px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6B3F8D;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        /* MAIN CONTENT */
+        main {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .blog-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .blog-header h1 {
+            font-size: clamp(32px, 8vw, 42px);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 12px;
+            color: #1A1A2E;
+        }
+
+        .blog-header p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        /* BLOG CARDS */
+        .blog-cards {
+            display: grid;
+            gap: 24px;
+        }
+
+        .blog-card {
+            background: white;
+            border: 1px solid rgba(107, 63, 141, 0.12);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .blog-card:hover {
+            border-color: #D65C8C;
+            box-shadow: 0 8px 24px rgba(214, 92, 140, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .blog-card h2 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #1A1A2E;
+            line-height: 1.3;
+        }
+
+        .blog-card p {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        .card-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #999;
+            align-items: center;
+        }
+
+        .read-time {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* FOOTER */
+        footer {
+            padding: 40px 20px;
+            background-color: #F5F0FA;
+            text-align: center;
+            border-top: 1px solid #E8DFF3;
+        }
+
+        .footer-content {
+            max-width: 720px;
+            margin: 0 auto;
+        }
+
+        .footer-text {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.8;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            font-size: 13px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #6B3F8D;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .footer-links a:hover {
+            opacity: 0.7;
+        }
+
+        .payment-badge {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                padding: 24px 16px;
+            }
+
+            .blog-header {
+                margin-bottom: 32px;
+            }
+
+            .blog-header h1 {
+                font-size: 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="/" class="logo">MenoMind</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="blog-header">
+            <h1>MenoMind Blog</h1>
+            <p>Evidence-based insights about perimenopause, hormones, and what's really happening in your body</p>
+        </div>
+
+        <div class="blog-cards">
+            <a href="/blog/waking-up-at-3am" class="blog-card">
+                <h2>Why You're Waking Up at 3am — It Might Be Perimenopause</h2>
+                <p>Waking up at 3am with anxiety or a racing mind? It may not be stress — it could be perimenopause. Learn why it happens and what you can do about it.</p>
+                <div class="card-meta">
+                    <span class="read-time">⏱ 5 min read</span>
+                </div>
+            </a>
+
+            <a href="/blog/perimenopause-rage" class="blog-card">
+                <h2>Perimenopause Rage: Why You Can't Recognize Yourself</h2>
+                <p>The sudden rage isn't a character flaw — it's hormonal. Up to 70% of women in perimenopause experience irritability. Here's why and what helps.</p>
+                <div class="card-meta">
+                    <span class="read-time">⏱ 5 min read</span>
+                </div>
+            </a>
+
+            <a href="/blog/perimenopause-brain-fog" class="blog-card">
+                <h2>Perimenopause Brain Fog: Why You're Forgetting Words (And It's Not Dementia)</h2>
+                <p>Forgetting the word for 'refrigerator'? Nearly two-thirds of women in perimenopause experience brain fog. Here's what's actually happening in your brain.</p>
+                <div class="card-meta">
+                    <span class="read-time">⏱ 6 min read</span>
+                </div>
+            </a>
+
+            <a href="/blog/tinnitus-perimenopause" class="blog-card">
+                <h2>Is Tinnitus a Sign of Perimenopause? What the Research Says</h2>
+                <p>That ringing in your ears could be hormonal. Up to 30% of women experience tinnitus during perimenopause. Here's the estrogen-ear connection.</p>
+                <div class="card-meta">
+                    <span class="read-time">⏱ 5 min read</span>
+                </div>
+            </a>
+
+            <a href="/blog/blood-tests-normal-perimenopause" class="blog-card">
+                <h2>Your Blood Tests Are Normal But You Feel Terrible — Here's Why</h2>
+                <p>Your doctor says your hormone levels are 'normal' but you feel awful. Here's why perimenopause blood tests are unreliable and what to do instead.</p>
+                <div class="card-meta">
+                    <span class="read-time">⏱ 6 min read</span>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">
+                MenoMind is not a substitute for professional medical advice. Always consult with a healthcare provider about symptoms and treatment options.
+            </p>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/quiz">Take the Assessment</a>
+                <a href="mailto:hello@menomind.app">Contact</a>
+            </div>
+            <div class="payment-badge">
+                <span>🔒 Secure payments by Stripe</span>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
