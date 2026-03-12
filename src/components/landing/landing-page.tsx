@@ -6,25 +6,27 @@ import Image from 'next/image'
 import { SYMPTOM_CATEGORIES, ACTION_PLANS } from '@/lib/quiz/symptom-data'
 
 const SYMPTOMS_CHECKLIST = [
-  'Unexplained anxiety or mood swings',
-  'Difficulty sleeping or waking at 3am',
-  'Hot flashes or night sweats',
-  'Brain fog or trouble concentrating',
-  'Fatigue despite sleeping enough',
-  'Irregular or changing periods',
-  'Joint pain or muscle aches',
+  'Anxiety that came out of nowhere',
+  'Waking up at 3am and can\'t fall back asleep',
+  'Hot flashes or drenching night sweats',
+  'Brain fog so bad you forget words mid-sentence',
+  'Exhausted no matter how much you sleep',
+  'Periods that are all over the place',
+  'Aches and pains that don\'t make sense',
 ]
 
 const QUIZ_QUESTIONS = [
   {
     id: 'age',
-    title: 'How old are you?',
+    title: 'First — how old are you?',
+    subtitle: 'This helps us give you more relevant information.',
     options: ['Under 35', '35-39', '40-44', '45-49', '50-54', '55+'],
     type: 'single' as const,
   },
   {
     id: 'cognitive',
-    title: 'Are you experiencing any of these?',
+    title: 'Have you noticed any of these lately?',
+    subtitle: 'These are more common than you think — and there\'s usually a hormonal reason.',
     options: [
       'Anxiety or panic attacks',
       'Irritability or rage',
@@ -36,7 +38,8 @@ const QUIZ_QUESTIONS = [
   },
   {
     id: 'vasomotor',
-    title: 'What about these physical symptoms?',
+    title: 'What about your body — anything feel off?',
+    subtitle: 'Many women don\'t connect these to hormones at first.',
     options: [
       'Hot flashes',
       'Night sweats',
@@ -48,7 +51,8 @@ const QUIZ_QUESTIONS = [
   },
   {
     id: 'somatic',
-    title: 'Any of these affecting you?',
+    title: 'How about sleep, energy, or pain?',
+    subtitle: 'If you\'re exhausted but can\'t explain why — you\'re not alone.',
     options: [
       'Sleep disruption',
       'Fatigue / low energy',
@@ -60,7 +64,8 @@ const QUIZ_QUESTIONS = [
   },
   {
     id: 'periods',
-    title: 'Have your periods changed?',
+    title: 'Have your periods changed at all?',
+    subtitle: 'Even subtle changes can be a signal.',
     options: [
       'Becoming irregular',
       'Heavier or lighter than usual',
@@ -72,18 +77,20 @@ const QUIZ_QUESTIONS = [
   },
   {
     id: 'history',
-    title: 'Any family history of early menopause?',
+    title: 'Do you know if anyone in your family went through menopause early?',
+    subtitle: 'It\'s okay if you\'re not sure — most women don\'t know.',
     options: ['Yes', 'No', "I'm not sure"],
     type: 'single' as const,
   },
   {
     id: 'impact',
-    title: 'How much are these symptoms affecting your daily life?',
+    title: 'How much is all of this affecting your day-to-day?',
+    subtitle: 'Be honest — there\'s no wrong answer here.',
     options: [
-      'Not at all',
-      'A little — manageable',
-      'Moderately — affecting work/relationships',
-      'Significantly — hard to function normally',
+      'Not really — just curious',
+      'A little — I can manage, but I notice it',
+      'A lot — it\'s affecting my work or relationships',
+      'It\'s overwhelming — I don\'t feel like myself',
     ],
     type: 'single' as const,
   },
@@ -194,8 +201,8 @@ export function LandingPage() {
     if ((a.somatic?.length || 0) > 0 && !a.somatic?.includes('None of these')) score += a.somatic!.length
     if (a.periods?.[0] && !['No changes'].includes(a.periods[0])) score += 2
     if (a.history?.[0] === 'Yes') score += 1
-    if (a.impact?.[0]?.startsWith('Significantly')) score += 2
-    else if (a.impact?.[0]?.startsWith('Moderately')) score += 1
+    if (a.impact?.[0]?.startsWith('It\'s overwhelming')) score += 2
+    else if (a.impact?.[0]?.startsWith('A lot')) score += 1
 
     if (score >= 8) return 'strong'
     if (score >= 4) return 'moderate'
@@ -282,21 +289,21 @@ export function LandingPage() {
       bg: 'bg-green-50',
       border: 'border-green-200',
       label: 'Low Likelihood',
-      message: 'Based on your answers, perimenopause is less likely right now — but it\'s great that you\'re paying attention to your body.',
+      message: 'Your symptoms are mild right now, but the fact that you\'re here means you\'re listening to your body. That matters. Perimenopause can start subtly — knowing what to watch for puts you ahead.',
     },
     moderate: {
       color: 'text-yellow-600',
       bg: 'bg-yellow-50',
       border: 'border-yellow-200',
       label: 'Moderate Likelihood',
-      message: 'Your symptoms suggest perimenopause could be a factor. Many women start experiencing hormonal shifts earlier than expected.',
+      message: 'What you\'re describing is incredibly common in women your age, and there\'s a real biological reason for it. You\'re not stressed, broken, or imagining things — your hormones are shifting, and your body is responding exactly the way it should.',
     },
     strong: {
       color: 'text-brand-pink',
       bg: 'bg-pink-50',
       border: 'border-pink-200',
       label: 'Strong Likelihood',
-      message: 'Your symptom pattern is very consistent with perimenopause. You\'re not imagining it — these changes are real and common.',
+      message: 'Everything you\'re feeling makes sense. This isn\'t anxiety, it isn\'t burnout, and you\'re definitely not losing your mind. Your symptom pattern is textbook perimenopause — and the good news is, once you know what\'s happening, there\'s a lot you can do about it.',
     },
   }
 
@@ -326,12 +333,12 @@ export function LandingPage() {
       >
         <div className="max-w-[720px] mx-auto relative z-10 text-center">
           <h1 className="text-3xl sm:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-lg">
-            Is It Anxiety or Perimenopause?{' '}
-            <span className="block">Get Answers Free</span>
+            You&apos;re Not Losing Your Mind.{' '}
+            <span className="block">It Might Be Your Hormones.</span>
           </h1>
           <p className="text-white/95 text-base mb-6 drop-shadow">
-            AI-powered symptom decoder built by women, for women. Find out if your anxiety,
-            brain fog, and fatigue might be hormonal — in 2 minutes.
+            The anxiety, the brain fog, the 3am wake-ups — there&apos;s a biological reason for all of it.
+            Take our free 2-minute quiz and finally get answers that make sense.
           </p>
           <div className="mb-5">
             <button onClick={scrollToQuiz} className="block w-full max-w-[340px] mx-auto bg-brand-pink text-white py-4 px-8 rounded-lg text-base font-semibold hover:bg-brand-pink-light transition-colors">
@@ -365,10 +372,10 @@ export function LandingPage() {
       <section className="py-16 px-5">
         <div className="max-w-[720px] mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
-            Does any of this sound familiar?
+            Sound familiar?
           </h2>
           <p className="text-gray-600 text-center mb-8">
-            Check the symptoms you&apos;re experiencing:
+            If you&apos;ve been told it&apos;s &quot;just stress&quot; or &quot;just aging,&quot; check how many of these you recognize:
           </p>
           <div className="space-y-3 max-w-md mx-auto">
             {SYMPTOMS_CHECKLIST.map((symptom, i) => (
@@ -393,10 +400,10 @@ export function LandingPage() {
           {checkedSymptoms.size > 0 && (
             <div className="mt-6 text-center">
               <p className="text-brand-purple font-semibold">
-                You checked {checkedSymptoms.size} of {SYMPTOMS_CHECKLIST.length} — that&apos;s worth looking into.
+                {checkedSymptoms.size} out of {SYMPTOMS_CHECKLIST.length} — you&apos;re not imagining this. Let&apos;s find out what&apos;s going on.
               </p>
               <button onClick={scrollToQuiz} className="btn-primary mt-4 text-sm">
-                Take the Full Assessment →
+                Get My Free Results →
               </button>
             </div>
           )}
@@ -407,7 +414,7 @@ export function LandingPage() {
       <section className="py-16 px-5 bg-white">
         <div className="max-w-[720px] mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-10">
-            You&apos;re not imagining it. The system failed you.
+            It&apos;s not you. The system wasn&apos;t built for this.
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
             <div className="text-center p-6">
@@ -459,27 +466,27 @@ export function LandingPage() {
               <div className="w-14 h-14 bg-brand-purple/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">💬</span>
               </div>
-              <h3 className="font-semibold mb-2">1. Tell us how you feel</h3>
+              <h3 className="font-semibold mb-2">1. Tell us what&apos;s going on</h3>
               <p className="text-sm text-gray-600">
-                Chat with our AI about your symptoms in plain language
+                In your own words. No medical jargon needed.
               </p>
             </div>
             <div className="text-center">
               <div className="w-14 h-14 bg-brand-pink/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">📊</span>
               </div>
-              <h3 className="font-semibold mb-2">2. Track & understand</h3>
+              <h3 className="font-semibold mb-2">2. See the patterns</h3>
               <p className="text-sm text-gray-600">
-                Log symptoms daily and see patterns you&apos;d never notice alone
+                Finally understand why certain days are harder than others
               </p>
             </div>
             <div className="text-center">
               <div className="w-14 h-14 bg-brand-purple/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <span className="text-2xl">🩺</span>
               </div>
-              <h3 className="font-semibold mb-2">3. Take action</h3>
+              <h3 className="font-semibold mb-2">3. Know what to do next</h3>
               <p className="text-sm text-gray-600">
-                Follow your personalized wellness plan and prep for doctor visits
+                Walk into your doctor&apos;s office prepared — and finally get taken seriously
               </p>
             </div>
           </div>
@@ -492,21 +499,24 @@ export function LandingPage() {
           {quizStep === -1 ? (
             <div className="text-center">
               <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                Could it be perimenopause?
+                Let&apos;s figure out what&apos;s going on
               </h2>
               <p className="text-gray-600 mb-6">
-                Take this 2-minute assessment to find out. Based on clinical screening criteria.
+                7 quick questions. No account needed. You&apos;ll get a personalized breakdown of your symptoms and what they might mean — completely free.
               </p>
               <button onClick={() => setQuizStep(0)} className="btn-primary">
-                Start the Assessment →
+                Let&apos;s Start →
               </button>
             </div>
           ) : showResult ? (
             <div className="max-w-[600px] mx-auto">
               {/* Section 1: Personalized Symptom Score */}
-              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-8">
-                Your Perimenopause Symptom Profile
+              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
+                Here&apos;s what we found
               </h2>
+              <p className="text-gray-500 text-center mb-8 text-sm">
+                Based on what you told us, here&apos;s what&apos;s likely going on — and why.
+              </p>
 
               {(() => {
                 const { reported, total } = getSymptomScore()
@@ -542,7 +552,7 @@ export function LandingPage() {
                       {severityLabels[resultLevel]} Symptom Level
                     </p>
                     <p className="text-gray-700 text-sm">
-                      Based on your answers, you&apos;re experiencing {reported} common perimenopause symptom{reported !== 1 ? 's' : ''}.
+                      You reported {reported} symptom{reported !== 1 ? 's' : ''} that {reported !== 1 ? 'are' : 'is'} commonly linked to hormonal changes.
                     </p>
                     <p className="text-gray-600 text-sm mt-2">
                       {resultConfig[resultLevel].message}
@@ -553,7 +563,8 @@ export function LandingPage() {
 
               {/* Section 2: Symptom Breakdown */}
               <div className="mb-8">
-                <h3 className="text-lg font-bold mb-4">What Your Symptoms Tell Us</h3>
+                <h3 className="text-lg font-bold mb-1">Why you&apos;re feeling this way</h3>
+                <p className="text-xs text-gray-500 mb-4">Every one of these has a biological explanation.</p>
                 <div className="space-y-3">
                   {(['cognitive', 'vasomotor', 'somatic', 'periods'] as const).map((catKey) => {
                     const cat = SYMPTOM_CATEGORIES[catKey]
@@ -601,7 +612,8 @@ export function LandingPage() {
 
               {/* Section 3: Personalized Action Plan Preview */}
               <div className="mb-8">
-                <h3 className="text-lg font-bold mb-4">Your Personalized Action Plan</h3>
+                <h3 className="text-lg font-bold mb-1">What you can actually do about it</h3>
+                <p className="text-xs text-gray-500 mb-4">Personalized to your symptoms. No guesswork.</p>
                 <div className="space-y-3">
                   {getPersonalizedPlans().map((plan, i) => (
                     <div
@@ -649,10 +661,10 @@ export function LandingPage() {
               {/* Email Check-in Capture */}
               <div className="mb-8 p-5 bg-white rounded-xl border border-gray-200 text-center">
                 <p className="text-sm font-semibold text-brand-dark mb-1">
-                  Not ready to chat yet?
+                  Want me to check in with you?
                 </p>
                 <p className="text-xs text-gray-500 mb-3">
-                  Your symptoms may change week to week. Drop your email and I&apos;ll send you your full results + check in with you in a few days.
+                  Your symptoms can shift week to week. Drop your email and I&apos;ll send your full results — plus a check-in in a few days to see how you&apos;re doing.
                 </p>
                 {emailCaptured ? (
                   <p className="text-sm text-green-600 font-medium">
@@ -737,14 +749,17 @@ export function LandingPage() {
                 </div>
               </div>
 
-              {/* Micro-encouragement after Q4 */}
+              {/* Micro-encouragement */}
               {quizStep >= 4 && (
                 <p className="text-xs text-brand-purple font-medium mb-3">
-                  Almost done! Your personalized results are being prepared.
+                  Almost there — your personalized results are coming together.
                 </p>
               )}
 
-              <h3 className="text-xl font-bold mb-4">{QUIZ_QUESTIONS[quizStep].title}</h3>
+              <h3 className="text-xl font-bold mb-1">{QUIZ_QUESTIONS[quizStep].title}</h3>
+              {QUIZ_QUESTIONS[quizStep].subtitle && (
+                <p className="text-sm text-gray-500 mb-4">{QUIZ_QUESTIONS[quizStep].subtitle}</p>
+              )}
               <div className="space-y-3">
                 {QUIZ_QUESTIONS[quizStep].options.map((option) => {
                   const selected = quizAnswers[QUIZ_QUESTIONS[quizStep].id]?.includes(option)
@@ -915,10 +930,10 @@ export function LandingPage() {
       <section className="py-20 px-5 bg-brand-purple text-white text-center">
         <div className="max-w-[600px] mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-            You&apos;ve been waiting for someone to listen
+            You deserve someone who actually listens
           </h2>
           <p className="text-white/80 mb-8">
-            MenoMind is here. Start understanding your body today — for free.
+            No judgment. No dismissal. Just real answers about what&apos;s happening in your body — for free.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={scrollToQuiz} className="bg-brand-pink text-white py-4 px-8 rounded-xl font-semibold hover:bg-brand-pink-light transition-colors">
