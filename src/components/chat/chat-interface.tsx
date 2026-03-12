@@ -87,6 +87,7 @@ function ChatInterface({
   const sendMessage = useCallback(
     async (messageText: string) => {
       const trimmed = messageText.trim();
+      console.log('[MenoMind] sendMessage called:', { trimmed, isStreaming });
       if (!trimmed || isStreaming) return;
 
       setError(null);
@@ -120,6 +121,7 @@ function ChatInterface({
           ? { message: trimmed, quizSymptoms: quizContext?.symptoms, quizLevel: quizContext?.level }
           : { conversationId: currentConversationId, message: trimmed };
 
+        console.log('[MenoMind] fetching:', endpoint, payload);
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -127,6 +129,7 @@ function ChatInterface({
           signal: abortControllerRef.current.signal,
         });
 
+        console.log('[MenoMind] response status:', res.status);
         if (!res.ok) {
           const errData = await res.json().catch(() => null);
           if (res.status === 429 && onLimitReached) {
@@ -191,6 +194,7 @@ function ChatInterface({
           }
         }
       } catch (err) {
+        console.error('[MenoMind] sendMessage error:', err);
         if (err instanceof DOMException && err.name === 'AbortError') {
           return;
         }
