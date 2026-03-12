@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Perimenopause Screening Results — MenoMind</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#6B3F8D">
+
+    <!-- GA4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TS69CENYQ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-5TS69CENYQ');
+    </script>
+
+    <!-- Meta Pixel -->
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2166510774105785');
+        fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+        src="https://www.facebook.com/tr?id=2166510774105785&ev=PageView&noscript=1"
+    /></noscript>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #FFFBF5;
+            color: #1A1A2E;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 16px 20px;
+            background: #FFFBF5;
+            border-bottom: 1px solid rgba(107, 63, 141, 0.08);
+            text-align: center;
+        }
+        .header a {
+            font-size: 22px;
+            font-weight: 700;
+            color: #6B3F8D;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 40px 20px 60px;
+        }
+
+        .error-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .error-state h1 {
+            font-size: 24px;
+            color: #1A1A2E;
+            margin-bottom: 12px;
+        }
+        .error-state p {
+            color: #666;
+            margin-bottom: 24px;
+        }
+
+        /* Result header */
+        .result-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .result-header h1 {
+            font-size: clamp(22px, 5vw, 28px);
+            font-weight: 800;
+            color: #1A1A2E;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+        .result-header p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* Indicator badge */
+        .indicator-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 16px;
+            margin: 16px 0 8px;
+        }
+        .indicator-badge .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .card h2 {
+            font-size: 17px;
+            font-weight: 700;
+            color: #6B3F8D;
+            margin-bottom: 12px;
+        }
+        .card p {
+            font-size: 15px;
+            color: #444;
+        }
+
+        /* Score breakdown */
+        .score-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+        .score-item {
+            background: #F8F4FC;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .score-item .label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .score-item .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #6B3F8D;
+        }
+        .score-item.active {
+            background: linear-gradient(135deg, #f0e6f6, #e8f5f5);
+            border: 1px solid rgba(107, 63, 141, 0.15);
+        }
+        .score-item.inactive {
+            opacity: 0.5;
+        }
+
+        /* Symptom clusters */
+        .symptom-tag {
+            display: inline-block;
+            background: #F0E6F6;
+            color: #6B3F8D;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin: 4px 4px 4px 0;
+        }
+
+        /* What this means */
+        .explainer {
+            font-size: 15px;
+            color: #444;
+            line-height: 1.7;
+        }
+        .explainer strong {
+            color: #1A1A2E;
+        }
+
+        /* Next steps */
+        .step {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 18px;
+            align-items: flex-start;
+        }
+        .step:last-child { margin-bottom: 0; }
+        .step-num {
+            width: 28px;
+            height: 28px;
+            min-width: 28px;
+            background: rgba(107, 63, 141, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: #6B3F8D;
+        }
+        .step-text h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1A1A2E;
+            margin-bottom: 2px;
+        }
+        .step-text p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* CTA */
+        .cta-section {
+            text-align: center;
+            margin: 32px 0 16px;
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 16px 36px;
+            background: linear-gradient(135deg, #6B3F8D, #D65C8C);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(107, 63, 141, 0.3);
+        }
+        .cta-secondary {
+            display: block;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #6B3F8D;
+            text-decoration: none;
+        }
+
+        .disclaimer {
+            text-align: center;
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a href="/">MenoMind</a>
+    </header>
+
+    <div class="container" id="resultsContainer">
+        <!-- Populated by JS -->
+    </div>
+
+    <script>
+        var MONTHLY_LINK = 'https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00';
+        var ANNUAL_LINK = 'https://buy.stripe.com/9B68wOawV5Kb1B42771kA01';
+
+        function decodeToken(token) {
+            try {
+                var base64 = token.replace(/-/g, '+').replace(/_/g, '/');
+                while (base64.length % 4) base64 += '=';
+                var json = atob(base64);
+                return JSON.parse(json);
+            } catch(e) {
+                return null;
+            }
+        }
+
+        function renderResults(data) {
+            var answers = data.a;
+            var totalScore = data.s;
+
+            var level, levelText, color, bgColor;
+            if (totalScore <= 3) {
+                level = 'low';
+                levelText = 'Low Indicators';
+                color = '#4CAF50';
+                bgColor = 'rgba(76, 175, 80, 0.1)';
+            } else if (totalScore <= 7) {
+                level = 'moderate';
+                levelText = 'Moderate Indicators';
+                color = '#FFA500';
+                bgColor = 'rgba(255, 165, 0, 0.1)';
+            } else {
+                level = 'strong';
+                levelText = 'Strong Indicators';
+                color = '#D65C8C';
+                bgColor = 'rgba(214, 92, 140, 0.1)';
+            }
+
+            var symptoms = [];
+            if (answers.cognitive > 0) symptoms.push('Cognitive & Mood');
+            if (answers.vasomotor > 0) symptoms.push('Vasomotor (Hot Flashes & Night Sweats)');
+            if (answers.somatic > 0) symptoms.push('Sleep & Body');
+            if (answers.cycle > 0) symptoms.push('Period Changes');
+
+            var description;
+            if (level === 'strong') {
+                description = 'Based on your answers, your symptoms show strong indicators consistent with perimenopause. Many women with this symptom profile find relief once they understand what\'s happening in their body.';
+            } else if (level === 'moderate') {
+                description = 'Based on your answers, your symptoms show moderate indicators consistent with perimenopause. While your experience may vary, it\'s worth discussing these patterns with your healthcare provider.';
+            } else {
+                description = 'Based on your answers, you\'re showing lower indicators for perimenopause, but your symptoms are still worth tracking. Hormonal transitions are unique to each woman, and symptoms can develop over time.';
+            }
+
+            var whatThisMeans;
+            if (level === 'strong') {
+                whatThisMeans = '<strong>What this means:</strong> Perimenopause typically involves 4\u201310 years of hormonal fluctuation. What feels like anxiety, depression, or burnout may actually be your body telling you something specific is changing. Getting answers is the first step to getting relief.';
+            } else if (level === 'moderate') {
+                whatThisMeans = '<strong>What this means:</strong> Your symptoms may or may not be perimenopause-related \u2014 hormonal changes can coexist with stress, life events, and other factors. A conversation with your doctor can help clarify what\'s happening.';
+            } else {
+                whatThisMeans = '<strong>What this means:</strong> Even if perimenopause isn\'t your primary concern right now, it\'s helpful to track your symptoms over time. Many women don\'t recognize the connection until patterns become clearer.';
+            }
+
+            var categories = [
+                { key: 'cognitive', label: 'Cognitive & Mood' },
+                { key: 'vasomotor', label: 'Vasomotor' },
+                { key: 'somatic', label: 'Sleep & Body' },
+                { key: 'cycle', label: 'Cycle Changes' },
+                { key: 'impact', label: 'Life Impact' }
+            ];
+
+            var scoreGridHtml = '';
+            for (var i = 0; i < categories.length; i++) {
+                var cat = categories[i];
+                var val = answers[cat.key] || 0;
+                var cls = val > 0 ? 'active' : 'inactive';
+                scoreGridHtml += '<div class="score-item ' + cls + '">' +
+                    '<div class="label">' + cat.label + '</div>' +
+                    '<div class="value">' + val + '</div>' +
+                    '</div>';
+            }
+
+            var symptomsHtml = '';
+            if (symptoms.length > 0) {
+                for (var j = 0; j < symptoms.length; j++) {
+                    symptomsHtml += '<span class="symptom-tag">' + symptoms[j] + '</span>';
+                }
+            } else {
+                symptomsHtml = '<span style="color:#888;font-size:14px;">General wellness monitoring recommended</span>';
+            }
+
+            var html = '' +
+                '<div class="result-header">' +
+                    '<h1>Your Perimenopause Screening Results</h1>' +
+                    '<p>Here\'s what your quiz responses tell us.</p>' +
+                    '<div class="indicator-badge" style="background:' + bgColor + ';color:' + color + ';">' +
+                        '<span class="dot" style="background:' + color + ';"></span>' +
+                        levelText + ' Detected' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="card">' +
+                    '<h2>Your Assessment</h2>' +
+                    '<p>' + description + '</p>' +
+                '</div>' +
+
+                '<div class="card">' +
+                    '<h2>Matched Symptom Clusters</h2>' +
+                    '<div>' + symptomsHtml + '</div>' +
+                '</div>' +
+
+                '<div class="card">' +
+                    '<h2>Score Breakdown</h2>' +
+                    '<p style="font-size:14px;color:#888;margin-bottom:4px;">Total score: ' + totalScore + '</p>' +
+                    '<div class="score-grid">' + scoreGridHtml + '</div>' +
+                '</div>' +
+
+                '<div class="card">' +
+                    '<div class="explainer">' + whatThisMeans + '</div>' +
+                '</div>' +
+
+                '<div class="card">' +
+                    '<h2>What You Can Do Next</h2>' +
+                    '<div class="step">' +
+                        '<div class="step-num">1</div>' +
+                        '<div class="step-text">' +
+                            '<h3>Talk to your doctor</h3>' +
+                            '<p>Bring these results to your next appointment. Ask about a hormone panel (FSH, estradiol) to get a clearer picture.</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="step">' +
+                        '<div class="step-num">2</div>' +
+                        '<div class="step-text">' +
+                            '<h3>Start tracking daily</h3>' +
+                            '<p>A single quiz is a snapshot. Daily tracking reveals the patterns your doctor needs to see.</p>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="step">' +
+                        '<div class="step-num">3</div>' +
+                        '<div class="step-text">' +
+                            '<h3>Learn what\'s connected</h3>' +
+                            '<p>Brain fog + anxiety + insomnia aren\'t separate problems \u2014 they\'re often the same hormonal shift showing up in different ways.</p>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                '<div class="cta-section">' +
+                    '<a href="' + MONTHLY_LINK + '" class="cta-button">Start Tracking with MenoMind \u2014 $14.99/mo</a>' +
+                    '<a href="' + ANNUAL_LINK + '" class="cta-secondary">Or save 45% with the annual plan \u2014 $8.25/mo</a>' +
+                '</div>' +
+
+                '<div class="disclaimer">' +
+                    'This screening is for educational purposes only and is not a medical diagnosis. ' +
+                    'Always consult with a qualified healthcare provider about your symptoms.' +
+                '</div>';
+
+            document.getElementById('resultsContainer').innerHTML = html;
+        }
+
+        function renderError() {
+            document.getElementById('resultsContainer').innerHTML =
+                '<div class="error-state">' +
+                    '<h1>Results not found</h1>' +
+                    '<p>This link may have expired or is invalid. Take the quiz to get your personalized results.</p>' +
+                    '<a href="/#quiz" class="cta-button">Take the Quiz</a>' +
+                '</div>';
+        }
+
+        // Parse token from URL
+        var params = new URLSearchParams(window.location.search);
+        var token = params.get('token');
+
+        if (token) {
+            var data = decodeToken(token);
+            if (data && data.a) {
+                renderResults(data);
+            } else {
+                renderError();
+            }
+        } else {
+            renderError();
+        }
+    </script>
+</body>
+</html>

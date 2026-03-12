@@ -12,6 +12,10 @@
       "destination": "/success.html"
     },
     {
+      "source": "/results",
+      "destination": "/results.html"
+    },
+    {
       "source": "/blog",
       "destination": "/blog/index.html"
     },
