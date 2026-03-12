@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
+import { SYMPTOM_CATEGORIES, ACTION_PLANS } from '@/lib/quiz/symptom-data'
 
 const SYMPTOMS_CHECKLIST = [
   'Unexplained anxiety or mood swings',
@@ -88,126 +89,6 @@ const QUIZ_QUESTIONS = [
   },
 ]
 
-// Symptom category data for personalized results
-const SYMPTOM_CATEGORIES = {
-  cognitive: {
-    label: 'Emotional & Cognitive',
-    icon: '🧠',
-    symptoms: {
-      'Anxiety or panic attacks': {
-        explanation: 'Hormonal fluctuations directly affect your nervous system. This is not "just stress."',
-        prevalence: 62,
-      },
-      'Irritability or rage': {
-        explanation: 'Estrogen drops affect serotonin regulation, causing intense emotional reactions that feel out of character.',
-        prevalence: 70,
-      },
-      'Brain fog or memory issues': {
-        explanation: 'Estrogen plays a key role in cognitive function. Many women describe feeling like they\'re "losing their mind."',
-        prevalence: 60,
-      },
-      'Feeling down or emotionally flat': {
-        explanation: 'Hormonal shifts can affect mood-regulating neurotransmitters, leading to emotional numbness or sadness.',
-        prevalence: 45,
-      },
-    },
-  },
-  vasomotor: {
-    label: 'Vasomotor Symptoms',
-    icon: '🌡️',
-    symptoms: {
-      'Hot flashes': {
-        explanation: 'Your body\'s thermostat is affected by changing estrogen levels, causing sudden waves of heat.',
-        prevalence: 75,
-      },
-      'Night sweats': {
-        explanation: 'The same temperature dysregulation that causes hot flashes intensifies during sleep.',
-        prevalence: 68,
-      },
-      'Heart palpitations': {
-        explanation: 'Estrogen fluctuations can affect heart rhythm. Often mistaken for anxiety or cardiac issues.',
-        prevalence: 40,
-      },
-      'Dizziness': {
-        explanation: 'Hormonal changes affect blood pressure regulation and inner ear function.',
-        prevalence: 35,
-      },
-    },
-  },
-  somatic: {
-    label: 'Physical & Sleep',
-    icon: '😴',
-    symptoms: {
-      'Sleep disruption': {
-        explanation: 'Progesterone — your natural sleep hormone — declines during perimenopause, disrupting your sleep architecture.',
-        prevalence: 72,
-      },
-      'Fatigue / low energy': {
-        explanation: 'Hormonal shifts affect your metabolism and energy production at a cellular level.',
-        prevalence: 78,
-      },
-      'Joint or muscle pain': {
-        explanation: 'Estrogen has anti-inflammatory properties. As levels drop, joint and muscle pain can increase.',
-        prevalence: 55,
-      },
-      'Weight gain (especially midsection)': {
-        explanation: 'Hormonal changes shift fat distribution and slow metabolism — this isn\'t about willpower.',
-        prevalence: 65,
-      },
-    },
-  },
-  periods: {
-    label: 'Menstrual Changes',
-    icon: '📅',
-    symptoms: {
-      'Becoming irregular': {
-        explanation: 'Irregular cycles are one of the earliest and most reliable signs of perimenopause.',
-        prevalence: 80,
-      },
-      'Heavier or lighter than usual': {
-        explanation: 'Fluctuating hormones cause unpredictable changes in menstrual flow.',
-        prevalence: 65,
-      },
-      'Skipping months': {
-        explanation: 'As ovulation becomes less regular, periods may come and go unpredictably.',
-        prevalence: 50,
-      },
-      'Stopped completely': {
-        explanation: 'If periods have stopped for 12+ consecutive months, you may have reached menopause.',
-        prevalence: 30,
-      },
-    },
-  },
-}
-
-// Personalized action plans based on symptom categories
-const ACTION_PLANS: Record<string, { title: string; description: string }[]> = {
-  cognitive: [
-    { title: 'Daily mindfulness protocol for hormonal anxiety', description: 'A 10-minute evidence-based routine designed specifically for perimenopause-related anxiety.' },
-    { title: 'Cognitive support nutrition guide', description: 'Foods and supplements that support brain function during hormonal transitions.' },
-    { title: 'Stress-hormone balancing exercise plan', description: 'Movement patterns that reduce cortisol and support estrogen balance.' },
-    { title: 'Sleep-mood connection optimization', description: 'How improving your sleep directly reduces anxiety and brain fog.' },
-  ],
-  vasomotor: [
-    { title: 'Hot flash trigger identification protocol', description: 'Track and identify your personal triggers to reduce frequency by up to 40%.' },
-    { title: 'Temperature regulation techniques', description: 'Evidence-based cooling strategies and breathing exercises for immediate relief.' },
-    { title: 'Night sweat sleep environment guide', description: 'Optimize your sleep setup to minimize disruption from night sweats.' },
-    { title: 'Dietary triggers elimination plan', description: 'Common foods that worsen vasomotor symptoms and what to eat instead.' },
-  ],
-  somatic: [
-    { title: 'Evening wind-down protocol for hormonal sleep disruption', description: 'A step-by-step routine that works with your changing hormones, not against them.' },
-    { title: 'Anti-inflammatory nutrition plan', description: 'Reduce joint pain and fatigue through targeted dietary changes.' },
-    { title: 'Energy restoration exercise guide', description: 'Movement that boosts energy without overtaxing your system.' },
-    { title: 'Weight management hormonal strategy', description: 'Why traditional diets fail in perimenopause and what actually works.' },
-  ],
-  general: [
-    { title: 'Perimenopause symptom tracking starter guide', description: 'Learn what to track and how to spot patterns in your symptoms.' },
-    { title: 'Doctor visit preparation checklist', description: 'Everything you need to advocate for yourself at your next appointment.' },
-    { title: 'Hormone health daily routine', description: 'Morning and evening routines that support hormonal balance.' },
-    { title: 'Perimenopause nutrition foundations', description: 'Key nutrients your body needs more of during this transition.' },
-  ],
-}
-
 const TESTIMONIALS = [
   {
     name: 'Michelle T.',
@@ -241,6 +122,8 @@ export function LandingPage() {
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string[]>>({})
   const [showResult, setShowResult] = useState(false)
   const [email, setEmail] = useState('')
+  const [captureEmail, setCaptureEmail] = useState('')
+  const [emailCaptured, setEmailCaptured] = useState(false)
   const [showExitPopup, setShowExitPopup] = useState(false)
   const [exitShown, setExitShown] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -723,23 +606,10 @@ export function LandingPage() {
                   {getPersonalizedPlans().map((plan, i) => (
                     <div
                       key={i}
-                      className={`p-4 rounded-xl border ${
-                        i < 2
-                          ? 'bg-white border-gray-200'
-                          : 'bg-gray-50 border-gray-100 relative overflow-hidden'
-                      }`}
+                      className="p-4 rounded-xl border bg-white border-gray-200"
                     >
-                      {i >= 2 && (
-                        <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 flex items-center justify-center">
-                          <span className="bg-brand-purple text-white text-xs font-semibold px-3 py-1.5 rounded-full flex items-center gap-1">
-                            🔒 Unlock with Premium
-                          </span>
-                        </div>
-                      )}
                       <div className="flex items-start gap-3">
-                        <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${
-                          i < 2 ? 'bg-brand-purple text-white' : 'bg-gray-300 text-white'
-                        }`}>
+                        <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 bg-brand-purple text-white">
                           {i + 1}
                         </span>
                         <div>
@@ -749,6 +619,17 @@ export function LandingPage() {
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="mt-4 p-3 bg-brand-purple/5 rounded-xl text-center">
+                  <p className="text-sm text-brand-purple font-medium">
+                    Want to start working on these?{' '}
+                    <Link
+                      href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
+                      className="underline font-semibold"
+                    >
+                      Talk to your AI companion →
+                    </Link>
+                  </p>
                 </div>
               </div>
 
@@ -763,6 +644,55 @@ export function LandingPage() {
                     Free &middot; No account needed &middot; Get personalized answers now
                   </span>
                 </Link>
+              </div>
+
+              {/* Email Check-in Capture */}
+              <div className="mb-8 p-5 bg-white rounded-xl border border-gray-200 text-center">
+                <p className="text-sm font-semibold text-brand-dark mb-1">
+                  Not ready to chat yet?
+                </p>
+                <p className="text-xs text-gray-500 mb-3">
+                  Your symptoms may change week to week. Drop your email and I&apos;ll send you your full results + check in with you in a few days.
+                </p>
+                {emailCaptured ? (
+                  <p className="text-sm text-green-600 font-medium">
+                    Got it! Check your email for your results.
+                  </p>
+                ) : (
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault()
+                      if (!captureEmail) return
+                      try {
+                        await fetch('/api/waitlist/checkin', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            email: captureEmail,
+                            quizSymptoms: getReportedSymptoms().map(s => s.symptom),
+                            quizLevel: resultLevel,
+                          }),
+                        })
+                        setEmailCaptured(true)
+                      } catch {
+                        // silently fail
+                      }
+                    }}
+                    className="flex gap-2 max-w-sm mx-auto"
+                  >
+                    <input
+                      type="email"
+                      value={captureEmail}
+                      onChange={(e) => setCaptureEmail(e.target.value)}
+                      placeholder="Your email"
+                      className="input-field flex-1 text-sm"
+                      required
+                    />
+                    <button type="submit" className="btn-primary text-sm whitespace-nowrap">
+                      Send My Results
+                    </button>
+                  </form>
+                )}
               </div>
 
               {/* Section 5: Social Proof */}
@@ -896,10 +826,10 @@ export function LandingPage() {
       <section className="py-16 px-5 bg-white">
         <div className="max-w-[720px] mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold text-center mb-4">
-            Start free. Upgrade when you&apos;re ready.
+            Plans &amp; Pricing
           </h2>
           <p className="text-gray-600 text-center mb-10">
-            Every account includes a 7-day free trial of Premium.
+            Start with our free tier. Upgrade when you need more.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-lg mx-auto">
             <div className="card border-2 border-gray-200 text-center">
@@ -911,8 +841,8 @@ export function LandingPage() {
                 <li>✓ 7-day trends</li>
                 <li>✓ 1 wellness plan</li>
               </ul>
-              <Link href="/signup" className="btn-secondary text-sm block">
-                Get Started
+              <Link href="/try" className="btn-secondary text-sm block">
+                Try It Free
               </Link>
             </div>
             <div className="card border-2 border-brand-purple text-center relative">
@@ -930,12 +860,12 @@ export function LandingPage() {
                 <li>✓ Weekly AI insights</li>
               </ul>
               <Link href="/signup" className="btn-primary text-sm block">
-                Start 7-Day Free Trial
+                Start Premium
               </Link>
             </div>
           </div>
           <p className="text-xs text-gray-500 text-center mt-4">
-            14-day money-back guarantee · Cancel anytime
+            Cancel anytime
           </p>
         </div>
       </section>
@@ -1045,10 +975,22 @@ export function LandingPage() {
                 className="input-field flex-1"
               />
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (email) {
+                    try {
+                      await fetch('/api/waitlist/checkin', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          email,
+                          quizSymptoms: getReportedSymptoms().map(s => s.symptom),
+                          quizLevel: showResult ? resultLevel : undefined,
+                        }),
+                      })
+                    } catch {
+                      // silently fail
+                    }
                     setShowExitPopup(false)
-                    alert('Guide sent! Check your email.')
                   }
                 }}
                 className="btn-primary text-sm whitespace-nowrap"

@@ -1,6 +1,20 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
+import { SYMPTOM_CATEGORIES } from '@/lib/quiz/symptom-data'
+import { sendQuizResultsEmail } from '@/lib/email/quiz-results'
+
+function determineCategoriesFromSymptoms(symptoms: string[]): string[] {
+  const categories = new Set<string>()
+  for (const symptom of symptoms) {
+    for (const [catId, catData] of Object.entries(SYMPTOM_CATEGORIES)) {
+      if (symptom in catData.symptoms) {
+        categories.add(catId)
+      }
+    }
+  }
+  return Array.from(categories)
+}
 
 export async function POST(request: Request) {
   try {
@@ -18,6 +32,8 @@ export async function POST(request: Request) {
     const cookieStore = cookies()
     const sessionId = cookieStore.get('anonymous_session')?.value || null
 
+    const categories = determineCategoriesFromSymptoms(quizSymptoms || [])
+
     const supabase = createClient()
 
     // Upsert on email to prevent duplicates
@@ -29,6 +45,7 @@ export async function POST(request: Request) {
           anonymous_session_id: sessionId,
           quiz_symptoms: quizSymptoms || [],
           quiz_level: quizLevel || null,
+          quiz_categories: categories,
         },
         { onConflict: 'email' }
       )
@@ -39,6 +56,18 @@ export async function POST(request: Request) {
         { error: 'Failed to save. Please try again.' },
         { status: 500 }
       )
+    }
+
+    // Send quiz results email (non-blocking — don't fail the request if email fails)
+    try {
+      await sendQuizResultsEmail({
+        email: email.trim().toLowerCase(),
+        symptoms: quizSymptoms || [],
+        level: quizLevel || 'unknown',
+        categories,
+      })
+    } catch (emailError) {
+      console.error('Failed to send quiz results email:', emailError)
     }
 
     return NextResponse.json({ success: true })
