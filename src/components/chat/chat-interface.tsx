@@ -252,7 +252,7 @@ function ChatInterface({
               message={{
                 id: 'welcome',
                 role: 'assistant',
-                content: `Hey${appUser?.name ? ` ${appUser.name.split(' ')[0]}` : ''}. Whatever brought you here today — you're in the right place. I help women make sense of what their bodies are doing during perimenopause and menopause. No judgment, no jargon, just real answers.\n\nWhat's been going on?`,
+                content: `Hey${appUser?.name ? ` ${appUser.name.split(' ')[0]}` : ''}. Something feels off and nobody can tell you why — I get it. A lot of women land here after months of Googling symptoms, getting dismissed by doctors, or just feeling like they're losing themselves.\n\nI'm here to help you connect the dots. No judgment, no jargon — just honest answers about what your body might be doing.\n\nWhat's been going on?`,
                 createdAt: new Date().toISOString(),
               }}
               isFirstAssistant={true}

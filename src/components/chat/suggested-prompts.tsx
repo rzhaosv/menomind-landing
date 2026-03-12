@@ -3,11 +3,12 @@
 import React from 'react';
 
 const SUGGESTED_PROMPTS = [
-  { text: 'I keep waking up at 3am and can\'t fall back asleep', icon: '🌙' },
-  { text: 'Am I too young for this to be menopause?', icon: '🤔' },
-  { text: 'I don\'t feel like myself anymore', icon: '💭' },
-  { text: 'My brain fog is scaring me', icon: '🧠' },
-  { text: 'Is this anxiety or is it hormonal?', icon: '🫠' },
+  { text: 'I feel like I\'m losing my mind and no one believes me', icon: '😶‍🌫️' },
+  { text: 'I have this rage that comes out of nowhere', icon: '🔥' },
+  { text: 'My doctor says nothing is wrong but I KNOW something is off', icon: '😤' },
+  { text: 'I wake up at 3am drenched in sweat every night', icon: '🌙' },
+  { text: 'Is this anxiety or is it hormonal?', icon: '💭' },
+  { text: 'I\'m scared to try HRT — is it actually safe?', icon: '💊' },
 ] as const;
 
 interface SuggestedPromptsProps {
