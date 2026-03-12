@@ -1874,8 +1874,26 @@
         const SUPABASE_URL = 'https://yfqedijcojghqzphmqkj.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmcWVkaWpjb2pnaHF6cGhtcWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NTg3NzEsImV4cCI6MjA4ODQzNDc3MX0.eLwGCY8Xd5estcAoO66Mfy-6b5ue16P6qqjgPc2KYxk';
 
-        async function saveEmailToSupabase(email, source, quizScore, quizResult) {
+        function generateResultsToken() {
+            var data = {
+                a: quizAnswers,
+                s: Object.values(quizAnswers).reduce(function(a, b) { return a + b; }, 0),
+                t: Date.now()
+            };
+            var json = JSON.stringify(data);
+            var encoded = btoa(json).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            return encoded;
+        }
+
+        async function saveEmailToSupabase(email, source, quizScore, quizResult, resultsToken) {
             try {
+                var body = {
+                    email: email,
+                    source: source || 'landing_page',
+                    quiz_score: quizScore || null,
+                    quiz_result: quizResult || null
+                };
+                if (resultsToken) body.results_token = resultsToken;
                 const res = await fetch(SUPABASE_URL + '/rest/v1/email_leads', {
                     method: 'POST',
                     headers: {
@@ -1884,12 +1902,7 @@
                         'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
                         'Prefer': 'return=minimal'
                     },
-                    body: JSON.stringify({
-                        email: email,
-                        source: source || 'landing_page',
-                        quiz_score: quizScore || null,
-                        quiz_result: quizResult || null
-                    })
+                    body: JSON.stringify(body)
                 });
                 if (res.ok) {
                     if (typeof fbq === 'function') fbq('track', 'Lead');
@@ -2254,7 +2267,8 @@
             }
             var totalScore = Object.values(quizAnswers).reduce(function(a, b) { return a + b; }, 0);
             var resultText = document.getElementById('resultTitle') ? document.getElementById('resultTitle').textContent : '';
-            await saveEmailToSupabase(email, 'quiz_results', totalScore, resultText);
+            var token = generateResultsToken();
+            await saveEmailToSupabase(email, 'quiz_results', totalScore, resultText, token);
             gtag('event', 'generate_lead', { method: 'quiz_email' });
             if (typeof fbq === 'function') fbq('track', 'Lead');
             document.getElementById('emailConfirmation').style.display = 'block';
