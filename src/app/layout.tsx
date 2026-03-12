@@ -3,6 +3,7 @@ import Script from 'next/script'
 import './globals.css'
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID
+const GADS_ID = 'AW-17830146300'
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID
 
 export const metadata: Metadata = {
@@ -43,7 +44,7 @@ export default function RootLayout({
               strategy="afterInteractive"
             />
             <Script id="google-analytics" strategy="afterInteractive">
-              {"window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '" + GA_ID + "');"}
+              {"window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', '" + GA_ID + "');gtag('config', '" + GADS_ID + "');"}
             </Script>
           </>
         )}

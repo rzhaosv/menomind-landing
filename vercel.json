@@ -2,7 +2,13 @@
   "buildCommand": null,
   "outputDirectory": "public",
   "framework": null,
-  "redirects": [],
+  "redirects": [
+    {
+      "source": "/quiz",
+      "destination": "/#quiz",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/success",
@@ -19,10 +25,6 @@
     {
       "source": "/contact",
       "destination": "/contact.html"
-    },
-    {
-      "source": "/quiz",
-      "destination": "/quiz.html"
     },
     {
       "source": "/results",
@@ -51,6 +53,86 @@
     {
       "source": "/blog/blood-tests-normal-perimenopause",
       "destination": "/blog/blood-tests-normal-perimenopause.html"
+    },
+    {
+      "source": "/blog/anxiety-at-40",
+      "destination": "/blog/anxiety-at-40.html"
+    },
+    {
+      "source": "/blog/angry-all-the-time",
+      "destination": "/blog/angry-all-the-time.html"
+    },
+    {
+      "source": "/blog/heart-palpitations-42",
+      "destination": "/blog/heart-palpitations-42.html"
+    },
+    {
+      "source": "/blog/perimenopause-age-38",
+      "destination": "/blog/perimenopause-age-38.html"
+    },
+    {
+      "source": "/blog/weight-gain-stomach-menopause",
+      "destination": "/blog/weight-gain-stomach-menopause.html"
+    },
+    {
+      "source": "/blog/cant-sleep-through-night",
+      "destination": "/blog/cant-sleep-through-night.html"
+    },
+    {
+      "source": "/blog/electric-shock-feeling",
+      "destination": "/blog/electric-shock-feeling.html"
+    },
+    {
+      "source": "/blog/perimenopause-digestive-issues",
+      "destination": "/blog/perimenopause-digestive-issues.html"
+    },
+    {
+      "source": "/blog/burning-tongue-menopause",
+      "destination": "/blog/burning-tongue-menopause.html"
+    },
+    {
+      "source": "/blog/joint-pain-perimenopause",
+      "destination": "/blog/joint-pain-perimenopause.html"
+    },
+    {
+      "source": "/blog/itchy-skin-perimenopause",
+      "destination": "/blog/itchy-skin-perimenopause.html"
+    },
+    {
+      "source": "/blog/perimenopause-dizziness",
+      "destination": "/blog/perimenopause-dizziness.html"
+    },
+    {
+      "source": "/blog/body-odor-change-perimenopause",
+      "destination": "/blog/body-odor-change-perimenopause.html"
+    },
+    {
+      "source": "/blog/perimenopause-fatigue",
+      "destination": "/blog/perimenopause-fatigue.html"
+    },
+    {
+      "source": "/blog/doctor-says-nothing-wrong",
+      "destination": "/blog/doctor-says-nothing-wrong.html"
+    },
+    {
+      "source": "/blog/too-young-perimenopause",
+      "destination": "/blog/too-young-perimenopause.html"
+    },
+    {
+      "source": "/blog/perimenopause-misdiagnosed-depression",
+      "destination": "/blog/perimenopause-misdiagnosed-depression.html"
+    },
+    {
+      "source": "/blog/talk-to-doctor-perimenopause",
+      "destination": "/blog/talk-to-doctor-perimenopause.html"
+    },
+    {
+      "source": "/blog/perimenopause-supplements",
+      "destination": "/blog/perimenopause-supplements.html"
+    },
+    {
+      "source": "/blog/is-hrt-safe",
+      "destination": "/blog/is-hrt-safe.html"
     },
     {
       "source": "/(.*)",

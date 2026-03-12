@@ -43,6 +43,18 @@ function EmailCapturePrompt({ quizSymptoms, quizLevel, onDismiss, onSubmit }: Em
       }
 
       setSubmitted(true);
+      // Google Ads Lead conversion
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC',
+          'value': 1.0,
+          'currency': 'USD'
+        });
+      }
+      // Meta Pixel Lead event
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        (window as any).fbq('track', 'Lead');
+      }
       onSubmit?.(trimmed);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong.');
