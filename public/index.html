@@ -72,14 +72,7 @@
         "@context": "https://schema.org",
         "@type": "Product",
         "name": "MenoMind",
-        "description": "AI-powered perimenopause symptom decoder and educational tool",
-        "offers": {
-            "@type": "AggregateOffer",
-            "priceCurrency": "USD",
-            "lowPrice": "14.99",
-            "highPrice": "99",
-            "offerCount": "2"
-        }
+        "description": "AI-powered perimenopause symptom decoder and educational tool"
     }
     </script>
 
@@ -607,148 +600,6 @@
             box-shadow: 0 24px 48px rgba(0,0,0,0.12);
         }
 
-        /* ========== PRICING ========== */
-        .pricing-section {
-            padding: 100px 0;
-            background-color: #FFFFFF;
-        }
-
-        .pricing-content {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 0 40px;
-        }
-
-        .pricing-intro {
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .pricing-intro h2 {
-            margin-bottom: 12px;
-        }
-
-        .pricing-intro p {
-            font-size: 18px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .pricing-card {
-            background-color: #FFFFFF;
-            border: 1.5px solid var(--bg-secondary);
-            border-radius: 16px;
-            padding: 40px 32px;
-            position: relative;
-            text-align: left;
-        }
-
-        .pricing-card.featured {
-            border-color: var(--accent-warm);
-        }
-
-        .pricing-badge {
-            position: absolute;
-            top: -12px;
-            left: 32px;
-            background-color: var(--accent-warm);
-            color: white;
-            padding: 4px 16px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 100px;
-            letter-spacing: 0.03em;
-        }
-
-        .pricing-name {
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .pricing-price {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 44px;
-            font-weight: 500;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .pricing-period {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 28px;
-        }
-
-        .pricing-features {
-            list-style: none;
-            margin-bottom: 28px;
-            font-size: 15px;
-            color: var(--text-secondary);
-            line-height: 1.8;
-        }
-
-        .pricing-features li {
-            padding-left: 24px;
-            position: relative;
-            margin-bottom: 8px;
-        }
-
-        .pricing-features li::before {
-            content: '\2713';
-            position: absolute;
-            left: 0;
-            color: var(--trust-green);
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        a.pricing-button {
-            text-decoration: none;
-        }
-
-        .pricing-button {
-            display: flex;
-            width: 100%;
-            background-color: var(--cta-bg);
-            color: var(--cta-text);
-            padding: 16px 24px;
-            border-radius: 100px;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            min-height: 48px;
-            align-items: center;
-            justify-content: center;
-            letter-spacing: 0.02em;
-        }
-
-        .pricing-button:hover {
-            opacity: 0.85;
-        }
-
-        .pricing-guarantee {
-            text-align: center;
-            font-size: 15px;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
         /* ========== FAQ ========== */
         .faq-section {
             padding: 100px 0;
@@ -853,12 +704,6 @@
 
         .footer-links a:hover {
             color: #FAF7F2;
-        }
-
-        .payment-badge {
-            font-size: 12px;
-            color: rgba(250, 247, 242, 0.35);
-            margin-bottom: 16px;
         }
 
         .footer-copyright {
@@ -1037,7 +882,6 @@
             .section-narrow,
             .hero-grid,
             .product-grid,
-            .pricing-content,
             .faq-content,
             .testimonial-grid,
             .identity-inner {
@@ -1061,7 +905,6 @@
             .testimonials-section,
             .identity-section,
             .product-section,
-            .pricing-section,
             .faq-section {
                 padding: 60px 0;
             }
@@ -1072,10 +915,6 @@
 
             .testimonial-card {
                 padding: 28px;
-            }
-
-            .pricing-grid {
-                grid-template-columns: 1fr;
             }
 
             .stat-grid {
@@ -1265,51 +1104,6 @@
         </div>
     </section>
 
-    <!-- SECTION 7: PRICING -->
-    <section class="pricing-section">
-        <div class="pricing-content">
-            <div class="pricing-intro">
-                <div class="eyebrow">PLANS</div>
-                <h2>Stop wondering. Start understanding.</h2>
-                <p>Track your symptoms over time, get AI-powered pattern insights, and walk into your doctor's office with answers.</p>
-            </div>
-
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <div class="pricing-name">Monthly</div>
-                    <div class="pricing-price">$14.99</div>
-                    <div class="pricing-period">per month, cancel anytime</div>
-                    <ul class="pricing-features">
-                        <li>AI symptom assessment &amp; tracking</li>
-                        <li>Personalized report</li>
-                        <li>Doctor visit prep reports</li>
-                        <li>Email support</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00" class="pricing-button" onclick="gtag('event','begin_checkout',{value:14.99,currency:'USD',items:[{item_name:'MenoMind Monthly'}]})">Start Free Trial</a>
-                </div>
-
-                <div class="pricing-card featured">
-                    <div class="pricing-badge">Best Value</div>
-                    <div class="pricing-name">Annual</div>
-                    <div class="pricing-price">$99</div>
-                    <div class="pricing-period">per year, save 44%</div>
-                    <ul class="pricing-features">
-                        <li>Full symptom assessment</li>
-                        <li>Personalized report</li>
-                        <li>Unlimited updates</li>
-                        <li>Priority email support</li>
-                        <li>Exclusive community access</li>
-                    </ul>
-                    <a href="https://buy.stripe.com/9B68wOawV5Kb1B42771kA01" class="pricing-button" onclick="gtag('event','begin_checkout',{value:99,currency:'USD',items:[{item_name:'MenoMind Annual'}]})">Start Trial</a>
-                </div>
-            </div>
-
-            <div class="pricing-guarantee">
-                All plans include a 14-day no-questions-asked refund. Because clarity shouldn't feel like a risk.
-            </div>
-        </div>
-    </section>
-
     <!-- SECTION 9: FAQ -->
     <section class="faq-section">
         <div class="faq-content">
@@ -1377,21 +1171,11 @@
 
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Can I cancel my subscription anytime?</span>
+                    <span>Is MenoMind free to use?</span>
                     <span class="faq-icon">+</span>
                 </div>
                 <div class="faq-answer">
-                    Absolutely. You can cancel your subscription at any time from your account settings. If you cancel within 14 days, we'll refund your full payment.
-                </div>
-            </div>
-
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Do you offer a free option?</span>
-                    <span class="faq-icon">+</span>
-                </div>
-                <div class="faq-answer">
-                    Yes! Take our symptom quiz and chat with MenoMind AI for free — no account needed. You'll get your results and can talk through what they mean. When you're ready for a personalized action plan, doctor visit scripts, and ongoing tracking, try Premium for just $1 your first week.
+                    Yes! Take our symptom quiz and chat with MenoMind AI for free — no account needed. You'll get your results and can talk through what they mean.
                 </div>
             </div>
         </div>
@@ -1409,7 +1193,6 @@
                 <a href="/terms">Terms of Service</a>
                 <a href="/contact">Contact</a>
             </div>
-            <div class="payment-badge">Secure payments powered by Stripe</div>
             <div class="footer-copyright">&copy; 2026 MenoMind. All rights reserved.</div>
         </div>
     </footer>
@@ -1432,6 +1215,17 @@
         // SUPABASE EMAIL CAPTURE
         const SUPABASE_URL = 'https://yfqedijcojghqzphmqkj.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmcWVkaWpjb2pnaHF6cGhtcWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NTg3NzEsImV4cCI6MjA4ODQzNDc3MX0.eLwGCY8Xd5estcAoO66Mfy-6b5ue16P6qqjgPc2KYxk';
+        const FORMSUBMIT_URL = 'https://formsubmit.co/ajax/midnight.chatter126@gmail.com';
+
+        function notifyEmail(email, source, extra) {
+            var data = { email: email, source: source, _subject: 'New MenoMind Lead: ' + source };
+            if (extra) Object.keys(extra).forEach(function(k) { data[k] = extra[k]; });
+            fetch(FORMSUBMIT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(function() {});
+        }
 
         async function saveEmailToSupabase(email, source, quizScore, quizResult, resultsToken) {
             try {
@@ -1452,18 +1246,14 @@
                     },
                     body: JSON.stringify(body)
                 });
+                // Also send email notification
+                notifyEmail(email, source || 'landing_page', { quiz_score: quizScore || '', quiz_result: quizResult || '' });
                 if (res.ok) {
                     if (typeof fbq === 'function') fbq('track', 'Lead');
                 }
                 return res.ok;
             } catch(e) { return false; }
         }
-
-        // STRIPE PAYMENT LINKS
-        const STRIPE_LINKS = {
-            monthly: 'https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00',
-            annual: 'https://buy.stripe.com/9B68wOawV5Kb1B42771kA01'
-        };
 
         // INITIALIZE
         document.addEventListener('DOMContentLoaded', function() {
