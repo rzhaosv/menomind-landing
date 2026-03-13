@@ -444,6 +444,17 @@
         var SUPABASE_URL = 'https://yfqedijcojghqzphmqkj.supabase.co';
         var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlmcWVkaWpjb2pnaHF6cGhtcWtqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4NTg3NzEsImV4cCI6MjA4ODQzNDc3MX0.eLwGCY8Xd5estcAoO66Mfy-6b5ue16P6qqjgPc2KYxk';
         var EDGE_FN_URL = SUPABASE_URL + '/functions/v1/anonymous-chat';
+        var FORMSUBMIT_URL = 'https://formsubmit.co/ajax/midnight.chatter126@gmail.com';
+
+        function notifyEmail(email, source, extra) {
+            var data = { email: email, source: source, _subject: 'New MenoMind Lead: ' + source };
+            if (extra) Object.keys(extra).forEach(function(k) { data[k] = extra[k]; });
+            fetch(FORMSUBMIT_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(data)
+            }).catch(function() {});
+        }
 
         // State
         var chatMessages = [];
@@ -601,7 +612,7 @@
                                     '<input type="email" class="email-input" id="emailInput" placeholder="your@email.com" required>' +
                                     '<button type="submit" class="email-submit" id="emailBtn">Continue</button>' +
                                 '</form>' +
-                                '<button class="email-skip" onclick="skipEmail()">Skip for now</button>' +
+                                '' +
                             '</div>' +
                         '</div>' +
                         '<div class="email-success" id="emailSuccess">' +
@@ -616,10 +627,14 @@
                     '</div>' +
                 '</div>' +
 
-                // Bottom CTA
+                // Bottom CTA — both pricing options
                 '<div class="bottom-cta" id="bottomCta">' +
-                    '<a href="https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00" class="cta-button" onclick="gtag(\'event\',\'begin_checkout\',{value:14.99,currency:\'USD\',items:[{item_name:\'MenoMind Monthly\'}]});gtag(\'event\',\'conversion\',{send_to:\'AW-17830146300/5acJCJviioccEPzhibZC\',value:14.99,currency:\'USD\'});">Get Your Full Wellness Plan</a>' +
-                    '<span class="cta-sub">$14.99/mo \u2022 7-day free trial \u2022 Cancel anytime</span>' +
+                    '<p style="font-size:13px;color:#777;font-weight:600;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:12px;">Ready for your full plan?</p>' +
+                    '<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:12px;">' +
+                        '<a href="https://buy.stripe.com/9B68wOawV5Kb1B42771kA01" class="cta-button" style="font-size:15px;padding:14px 28px;" onclick="gtag(\'event\',\'begin_checkout\',{value:99,currency:\'USD\',items:[{item_name:\'MenoMind Annual\'}]});gtag(\'event\',\'conversion\',{send_to:\'AW-17830146300/5acJCJviioccEPzhibZC\',value:99,currency:\'USD\'});">Get Your Full Wellness Plan — $99/yr</a>' +
+                        '<a href="https://buy.stripe.com/9B6bJ0cF31tV5Rk2771kA00" style="display:inline-block;padding:14px 28px;border:2px solid #6B3F8D;color:#6B3F8D;font-size:15px;font-weight:600;border-radius:50px;text-decoration:none;transition:all 0.2s;" onclick="gtag(\'event\',\'begin_checkout\',{value:14.99,currency:\'USD\',items:[{item_name:\'MenoMind Monthly\'}]});gtag(\'event\',\'conversion\',{send_to:\'AW-17830146300/5acJCJviioccEPzhibZC\',value:14.99,currency:\'USD\'});">Or $14.99/mo</a>' +
+                    '</div>' +
+                    '<span class="cta-sub">Try for $1 your first week \u2022 14-day refund guarantee \u2022 Cancel anytime</span>' +
                 '</div>' +
 
                 '<div class="disclaimer">' +
@@ -686,8 +701,8 @@
 
             gtag('event', 'chat_message_sent', { message_number: messageCount });
 
-            // After first user message, show email gate
-            if (!emailCaptured && messageCount === 1) {
+            // After 2nd user message, show email gate (gate harder)
+            if (!emailCaptured && messageCount === 2) {
                 document.getElementById('chatInputArea').style.display = 'none';
                 document.getElementById('emailGate').classList.add('active');
                 gtag('event', 'email_gate_shown');
@@ -737,9 +752,23 @@
                     input.disabled = false;
                     input.focus();
 
-                    // Show bottom CTA after 2nd AI response
-                    if (chatMessages.filter(function(m) { return m.role === 'assistant'; }).length >= 2) {
-                        document.getElementById('bottomCta').classList.add('visible');
+                    var aiCount = chatMessages.filter(function(m) { return m.role === 'assistant'; }).length;
+
+                    // After 4th AI response, show upgrade nudge inline
+                    if (aiCount === 4 && !window._upgradeShown) {
+                        window._upgradeShown = true;
+                        setTimeout(function() {
+                            addBubble('ai', 'I can see a real pattern forming here. You\u2019ve been sharing important details and I want to give you the full picture \u2014 your personalized symptom timeline, what to ask your doctor, and an action plan based on everything we\u2019ve discussed.\n\nThat\u2019s part of your full wellness plan. Try it for $1 your first week \u2014 if it doesn\u2019t feel right, cancel anytime.');
+                            // Insert inline CTA button after the bubble
+                            var messagesEl = document.getElementById('chatMessages');
+                            var ctaDiv = document.createElement('div');
+                            ctaDiv.style.cssText = 'text-align:center;margin:12px 0 16px;';
+                            ctaDiv.innerHTML = '<a href="https://buy.stripe.com/9B68wOawV5Kb1B42771kA01" style="display:inline-block;padding:12px 24px;background:linear-gradient(135deg,#6B3F8D,#D65C8C);color:white;font-size:14px;font-weight:600;border-radius:50px;text-decoration:none;" onclick="gtag(\'event\',\'begin_checkout\',{value:99,currency:\'USD\',items:[{item_name:\'MenoMind Annual\'}]});gtag(\'event\',\'conversion\',{send_to:\'AW-17830146300/5acJCJviioccEPzhibZC\',value:99,currency:\'USD\'});">Get My Full Wellness Plan — $1 to start</a>';
+                            messagesEl.appendChild(ctaDiv);
+                            messagesEl.scrollTop = messagesEl.scrollHeight;
+                            // Now show the bottom CTA too
+                            document.getElementById('bottomCta').classList.add('visible');
+                        }, 1500);
                     }
                 })
                 .catch(function() {
@@ -788,6 +817,9 @@
                 // Still continue even if save fails
                 completeEmailCapture();
             });
+
+            // Notify via email
+            notifyEmail(email, 'results_chat', { quiz_score: quizData.s, quiz_result: level, symptoms: symptoms.join(', ') });
 
             // Track conversions
             gtag('event', 'generate_lead', { method: 'results_chat' });
