@@ -54,7 +54,7 @@ export async function createCheckoutSession({
     customer: customerId || undefined,
     line_items: lineItems,
     mode: 'subscription',
-    success_url: `${returnUrl}?success=true`,
+    success_url: `${returnUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${returnUrl}?canceled=true`,
     subscription_data: {
       trial_period_days: 7,
