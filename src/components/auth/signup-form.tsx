@@ -68,6 +68,11 @@ export default function SignupForm() {
         return
       }
 
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        (window as any).fbq('track', 'CompleteRegistration', {
+          content_name: 'MenoMind Account',
+        })
+      }
       setSuccess(true)
     } catch {
       setError('An unexpected error occurred. Please try again.')

@@ -2,6 +2,47 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 const FROM_EMAIL = 'MenoMind <hello@menomind.app>'
+const REPLY_TO = 'midnight.chatter126@gmail.com'
+
+export async function sendNurtureEmail(
+  email: string,
+  resultsUrl?: string,
+  scheduledAt?: Date
+) {
+  await resend.emails.send({
+    ...(scheduledAt && { scheduledAt: scheduledAt.toISOString() }),
+    from: FROM_EMAIL,
+    to: email,
+    replyTo: REPLY_TO,
+    subject: "It's not anxiety. It's not aging. It's hormones.",
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.6;">
+        <div style="background: linear-gradient(135deg, #6B3F8D, #8B5AAF); padding: 32px; text-align: center; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">MenoMind</h1>
+        </div>
+        <div style="padding: 32px; background: #fff;">
+          <p>Hi there,</p>
+          <p>Here's something most women don't hear until it's years too late:</p>
+          <p>The average woman experiences perimenopause symptoms for <strong>4-8 years</strong> before getting a correct diagnosis. Not because the symptoms aren't real — but because they show up as anxiety, insomnia, brain fog, and fatigue. Things that get blamed on stress. Or age. Or "just being a woman."</p>
+          <p>You took the quiz because something felt off. That instinct? Trust it.</p>
+          <p><strong>Perimenopause isn't a switch that flips at 50.</strong> It's a gradual shift that can start as early as your late 30s. And it doesn't just affect your period — it affects your brain, your sleep, your mood, your joints, your gut, and your confidence.</p>
+          <p>The problem isn't your body. The problem is that nobody connects the dots.</p>
+          <p>That's exactly what MenoMind was built to do. Our AI tracks your symptoms daily — not just individually, but as patterns. So when you walk into your doctor's office, you're not saying "I've been tired and anxious." You're saying "Here's 30 days of data showing a clear hormonal pattern."</p>
+          <p>That's the difference between being dismissed and being heard.</p>
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="https://menomind.app/dashboard" style="background: #6B3F8D; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Start Tracking Your Symptoms</a>
+          </div>
+          <p>You're not imagining it. And you don't have to figure it out alone.</p>
+          <p style="color: #666;">— The MenoMind Team</p>
+          ${resultsUrl ? `<p style="font-size: 13px; color: #888;">P.S. If you haven't looked at your quiz results yet, they're still waiting for you. <a href="${resultsUrl}" style="color: #6B3F8D;">View Results →</a></p>` : ''}
+        </div>
+        <div style="padding: 16px 32px; background: #F5F0F9; text-align: center; font-size: 12px; color: #888; border-radius: 0 0 12px 12px;">
+          <p><a href="https://www.menomind.app" style="color: #6B3F8D;">menomind.app</a> · Built for women navigating perimenopause</p>
+        </div>
+      </div>
+    `,
+  })
+}
 
 export async function sendTrialEndingEmail(
   email: string,
@@ -11,8 +52,8 @@ export async function sendTrialEndingEmail(
 ) {
   const subject =
     daysLeft <= 1
-      ? 'Your $1 week ends tomorrow — here\'s what you\'ve discovered'
-      : `Your $1 week ends in ${daysLeft} days`
+      ? 'Your trial week ends tomorrow — here\'s what you\'ve discovered'
+      : `Your trial week ends in ${daysLeft} days`
 
   const patternSection = patternSummary
     ? `
@@ -25,13 +66,14 @@ export async function sendTrialEndingEmail(
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
+    replyTo: REPLY_TO,
     subject,
     html: `
       <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px; color: #1A1A2E;">
         <h1 style="font-size: 22px; font-weight: 600; margin-bottom: 16px;">Hi ${name},</h1>
         <p style="font-size: 16px; line-height: 1.6; color: #444;">
-          Your $1 trial week ${daysLeft <= 1 ? 'ends tomorrow' : `ends in ${daysLeft} days`}.
-          After that, your subscription continues at the regular price — keeping all
+          Your trial week ${daysLeft <= 1 ? 'ends tomorrow' : `ends in ${daysLeft} days`}.
+          After that, your subscription continues seamlessly — keeping all
           your conversations, symptom data, and personalized insights intact.
         </p>
         ${patternSection}
@@ -39,7 +81,7 @@ export async function sendTrialEndingEmail(
           If MenoMind isn't right for you, no worries — you can cancel anytime
           from your Settings page and you won't be charged again.
         </p>
-        <a href="https://menomind.app/dashboard" style="display: inline-block; background: #1A1A2E; color: white; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 15px; margin-top: 16px;">
+        <a href="https://menomind.app/settings/subscription" style="display: inline-block; background: #1A1A2E; color: white; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 15px; margin-top: 16px;">
           Go to My Dashboard →
         </a>
         <p style="color: #999; font-size: 13px; margin-top: 32px; line-height: 1.5;">
@@ -57,6 +99,7 @@ export async function sendPaymentFailedEmail(
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
+    replyTo: REPLY_TO,
     subject: 'Action needed — we couldn\'t process your payment',
     html: `
       <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px; color: #1A1A2E;">
@@ -86,7 +129,8 @@ export async function sendWinbackEmail(
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
-    subject: 'We miss you — come back for $1',
+    replyTo: REPLY_TO,
+    subject: 'We miss you — come back to MenoMind',
     html: `
       <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 560px; margin: 0 auto; padding: 40px 20px; color: #1A1A2E;">
         <h1 style="font-size: 22px; font-weight: 600; margin-bottom: 16px;">Hi ${name},</h1>
@@ -96,10 +140,10 @@ export async function sendWinbackEmail(
         </p>
         <p style="font-size: 16px; line-height: 1.6; color: #444;">
           Your previous conversations and symptom data are still here, exactly where you left them.
-          If you'd like to pick back up, you can restart with a $1 first week — just like the first time.
+          If you'd like to pick back up, you can restart anytime from your account portal.
         </p>
-        <a href="https://menomind.app/pricing" style="display: inline-block; background: #1A1A2E; color: white; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 15px; margin-top: 16px;">
-          Come Back for $1 →
+        <a href="https://menomind.app/settings/subscription" style="display: inline-block; background: #1A1A2E; color: white; padding: 14px 28px; border-radius: 100px; text-decoration: none; font-weight: 600; font-size: 15px; margin-top: 16px;">
+          Come Back to MenoMind →
         </a>
         <p style="color: #999; font-size: 13px; margin-top: 32px; line-height: 1.5;">
           No pressure at all. This is a one-time offer and you can unsubscribe from these emails anytime.

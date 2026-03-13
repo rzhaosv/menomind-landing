@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 const FROM_EMAIL = 'MenoMind <hello@menomind.app>'
+const REPLY_TO = 'midnight.chatter126@gmail.com'
 
 interface QuizResultsEmailData {
   email: string
@@ -25,6 +26,7 @@ export async function sendQuizResultsEmail(data: QuizResultsEmailData) {
   await resend.emails.send({
     from: FROM_EMAIL,
     to: data.email,
+    replyTo: REPLY_TO,
     subject: "Your MenoMind Assessment Results Are Ready",
     html: `
       <div style="font-family: Inter, -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">

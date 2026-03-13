@@ -3,6 +3,7 @@ import { cookies } from 'next/headers'
 import { createClient } from '@/lib/supabase/server'
 import { SYMPTOM_CATEGORIES } from '@/lib/quiz/symptom-data'
 import { sendQuizResultsEmail } from '@/lib/email/quiz-results'
+import { sendNurtureEmail } from '@/lib/email/retention-sequences'
 
 function determineCategoriesFromSymptoms(symptoms: string[]): string[] {
   const categories = new Set<string>()
@@ -59,15 +60,30 @@ export async function POST(request: Request) {
     }
 
     // Send quiz results email (non-blocking — don't fail the request if email fails)
+    const cleanEmail = email.trim().toLowerCase()
     try {
       await sendQuizResultsEmail({
-        email: email.trim().toLowerCase(),
+        email: cleanEmail,
         symptoms: quizSymptoms || [],
         level: quizLevel || 'unknown',
         categories,
       })
     } catch (emailError) {
       console.error('Failed to send quiz results email:', emailError)
+    }
+
+    // Schedule nurture email for 48h later
+    try {
+      const token = Buffer.from(JSON.stringify({
+        symptoms: quizSymptoms || [],
+        level: quizLevel || 'unknown',
+        categories,
+      })).toString('base64url')
+      const resultsUrl = `https://menomind.app/results?token=${token}`
+
+      await sendNurtureEmail(cleanEmail, resultsUrl, new Date(Date.now() + 48 * 60 * 60 * 1000))
+    } catch (emailError) {
+      console.error('Failed to schedule nurture email:', emailError)
     }
 
     return NextResponse.json({ success: true })

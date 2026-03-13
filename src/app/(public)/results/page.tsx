@@ -1,7 +1,7 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import Link from 'next/link'
 import { SYMPTOM_CATEGORIES, ACTION_PLANS } from '@/lib/quiz/symptom-data'
 
@@ -62,6 +62,15 @@ function ResultsContent() {
       </div>
     )
   }
+
+  useEffect(() => {
+    if (data && typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+      (window as any).fbq('track', 'ViewContent', {
+        content_name: 'Quiz Results',
+        content_category: 'quiz',
+      })
+    }
+  }, [data])
 
   const { symptoms, level, categories } = data
 

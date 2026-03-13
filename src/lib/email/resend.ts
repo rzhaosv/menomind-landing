@@ -3,11 +3,13 @@ import { Resend } from 'resend'
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
 const FROM_EMAIL = 'MenoMind <hello@menomind.app>'
+const REPLY_TO = 'midnight.chatter126@gmail.com'
 
 export async function sendWelcomeEmail(email: string, name: string) {
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
+    replyTo: REPLY_TO,
     subject: 'Welcome to MenoMind — Your Menopause Companion',
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
@@ -24,7 +26,7 @@ export async function sendWelcomeEmail(email: string, name: string) {
           <li><strong>Track your symptoms</strong> — Daily logging takes under 60 seconds</li>
           <li><strong>Follow wellness plans</strong> — Personalized to your needs</li>
         </ul>
-        <a href="https://menomind.app/dashboard" style="display: inline-block; background: #6B3F8D; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600; margin-top: 20px;">
+        <a href="https://menomind.app/settings/subscription" style="display: inline-block; background: #6B3F8D; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600; margin-top: 20px;">
           Go to Your Dashboard →
         </a>
         <p style="color: #888; font-size: 14px; margin-top: 40px;">
@@ -43,6 +45,7 @@ export async function sendTrialReminderEmail(
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
+    replyTo: REPLY_TO,
     subject: `Your MenoMind trial ends in ${daysLeft} day${daysLeft === 1 ? '' : 's'}`,
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
@@ -51,7 +54,7 @@ export async function sendTrialReminderEmail(
           Your free premium trial ends in <strong>${daysLeft} day${daysLeft === 1 ? '' : 's'}</strong>.
           Don't lose access to unlimited AI conversations, full symptom trends, and personalized wellness plans.
         </p>
-        <a href="https://menomind.app/pricing" style="display: inline-block; background: #D65C8C; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600; margin-top: 20px;">
+        <a href="https://menomind.app/settings/subscription" style="display: inline-block; background: #D65C8C; color: white; padding: 12px 24px; border-radius: 12px; text-decoration: none; font-weight: 600; margin-top: 20px;">
           Keep Premium Access →
         </a>
         <p style="color: #888; font-size: 14px; margin-top: 40px;">
@@ -71,6 +74,7 @@ export async function sendPaymentConfirmationEmail(
   await resend.emails.send({
     from: FROM_EMAIL,
     to: email,
+    replyTo: REPLY_TO,
     subject: 'Payment confirmed — MenoMind Premium',
     html: `
       <div style="font-family: Inter, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
@@ -78,12 +82,8 @@ export async function sendPaymentConfirmationEmail(
         <p style="color: #1A1A2E; font-size: 16px; line-height: 1.6;">
           Hi ${name}, your MenoMind Premium ${plan} subscription is now active.
         </p>
-        <div style="background: #FFFBF5; padding: 20px; border-radius: 12px; margin: 20px 0;">
-          <p style="margin: 0; color: #1A1A2E;"><strong>Plan:</strong> ${plan}</p>
-          <p style="margin: 8px 0 0; color: #1A1A2E;"><strong>Amount:</strong> ${amount}</p>
-        </div>
         <p style="color: #888; font-size: 14px; margin-top: 40px;">
-          Manage your subscription anytime in Settings.
+          Manage your subscription anytime from your <a href="https://menomind.app/settings/subscription" style="color: #6B3F8D;">account portal</a>.
         </p>
       </div>
     `,
