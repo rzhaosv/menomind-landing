@@ -26,6 +26,25 @@ yarn-error.log*
 .mcp.json
 credentials.json
 
+# secrets
+keys.txt
+
+# ad creatives & generated assets
+output/
+*.jpg
+*.png
+*.docx
+*.pptx
+
+# strategy/prompt docs
+FB-AD-IMAGE-PROMPT.md
+FB-CAMPAIGN-PLAN.md
+PROFITABILITY-PROMPT.md
+MenoMind_Google_Ads_API_Design_Document.pdf
+
+# claude local config
+.claude/settings.local.json
+
 # misc
 .DS_Store
 *.tsbuildinfo
