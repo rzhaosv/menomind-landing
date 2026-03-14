@@ -1,5 +1,6 @@
 import type Stripe from 'stripe'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { sendPurchaseEvent } from '@/lib/meta/conversions-api'
 
 // Grace period before downgrade on payment failure (3 days in ms)
 const GRACE_PERIOD_MS = 3 * 24 * 60 * 60 * 1000
@@ -72,6 +73,16 @@ export async function handleCheckoutCompleted(
   if (eventError) {
     console.error('handleCheckoutCompleted: Failed to log event', eventError)
   }
+
+  // Send server-side Purchase event to Meta Conversions API
+  const amountInDollars = (session.amount_total || 0) / 100
+  const customerEmail = session.customer_details?.email || session.metadata?.email
+  await sendPurchaseEvent({
+    email: customerEmail || undefined,
+    value: amountInDollars,
+    currency: session.currency?.toUpperCase() || 'USD',
+    eventId: session.id,
+  })
 
   console.log(`handleCheckoutCompleted: User ${userId} upgraded to premium`)
 }
