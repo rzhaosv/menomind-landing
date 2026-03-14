@@ -1,12 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 export default function PricingPage() {
   const [annual, setAnnual] = useState(true)
   const [loading, setLoading] = useState<string | null>(null)
   const [showWhyDollar, setShowWhyDollar] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const w = window as any;
+      if (typeof w.gtag === 'function') {
+        w.gtag('event', 'view_pricing', { currency: 'USD', value: 0 });
+      }
+      if (typeof w.fbq === 'function') {
+        w.fbq('trackCustom', 'ViewPricing');
+      }
+    }
+  }, [])
 
   async function handleSubscribe(priceType: 'monthly' | 'annual') {
     setLoading(priceType)

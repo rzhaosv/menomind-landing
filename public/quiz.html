@@ -13,21 +13,13 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="/images/og-image.jpg">
 
-    <!-- GA4 -->
+    <!-- GA4 + Google Ads -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5TS69CENYQ"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-5TS69CENYQ');
-    </script>
-
-    <!-- Google Ads -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17830146300"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
         gtag('config', 'AW-17830146300');
     </script>
 
@@ -875,7 +867,8 @@
             document.getElementById('quizButtons').style.display = 'none';
 
             // Track quiz completion
-            gtag('event', 'quiz_complete', { score: score, level: level });
+            gtag('event', 'quiz_complete', { score: score, level: level, value: 0.50, currency: 'USD' });
+            if (typeof fbq === 'function') fbq('trackCustom', 'QuizComplete');
         }
 
         function trackQuizToChat() {
