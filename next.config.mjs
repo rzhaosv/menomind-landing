@@ -17,8 +17,8 @@ const nextConfig = {
       },
       {
         source: '/quiz',
-        destination: '/#quiz',
-        permanent: true,
+        destination: '/quiz.html',
+        permanent: false,
       },
     ]
   },
