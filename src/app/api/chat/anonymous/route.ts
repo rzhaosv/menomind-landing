@@ -2,9 +2,10 @@ import { NextResponse } from 'next/server'
 import { streamChatResponse, type ChatMessage, type TokenUsage } from '@/lib/ai/claude'
 import { buildAnonymousSystemPrompt } from '@/lib/ai/system-prompt'
 import { MAX_TOKENS_BY_SUBSCRIPTION } from '@/lib/ai/model-router'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { randomUUID } from 'crypto'
 
-// In-memory message store — ephemeral by design
+// In-memory message store for chat context (fast, no DB round-trip)
 const sessionMessages = new Map<string, ChatMessage[]>()
 const sessionMessageCounts = new Map<string, number>()
 
@@ -45,6 +46,21 @@ export async function POST(request: Request) {
     // Add user message
     history.push({ role: 'user', content: message.trim() })
 
+    // Persist user message to Supabase (non-blocking)
+    const supabase = createAdminClient()
+    supabase
+      .from('anonymous_messages')
+      .insert({
+        session_id: sessionId,
+        role: 'user',
+        content: message.trim(),
+        quiz_symptoms: quizSymptoms || null,
+        quiz_level: quizLevel || null,
+      })
+      .then(({ error }) => {
+        if (error) console.error('Failed to save anonymous user message:', error)
+      })
+
     // Build system prompt
     const quizContext =
       quizSymptoms && quizSymptoms.length > 0
@@ -81,6 +97,18 @@ export async function POST(request: Request) {
 
           // Store assistant response in memory
           history.push({ role: 'assistant', content: fullResponse })
+
+          // Persist assistant message to Supabase (non-blocking)
+          supabase
+            .from('anonymous_messages')
+            .insert({
+              session_id: sessionId,
+              role: 'assistant',
+              content: fullResponse.trim(),
+            })
+            .then(({ error }) => {
+              if (error) console.error('Failed to save anonymous assistant message:', error)
+            })
 
           const tokenUsage = result.value as TokenUsage | undefined
           // Strip [UPGRADE_CTA] marker from visible response, use it as signal
