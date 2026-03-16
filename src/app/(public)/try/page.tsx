@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useState, useCallback } from 'react';
 import { ChatInterface } from '@/components/chat/chat-interface';
 import Link from 'next/link';
 
@@ -9,6 +9,20 @@ function TryChatContent() {
   const searchParams = useSearchParams();
   const symptomsParam = searchParams.get('symptoms');
   const levelParam = searchParams.get('level');
+
+  const [copied, setCopied] = useState(false);
+
+  const handleEmailClick = useCallback(() => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      navigator.clipboard.writeText('hello@menomind.app').then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      });
+    } else {
+      window.location.href = 'mailto:hello@menomind.app';
+    }
+  }, []);
 
   const quizContext =
     symptomsParam && symptomsParam.length > 0
@@ -43,6 +57,19 @@ function TryChatContent() {
           quizContext={quizContext}
         />
       </div>
+
+      {/* Footer */}
+      <footer className="px-4 py-2 bg-white border-t border-gray-200 text-center">
+        <p className="text-xs text-gray-400">
+          Questions?{' '}
+          <button
+            onClick={handleEmailClick}
+            className="text-brand-purple hover:underline cursor-pointer bg-transparent border-none p-0 text-xs"
+          >
+            {copied ? 'Copied!' : 'hello@menomind.app'}
+          </button>
+        </p>
+      </footer>
     </div>
   );
 }
