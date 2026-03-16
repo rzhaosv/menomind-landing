@@ -1,21 +1,8 @@
 import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { createClient } from '@/lib/supabase/server'
-import { SYMPTOM_CATEGORIES } from '@/lib/quiz/symptom-data'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { sendQuizResultsEmail } from '@/lib/email/quiz-results'
 import { sendNurtureEmail } from '@/lib/email/retention-sequences'
-
-function determineCategoriesFromSymptoms(symptoms: string[]): string[] {
-  const categories = new Set<string>()
-  for (const symptom of symptoms) {
-    for (const [catId, catData] of Object.entries(SYMPTOM_CATEGORIES)) {
-      if (symptom in catData.symptoms) {
-        categories.add(catId)
-      }
-    }
-  }
-  return Array.from(categories)
-}
 
 export async function POST(request: Request) {
   try {
@@ -33,9 +20,7 @@ export async function POST(request: Request) {
     const cookieStore = cookies()
     const sessionId = cookieStore.get('anonymous_session')?.value || null
 
-    const categories = determineCategoriesFromSymptoms(quizSymptoms || [])
-
-    const supabase = createClient()
+    const supabase = createAdminClient()
 
     // Upsert on email to prevent duplicates
     const { error } = await supabase
@@ -46,7 +31,6 @@ export async function POST(request: Request) {
           anonymous_session_id: sessionId,
           quiz_symptoms: quizSymptoms || [],
           quiz_level: quizLevel || null,
-          quiz_categories: categories,
         },
         { onConflict: 'email' }
       )
@@ -61,12 +45,15 @@ export async function POST(request: Request) {
 
     // Send quiz results email (non-blocking — don't fail the request if email fails)
     const cleanEmail = email.trim().toLowerCase()
+    const symptoms = quizSymptoms || []
+    const level = quizLevel || 'unknown'
+
     try {
       await sendQuizResultsEmail({
         email: cleanEmail,
-        symptoms: quizSymptoms || [],
-        level: quizLevel || 'unknown',
-        categories,
+        symptoms,
+        level,
+        categories: [],
       })
     } catch (emailError) {
       console.error('Failed to send quiz results email:', emailError)
@@ -75,9 +62,8 @@ export async function POST(request: Request) {
     // Schedule nurture email for 48h later
     try {
       const token = Buffer.from(JSON.stringify({
-        symptoms: quizSymptoms || [],
-        level: quizLevel || 'unknown',
-        categories,
+        symptoms,
+        level,
       })).toString('base64url')
       const resultsUrl = `https://menomind.app/results?token=${token}`
 
