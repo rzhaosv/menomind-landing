@@ -114,6 +114,10 @@
     {
       "source": "/blog/is-hrt-safe",
       "destination": "/blog/is-hrt-safe.html"
+    },
+    {
+      "source": "/blog/is-this-perimenopause",
+      "destination": "/blog/is-this-perimenopause.html"
     }
   ]
 }
