@@ -233,11 +233,11 @@
 
             <!-- Q6: Medical History -->
             <div class="quiz-question" data-question="5">
-                <h3>Have you talked to a doctor about any of this?</h3>
+                <h3>Have you ever talked to a doctor about these symptoms — or about whether they could be hormonal?</h3>
                 <div class="quiz-options" id="q6-options">
                     <label class="quiz-option"><input type="radio" name="medical" value="0"> Yes, and I'm getting help</label>
                     <label class="quiz-option"><input type="radio" name="medical" value="1"> I've tried, but I felt dismissed or told "it's just stress"</label>
-                    <label class="quiz-option"><input type="radio" name="medical" value="1"> No — nobody's ever mentioned perimenopause to me</label>
+                    <label class="quiz-option"><input type="radio" name="medical" value="1"> No — nobody's ever suggested my symptoms could be hormonal</label>
                     <label class="quiz-option"><input type="radio" name="medical" value="1"> I thought I was too young for this to be hormonal</label>
                 </div>
             </div>
@@ -282,13 +282,18 @@
 
                 <div class="result-description" id="whatThisMeans"></div>
 
-                <!-- PRIMARY CTA: Talk to AI -->
+                <!-- PRIMARY CTA: Chat with AI -->
                 <div id="chatCtaSection">
                     <div style="background:linear-gradient(135deg, rgba(107,63,141,0.08) 0%, rgba(214,92,140,0.08) 100%);border:1px solid rgba(107,63,141,0.15);border-radius:16px;padding:32px 24px;margin:20px 0;text-align:center;">
-                        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Want to understand what this means for you?</h3>
-                        <p style="font-size:15px;color:var(--text-secondary);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">Talk to MenoMind AI — it'll connect the dots between your symptoms in a way nobody has before.</p>
-                        <a id="chatCtaButton" href="/try" style="display:inline-block;background:#D65C8C;color:white;padding:16px 36px;border-radius:10px;font-size:16px;font-weight:600;text-decoration:none;box-shadow:0 4px 15px rgba(214,92,140,0.3);transition:all 0.3s;" onclick="trackQuizToChat()">Talk to MenoMind — it's free</a>
-                        <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">90-second conversations that change everything</p>
+                        <!-- Chat bubble visual -->
+                        <div style="display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:20px;">
+                            <div style="background:#D65C8C;color:white;padding:10px 16px;border-radius:16px 16px 4px 16px;font-size:14px;max-width:260px;text-align:left;">I've been waking up at 3am with my heart racing&hellip;</div>
+                            <div style="background:var(--bg-secondary);color:var(--text-primary);padding:10px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:280px;text-align:left;align-self:flex-end;">That's actually one of the most common signs of hormonal change. Here's what's happening&hellip;</div>
+                        </div>
+                        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Your next step: chat with MenoMind</h3>
+                        <p style="font-size:15px;color:var(--text-secondary);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">Our AI chatbot will walk through your specific symptoms, explain what's happening in your body, and help you figure out what to do next — like talking to a knowledgeable friend who actually gets it.</p>
+                        <a id="chatCtaButton" href="/try" style="display:inline-block;background:#D65C8C;color:white;padding:16px 36px;border-radius:10px;font-size:16px;font-weight:600;text-decoration:none;box-shadow:0 4px 15px rgba(214,92,140,0.3);transition:all 0.3s;" onclick="trackQuizToChat()">Start chatting — it's free</a>
+                        <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">No signup required. Your first 5 messages are free.</p>
                     </div>
                 </div>
 
