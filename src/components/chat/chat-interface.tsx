@@ -18,6 +18,8 @@ interface ChatInterfaceProps {
   onEmailCapture?: (email: string) => void;
 }
 
+const ANONYMOUS_MESSAGE_LIMIT = 5;
+
 function TypingIndicator() {
   return (
     <div className="flex justify-start mb-4">
@@ -58,6 +60,7 @@ function ChatInterface({
   const [emailCaptured, setEmailCaptured] = useState(false);
   const [showTrialOffer, setShowTrialOffer] = useState(false);
   const [trialOfferDismissed, setTrialOfferDismissed] = useState(false);
+  const [chatLocked, setChatLocked] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -65,7 +68,6 @@ function ChatInterface({
   // Sync initialMessages when navigating to a different conversation
   const initialMessagesRef = useRef(initialMessages);
   useEffect(() => {
-    // Only reset if the actual content changed (not just a new [] reference)
     if (JSON.stringify(initialMessages) !== JSON.stringify(initialMessagesRef.current)) {
       initialMessagesRef.current = initialMessages;
       setMessages(initialMessages);
@@ -79,7 +81,7 @@ function ChatInterface({
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isStreaming]);
+  }, [messages, isStreaming, chatLocked]);
 
   // Auto-resize textarea
   useEffect(() => {
@@ -92,9 +94,18 @@ function ChatInterface({
   const sendMessage = useCallback(
     async (messageText: string) => {
       const trimmed = messageText.trim();
-      if (!trimmed || isStreaming) return;
+      if (!trimmed || isStreaming || chatLocked) return;
 
       setError(null);
+
+      // Track user message count and check limits BEFORE sending
+      const newCount = userMessageCount + 1;
+      setUserMessageCount(newCount);
+
+      // Show email capture at message 3 (non-blocking)
+      if (anonymous && !emailCaptured && newCount === 3) {
+        setShowEmailCapture(true);
+      }
 
       const userMessage: ChatMessage = {
         id: `temp-${Date.now()}`,
@@ -136,7 +147,6 @@ function ChatInterface({
           const errData = await res.json().catch(() => null);
           if (res.status === 429 && onLimitReached) {
             onLimitReached();
-            // Remove the empty assistant message
             setMessages((prev) => prev.filter((msg) => msg.id !== assistantMessageId));
             setIsStreaming(false);
             return;
@@ -158,9 +168,8 @@ function ChatInterface({
 
           buffer += decoder.decode(value, { stream: true });
 
-          // Parse SSE events from the buffer
           const lines = buffer.split('\n');
-          buffer = lines.pop() || ''; // Keep incomplete line in buffer
+          buffer = lines.pop() || '';
 
           for (const line of lines) {
             if (!line.startsWith('data: ')) continue;
@@ -192,8 +201,23 @@ function ChatInterface({
                 throw new Error(payload.error || 'Failed to generate response');
               }
             } catch (e) {
-              if (e instanceof SyntaxError) continue; // Skip malformed lines
+              if (e instanceof SyntaxError) continue;
               throw e;
+            }
+          }
+        }
+
+        // After successful response: check if we've hit the hard limit
+        if (anonymous && newCount >= ANONYMOUS_MESSAGE_LIMIT) {
+          setChatLocked(true);
+          // Fire paywall tracking
+          if (typeof window !== 'undefined') {
+            const w = window as any;
+            if (typeof w.gtag === 'function') {
+              w.gtag('event', 'chat_paywall_hit', { messageCount: newCount });
+            }
+            if (typeof w.fbq === 'function') {
+              w.fbq('trackCustom', 'PaywallHit');
             }
           }
         }
@@ -204,22 +228,15 @@ function ChatInterface({
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to send message';
         setError(errorMessage);
-        // Remove the empty assistant message on error
         setMessages((prev) =>
           prev.filter((msg) => msg.id !== assistantMessageId)
         );
-        // Show email capture after 3 user messages in anonymous mode
-        const newCount = userMessageCount + 1;
-        setUserMessageCount(newCount);
-        if (anonymous && !emailCaptured && newCount === 3) {
-          setShowEmailCapture(true);
-        }
       } finally {
         setIsStreaming(false);
         abortControllerRef.current = null;
       }
     },
-    [isStreaming, currentConversationId, onLimitReached, onNewConversation, anonymous, quizContext, userMessageCount, emailCaptured, trialOfferDismissed]
+    [isStreaming, chatLocked, currentConversationId, onLimitReached, onNewConversation, anonymous, quizContext, userMessageCount, emailCaptured, trialOfferDismissed]
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -283,13 +300,16 @@ function ChatInterface({
                 }}
               />
             )}
-            {showTrialOffer && !trialOfferDismissed && (
+            {showTrialOffer && !trialOfferDismissed && !chatLocked && (
               <TrialOfferCard
                 onDismiss={() => {
                   setTrialOfferDismissed(true);
                   setShowTrialOffer(false);
                 }}
               />
+            )}
+            {chatLocked && (
+              <TrialOfferCard locked />
             )}
             <div ref={messagesEndRef} />
           </div>
@@ -314,7 +334,7 @@ function ChatInterface({
         </div>
       )}
 
-      {/* Message limit counter */}
+      {/* Message limit counter (authenticated users) */}
       {messageLimit && (
         <div className="text-center px-4 pb-1">
           <span className={`text-xs ${limitReached ? 'text-red-500 font-medium' : 'text-gray-400'}`}>
@@ -324,47 +344,55 @@ function ChatInterface({
         </div>
       )}
 
-      {/* Input area */}
-      <div className="border-t border-gray-200 bg-white p-4">
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
-          <div className="flex items-end gap-3">
-            <div className="flex-1 relative">
-              <textarea
-                ref={textareaRef}
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={limitReached ? 'Message limit reached. Upgrade to continue.' : 'Type your message...'}
-                disabled={isStreaming || !!limitReached}
-                rows={1}
-                className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 pr-12 text-sm text-brand-dark placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple disabled:bg-gray-50 disabled:cursor-not-allowed"
-                aria-label="Chat message input"
-              />
-            </div>
-            <button
-              type="submit"
-              disabled={!input.trim() || isStreaming || !!limitReached}
-              className="flex-shrink-0 w-11 h-11 rounded-xl bg-brand-purple text-white flex items-center justify-center hover:bg-brand-purple-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              aria-label="Send message"
-            >
-              {isStreaming ? (
-                <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                  <line x1="22" y1="2" x2="11" y2="13" />
-                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
-                </svg>
-              )}
-            </button>
-          </div>
-          <p className="text-[11px] text-gray-400 mt-2 text-center">
-            MenoMind AI can make mistakes. Always verify important health information with your doctor.
+      {/* Input area — hidden when chat is locked */}
+      {chatLocked ? (
+        <div className="border-t border-gray-200 bg-gray-50 p-4">
+          <p className="text-center text-sm text-gray-500">
+            Start your $1 trial to continue the conversation and get your personalized plan.
           </p>
-        </form>
-      </div>
+        </div>
+      ) : (
+        <div className="border-t border-gray-200 bg-white p-4">
+          <form onSubmit={handleSubmit} className="max-w-3xl mx-auto">
+            <div className="flex items-end gap-3">
+              <div className="flex-1 relative">
+                <textarea
+                  ref={textareaRef}
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={limitReached ? 'Message limit reached. Upgrade to continue.' : 'Type your message...'}
+                  disabled={isStreaming || !!limitReached}
+                  rows={1}
+                  className="w-full resize-none rounded-xl border border-gray-300 bg-white px-4 py-3 pr-12 text-sm text-brand-dark placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-purple/30 focus:border-brand-purple disabled:bg-gray-50 disabled:cursor-not-allowed"
+                  aria-label="Chat message input"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!input.trim() || isStreaming || !!limitReached}
+                className="flex-shrink-0 w-11 h-11 rounded-xl bg-brand-purple text-white flex items-center justify-center hover:bg-brand-purple-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                aria-label="Send message"
+              >
+                {isStreaming ? (
+                  <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                  </svg>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="22" y1="2" x2="11" y2="13" />
+                    <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                  </svg>
+                )}
+              </button>
+            </div>
+            <p className="text-[11px] text-gray-400 mt-2 text-center">
+              MenoMind AI can make mistakes. Always verify important health information with your doctor.
+            </p>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
