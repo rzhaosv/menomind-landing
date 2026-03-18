@@ -290,10 +290,10 @@
                             <div style="background:#D65C8C;color:white;padding:10px 16px;border-radius:16px 16px 4px 16px;font-size:14px;max-width:260px;text-align:left;">I've been waking up at 3am with my heart racing&hellip;</div>
                             <div style="background:var(--bg-secondary);color:var(--text-primary);padding:10px 16px;border-radius:16px 16px 16px 4px;font-size:14px;max-width:280px;text-align:left;align-self:flex-end;">That's actually one of the most common signs of hormonal change. Here's what's happening&hellip;</div>
                         </div>
-                        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Your next step: chat with MenoMind</h3>
-                        <p style="font-size:15px;color:var(--text-secondary);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">Our AI chatbot will walk through your specific symptoms, explain what's happening in your body, and help you figure out what to do next — like talking to a knowledgeable friend who actually gets it.</p>
-                        <a id="chatCtaButton" href="/try" style="display:inline-block;background:#D65C8C;color:white;padding:16px 36px;border-radius:10px;font-size:16px;font-weight:600;text-decoration:none;box-shadow:0 4px 15px rgba(214,92,140,0.3);transition:all 0.3s;" onclick="trackQuizToChat()">Start chatting — it's free</a>
-                        <p style="margin-top:16px;font-size:13px;color:var(--text-muted);">No signup required. Your first 5 messages are free.</p>
+                        <h3 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--text-primary);margin-bottom:8px;">Your next step: get your personalized plan</h3>
+                        <p style="font-size:15px;color:var(--text-secondary);margin-bottom:20px;max-width:440px;margin-left:auto;margin-right:auto;">Create your free account to get a personalized dashboard with symptom tracking, AI-powered insights, and actionable wellness plans tailored to your symptoms.</p>
+                        <a id="chatCtaButton" href="/signup" style="display:inline-block;background:#D65C8C;color:white;padding:16px 36px;border-radius:10px;font-size:16px;font-weight:600;text-decoration:none;box-shadow:0 4px 15px rgba(214,92,140,0.3);transition:all 0.3s;" onclick="trackQuizToSignup()">Get Your Personalized Plan</a>
+                        <p style="margin-top:12px;font-size:14px;"><a id="tryChatLink" href="/try" onclick="trackQuizToChat()" style="color:var(--text-secondary);text-decoration:underline;">Or try a quick chat first &rarr;</a></p>
                     </div>
                 </div>
 
@@ -551,16 +551,24 @@
 
             if (r.level === 'strong') triggerConfetti();
 
+            var signupUrl = '/signup?symptoms=' + encodeURIComponent(r.symptoms.join(',')) + '&level=' + encodeURIComponent(r.level);
             var tryUrl = '/try?symptoms=' + encodeURIComponent(r.symptoms.join(',')) + '&level=' + encodeURIComponent(r.level);
             var chatBtn = document.getElementById('chatCtaButton');
-            if (chatBtn) chatBtn.href = tryUrl;
+            if (chatBtn) chatBtn.href = signupUrl;
+            var tryChatLink = document.getElementById('tryChatLink');
+            if (tryChatLink) tryChatLink.href = tryUrl;
 
             document.getElementById('resultsScreen').classList.add('active');
         }
 
+        function trackQuizToSignup() {
+            gtag('event', 'quiz_signup_cta_click', { level: document.getElementById('resultTitle').textContent });
+            if (typeof fbq === 'function') fbq('trackCustom', 'QuizToSignupClick');
+        }
+
         function trackQuizToChat() {
-            gtag('event', 'quiz_to_chat', { level: document.getElementById('resultTitle').textContent });
-            if (typeof fbq === 'function') fbq('trackCustom', 'QuizToChat');
+            gtag('event', 'quiz_chat_cta_click', { level: document.getElementById('resultTitle').textContent });
+            if (typeof fbq === 'function') fbq('trackCustom', 'QuizToChatClick');
         }
 
         function triggerConfetti() {
