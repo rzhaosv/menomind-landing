@@ -9,19 +9,20 @@ function SuccessContent() {
   const searchParams = useSearchParams()
   const success = searchParams.get('success')
   const canceled = searchParams.get('canceled')
+  const sessionId = searchParams.get('session_id')
   const [tracked, setTracked] = useState(false)
+  const [signingIn, setSigningIn] = useState(false)
+  const [fallbackEmail, setFallbackEmail] = useState<string | null>(null)
 
+  // Track purchase conversion
   useEffect(() => {
     if (success && !tracked) {
-      // Client-side Meta Pixel Purchase event (deduped with server CAPI via event_id)
-      const sessionId = searchParams.get('session_id');
       (window as any).fbq?.('track', 'Purchase', {
         value: 1.00,
         currency: 'USD',
         content_name: 'MenoMind Premium',
       }, { eventID: sessionId || undefined });
 
-      // Google Ads conversion
       (window as any).gtag?.('event', 'conversion', {
         'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC',
         value: 1.0,
@@ -31,7 +32,34 @@ function SuccessContent() {
 
       setTracked(true)
     }
-  }, [success, tracked, searchParams])
+  }, [success, tracked, sessionId])
+
+  // Auto-sign in after checkout
+  useEffect(() => {
+    if (success && sessionId && !signingIn) {
+      setSigningIn(true)
+
+      fetch('/api/auth/post-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sessionId }),
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.url && !data.fallback) {
+            // Auto-redirect to magic link — signs them in
+            window.location.href = data.url
+          } else if (data.email) {
+            // Fallback: show email to sign in with
+            setFallbackEmail(data.email)
+            setSigningIn(false)
+          } else {
+            setSigningIn(false)
+          }
+        })
+        .catch(() => setSigningIn(false))
+    }
+  }, [success, sessionId, signingIn])
 
   if (canceled) {
     return (
@@ -50,6 +78,19 @@ function SuccessContent() {
     )
   }
 
+  // Show loading while auto-signing in
+  if (signingIn) {
+    return (
+      <div className="min-h-screen bg-brand-cream flex items-center justify-center px-5">
+        <div className="text-center">
+          <div className="w-12 h-12 mx-auto mb-4 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin" />
+          <h1 className="text-xl font-bold mb-2">Setting up your account...</h1>
+          <p className="text-gray-500 text-sm">This only takes a moment.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-brand-cream flex flex-col items-center justify-center px-5 py-12">
       <div className="max-w-md mx-auto">
@@ -57,9 +98,22 @@ function SuccessContent() {
           <div className="text-5xl mb-4">🎉</div>
           <h1 className="text-2xl font-bold mb-2">Welcome to MenoMind Premium</h1>
           <p className="text-gray-600 text-sm">
-            Your $1 first-week access is active. Here&apos;s how to get the most out of it.
+            {fallbackEmail
+              ? `Your account is ready. Sign in with ${fallbackEmail} to get started.`
+              : "Your $1 first-week access is active. Here\u0027s how to get the most out of it."}
           </p>
         </div>
+
+        {fallbackEmail && (
+          <div className="bg-brand-purple/5 rounded-xl p-4 mb-6 text-center">
+            <Link
+              href={`/login`}
+              className="btn-primary inline-block text-sm"
+            >
+              Sign In to Your Account
+            </Link>
+          </div>
+        )}
 
         {/* Quick-start checklist */}
         <div className="bg-white rounded-2xl border border-gray-200 p-6 mb-6">

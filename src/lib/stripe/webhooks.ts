@@ -50,26 +50,79 @@ export async function handleCheckoutCompleted(
   const userId = await resolveUserId(session.metadata?.userId, customerId, customerEmail)
 
   if (!userId) {
-    // No matching user yet — they may sign up after paying.
-    // Store the Stripe customer ID + email so we can link on signup.
-    console.warn('handleCheckoutCompleted: No user found yet, will link on signup', {
-      sessionId: session.id,
-      customerEmail,
-      customer: customerId,
-    })
-
-    // Log for debugging — no user to attach event to yet
-
-    // Send welcome email even for not-yet-linked users
-    if (customerEmail) {
-      try {
-        const { sendWelcomeEmail } = await import('@/lib/email/retention-sequences')
-        await sendWelcomeEmail(customerEmail)
-      } catch {}
+    // No user exists — auto-create one with the Stripe checkout email
+    if (!customerEmail) {
+      console.error('handleCheckoutCompleted: No userId and no email — cannot create user', {
+        sessionId: session.id,
+      })
+      return
     }
 
+    console.log('handleCheckoutCompleted: Auto-creating user for', customerEmail)
+    const supabaseAdmin = createAdminClient()
+
+    // Create a confirmed Supabase auth user (the handle_new_user trigger
+    // auto-creates the public.users row with subscription_tier='free')
+    let newUserId: string | null = null
+    const { data: newUser, error: createError } = await supabaseAdmin.auth.admin.createUser({
+      email: customerEmail,
+      email_confirm: true,
+    })
+
+    if (createError) {
+      // User might already exist (e.g. signed up but webhook hadn't matched)
+      if (createError.message?.includes('already') || createError.message?.includes('exists')) {
+        const { data: existingUser } = await supabaseAdmin
+          .from('users')
+          .select('id')
+          .eq('email', customerEmail)
+          .single()
+        newUserId = existingUser?.id || null
+      }
+      if (!newUserId) {
+        console.error('handleCheckoutCompleted: Failed to create user', createError)
+      }
+    } else {
+      newUserId = newUser.user?.id || null
+      // Wait briefly for the DB trigger to create the public.users row
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
+
+    if (newUserId) {
+      // Upgrade to premium
+      await supabaseAdmin
+        .from('users')
+        .update({
+          subscription_tier: 'premium',
+          stripe_customer_id: customerId,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', newUserId)
+
+      console.log(`handleCheckoutCompleted: Auto-created and upgraded user ${newUserId} (${customerEmail})`)
+
+      // Log subscription event
+      await supabaseAdmin.from('subscription_events').insert({
+        user_id: newUserId,
+        event_type: 'checkout.session.completed',
+        stripe_event_id: session.id,
+        data: {
+          customer: customerId,
+          subscription: session.subscription,
+          amount_total: session.amount_total,
+          auto_created: true,
+        },
+      })
+    }
+
+    // Send welcome email + purchase tracking regardless
+    try {
+      const { sendWelcomeEmail } = await import('@/lib/email/retention-sequences')
+      await sendWelcomeEmail(customerEmail)
+    } catch {}
+
     await sendPurchaseEvent({
-      email: customerEmail || undefined,
+      email: customerEmail,
       value: (session.amount_total || 0) / 100,
       currency: session.currency?.toUpperCase() || 'USD',
       eventId: session.id,
