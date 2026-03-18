@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 
@@ -15,12 +16,15 @@ function friendlyAuthError(msg: string): string {
 }
 
 export default function SignupForm() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const quizSymptoms = searchParams.get('symptoms') || ''
+  const quizLevel = searchParams.get('level') || ''
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -73,7 +77,11 @@ export default function SignupForm() {
           content_name: 'MenoMind Account',
         })
       }
-      setSuccess(true)
+
+      // Go straight to dashboard — middleware redirects new users to onboarding
+      const quizParams = quizSymptoms ? `?symptoms=${encodeURIComponent(quizSymptoms)}&level=${encodeURIComponent(quizLevel)}` : ''
+      router.push(`/dashboard${quizParams}`)
+      router.refresh()
     } catch {
       setError('An unexpected error occurred. Please try again.')
     } finally {
@@ -90,7 +98,7 @@ export default function SignupForm() {
       const { error: oauthError } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/auth/callback${quizSymptoms ? `?next=${encodeURIComponent(`/dashboard?symptoms=${encodeURIComponent(quizSymptoms)}&level=${encodeURIComponent(quizLevel)}`)}` : ''}`,
         },
       })
 
@@ -102,44 +110,6 @@ export default function SignupForm() {
       setError('An unexpected error occurred. Please try again.')
       setLoading(false)
     }
-  }
-
-  // Success state
-  if (success) {
-    return (
-      <div className="text-center">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
-          <svg
-            className="h-7 w-7 text-green-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={2}
-            stroke="currentColor"
-            aria-hidden="true"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        </div>
-        <h2 className="mb-2 text-xl font-semibold text-brand-dark">
-          Check your email
-        </h2>
-        <p className="mb-6 text-sm text-gray-500">
-          We&apos;ve sent a confirmation link to{' '}
-          <span className="font-medium text-brand-dark">{email}</span>. Please
-          check your inbox and click the link to activate your account.
-        </p>
-        <Link
-          href="/login"
-          className="inline-block text-sm font-medium text-brand-purple transition-colors hover:text-brand-purple-dark"
-        >
-          Back to sign in
-        </Link>
-      </div>
-    )
   }
 
   return (

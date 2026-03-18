@@ -624,11 +624,11 @@ function StepComplete({
         onClick={onStartChat}
         className="w-full bg-gradient-to-r from-brand-purple to-brand-pink hover:from-brand-purple-dark hover:to-brand-pink text-white"
       >
-        Start your first conversation
+        Go to Your Dashboard
       </Button>
 
       <p className="text-xs text-gray-400 mt-3">
-        5 free AI messages per day included with your account
+        Your personalized plan is ready
       </p>
     </div>
   );
@@ -770,7 +770,7 @@ export default function OnboardingPage() {
             <StepGenerating error={error} onRetry={handleRetry} />
           )}
           {currentStep === 7 && (
-            <StepComplete data={data} onStartChat={() => router.push('/chat')} />
+            <StepComplete data={data} onStartChat={() => router.push('/dashboard')} />
           )}
         </div>
       </div>

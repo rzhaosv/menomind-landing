@@ -772,38 +772,35 @@ export function LandingPage() {
                     </div>
                   ))}
                 </div>
-                <div className="mt-4 p-3 bg-brand-purple/5 rounded-xl text-center">
-                  <p className="text-sm text-brand-purple font-medium">
-                    Want to start working on these?{' '}
-                    <Link
-                      href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
-                      onClick={() => {
-                        (window as any).gtag?.('event', 'quiz_chat_cta_click', { result_level: resultLevel })
-                        (window as any).fbq?.('trackCustom', 'QuizToChatClick', { result_level: resultLevel })
-                      }}
-                      className="underline font-semibold"
-                    >
-                      Talk to your AI companion →
-                    </Link>
-                  </p>
-                </div>
               </div>
 
               {/* Section 4: CTA Block */}
               <div className="mb-8">
                 <Link
-                  href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
+                  href={`/signup?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
                   onClick={() => {
-                    (window as any).gtag?.('event', 'quiz_chat_cta_click', { result_level: resultLevel })
-                    (window as any).fbq?.('trackCustom', 'QuizToChatClick', { result_level: resultLevel })
+                    (window as any).gtag?.('event', 'quiz_signup_cta_click', { result_level: resultLevel });
+                    (window as any).fbq?.('trackCustom', 'QuizToSignupClick', { result_level: resultLevel });
                   }}
                   className="block bg-brand-purple hover:bg-brand-purple-dark text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
                 >
-                  Talk to your AI companion
+                  Get Your Personalized Plan
                   <span className="block text-xs font-normal text-purple-200 mt-1">
-                    Free &middot; No account needed &middot; Get personalized answers now
+                    Free account &middot; Takes 30 seconds &middot; Personalized dashboard
                   </span>
                 </Link>
+                <div className="text-center mt-3">
+                  <Link
+                    href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
+                    onClick={() => {
+                      (window as any).gtag?.('event', 'quiz_chat_cta_click', { result_level: resultLevel });
+                      (window as any).fbq?.('trackCustom', 'QuizToChatClick', { result_level: resultLevel });
+                    }}
+                    className="text-sm text-gray-500 hover:text-brand-purple transition-colors underline"
+                  >
+                    Or try a quick chat first →
+                  </Link>
+                </div>
               </div>
 
               {/* Section 5: Social Proof */}
