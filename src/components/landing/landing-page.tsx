@@ -128,6 +128,10 @@ export function LandingPage() {
   const [quizStep, setQuizStep] = useState(-1) // -1 = not started
   const [quizAnswers, setQuizAnswers] = useState<Record<string, string[]>>({})
   const [showResult, setShowResult] = useState(false)
+  const [showAnalyzing, setShowAnalyzing] = useState(false)
+  const [analyzingStep, setAnalyzingStep] = useState(0)
+  const [emailGateCompleted, setEmailGateCompleted] = useState(false)
+  const [emailGateSkipped, setEmailGateSkipped] = useState(false)
   const [email, setEmail] = useState('')
   const [captureEmail, setCaptureEmail] = useState('')
   const [emailCaptured, setEmailCaptured] = useState(false)
@@ -164,7 +168,9 @@ export function LandingPage() {
   }
 
   function scrollToQuiz() {
-    setQuizStep(0)
+    setQuizStep(0);
+    (window as any).gtag?.('event', 'quiz_start');
+    (window as any).fbq?.('trackCustom', 'QuizStart');
     setTimeout(() => {
       quizRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, 100)
@@ -185,9 +191,36 @@ export function LandingPage() {
 
   function nextQuestion() {
     if (quizStep < QUIZ_QUESTIONS.length - 1) {
+      // Track quiz step progression
+      (window as any).gtag?.('event', 'quiz_step', {
+        step: quizStep + 2,
+        question_id: QUIZ_QUESTIONS[quizStep + 1]?.id,
+        total: QUIZ_QUESTIONS.length,
+      })
       setQuizStep((s) => s + 1)
     } else {
-      setShowResult(true)
+      // Start analyzing screen instead of showing results immediately
+      setShowAnalyzing(true)
+      setAnalyzingStep(0)
+
+      // Rotate through analyzing messages
+      const timer1 = setTimeout(() => setAnalyzingStep(1), 1200)
+      const timer2 = setTimeout(() => setAnalyzingStep(2), 2400)
+      const timer3 = setTimeout(() => {
+        setShowAnalyzing(false)
+        setShowResult(true)
+
+        // Track quiz completion
+        const level = getResultLevel()
+        const { reported } = getSymptomScore();
+        (window as any).gtag?.('event', 'quiz_complete', { result_level: level, symptom_count: reported });
+        (window as any).fbq?.('trackCustom', 'QuizComplete', { result_level: level, symptom_count: reported });
+
+        // Track email gate shown
+        (window as any).gtag?.('event', 'email_gate_shown', { result_level: level })
+      }, 3600)
+
+      return () => { clearTimeout(timer1); clearTimeout(timer2); clearTimeout(timer3) }
     }
   }
 
@@ -504,9 +537,45 @@ export function LandingPage() {
               <p className="text-gray-600 mb-6">
                 7 quick questions. No account needed. You&apos;ll get a personalized breakdown of your symptoms and what they might mean — completely free.
               </p>
-              <button onClick={() => setQuizStep(0)} className="btn-primary">
+              <button onClick={() => {
+                setQuizStep(0);
+                (window as any).gtag?.('event', 'quiz_start');
+                (window as any).fbq?.('trackCustom', 'QuizStart');
+              }} className="btn-primary">
                 Let&apos;s Start →
               </button>
+            </div>
+          ) : showAnalyzing ? (
+            <div className="max-w-[500px] mx-auto text-center py-12">
+              <div className="mb-8">
+                <div className="w-16 h-16 mx-auto mb-6 relative">
+                  <div className="absolute inset-0 rounded-full border-4 border-brand-purple/20"></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-brand-purple border-t-transparent animate-spin"></div>
+                </div>
+                <h3 className="text-xl font-bold mb-2">Analyzing your responses...</h3>
+                <div className="space-y-3 mt-6">
+                  {[
+                    'Comparing with 2,400+ women in your age group...',
+                    'Matching your symptoms to clinical patterns...',
+                    'Building your personalized assessment...',
+                  ].map((msg, i) => (
+                    <p
+                      key={i}
+                      className={`text-sm transition-all duration-500 ${
+                        i <= analyzingStep ? 'text-gray-700 opacity-100' : 'text-gray-400 opacity-0'
+                      }`}
+                    >
+                      {i < analyzingStep ? '✓' : i === analyzingStep ? '...' : ''} {msg}
+                    </p>
+                  ))}
+                </div>
+              </div>
+              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-brand-purple rounded-full transition-all duration-1000 ease-out"
+                  style={{ width: `${((analyzingStep + 1) / 3) * 100}%` }}
+                />
+              </div>
             </div>
           ) : showResult ? (
             <div className="max-w-[600px] mx-auto">
@@ -561,6 +630,77 @@ export function LandingPage() {
                 )
               })()}
 
+              {/* Email Gate — between teaser score and full results */}
+              {!emailGateCompleted && !emailGateSkipped && (
+                <div className="mb-8 p-6 bg-white rounded-2xl border-2 border-brand-purple/20 text-center shadow-sm">
+                  <p className="text-lg font-bold text-brand-dark mb-1">
+                    Your full report is ready
+                  </p>
+                  <p className="text-sm text-gray-600 mb-1">
+                    Where should I send it?
+                  </p>
+                  <p className="text-xs text-gray-400 mb-4">
+                    Includes: detailed symptom breakdown, personalized action plan, and a check-in in a few days.
+                  </p>
+                  <form
+                    onSubmit={async (e) => {
+                      e.preventDefault()
+                      if (!captureEmail) return
+                      try {
+                        await fetch('/api/waitlist/checkin', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            email: captureEmail,
+                            quizSymptoms: getReportedSymptoms().map(s => s.symptom),
+                            quizLevel: resultLevel,
+                          }),
+                        })
+                        setEmailCaptured(true);
+                        setEmailGateCompleted(true);
+                        (window as any).gtag?.('event', 'conversion', { 'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC', value: 1.0, currency: 'USD' });
+                        (window as any).fbq?.('track', 'Lead')
+                      } catch {
+                        // silently fail
+                      }
+                    }}
+                    className="flex gap-2 max-w-sm mx-auto"
+                  >
+                    <input
+                      type="email"
+                      value={captureEmail}
+                      onChange={(e) => setCaptureEmail(e.target.value)}
+                      placeholder="Your email"
+                      className="input-field flex-1 text-sm"
+                      required
+                    />
+                    <button type="submit" className="btn-primary text-sm whitespace-nowrap">
+                      Send My Report
+                    </button>
+                  </form>
+                  <p className="text-xs text-gray-400 mt-3">Join 2,400+ women who&apos;ve taken this assessment</p>
+                  <button
+                    onClick={() => {
+                      setEmailGateSkipped(true);
+                      (window as any).gtag?.('event', 'email_gate_skipped', { result_level: resultLevel })
+                    }}
+                    className="text-xs text-gray-400 hover:text-gray-600 mt-2 underline"
+                  >
+                    Skip for now
+                  </button>
+                </div>
+              )}
+
+              {emailGateCompleted && !emailGateSkipped && (
+                <div className="mb-8 p-4 bg-green-50 rounded-xl border border-green-200 text-center">
+                  <p className="text-sm text-green-700 font-medium">
+                    ✓ Got it! Check your email for your full report.
+                  </p>
+                </div>
+              )}
+
+              {/* Sections 2-5: Full results — visible after email gate */}
+              {(emailGateCompleted || emailGateSkipped) && <>
               {/* Section 2: Symptom Breakdown */}
               <div className="mb-8">
                 <h3 className="text-lg font-bold mb-1">Why you&apos;re feeling this way</h3>
@@ -637,6 +777,10 @@ export function LandingPage() {
                     Want to start working on these?{' '}
                     <Link
                       href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
+                      onClick={() => {
+                        (window as any).gtag?.('event', 'quiz_chat_cta_click', { result_level: resultLevel })
+                        (window as any).fbq?.('trackCustom', 'QuizToChatClick', { result_level: resultLevel })
+                      }}
                       className="underline font-semibold"
                     >
                       Talk to your AI companion →
@@ -649,6 +793,10 @@ export function LandingPage() {
               <div className="mb-8">
                 <Link
                   href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
+                  onClick={() => {
+                    (window as any).gtag?.('event', 'quiz_chat_cta_click', { result_level: resultLevel })
+                    (window as any).fbq?.('trackCustom', 'QuizToChatClick', { result_level: resultLevel })
+                  }}
                   className="block bg-brand-purple hover:bg-brand-purple-dark text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
                 >
                   Talk to your AI companion
@@ -656,55 +804,6 @@ export function LandingPage() {
                     Free &middot; No account needed &middot; Get personalized answers now
                   </span>
                 </Link>
-              </div>
-
-              {/* Email Check-in Capture */}
-              <div className="mb-8 p-5 bg-white rounded-xl border border-gray-200 text-center">
-                <p className="text-sm font-semibold text-brand-dark mb-1">
-                  Want me to check in with you?
-                </p>
-                <p className="text-xs text-gray-500 mb-3">
-                  Your symptoms can shift week to week. Drop your email and I&apos;ll send your full results — plus a check-in in a few days to see how you&apos;re doing.
-                </p>
-                {emailCaptured ? (
-                  <p className="text-sm text-green-600 font-medium">
-                    Got it! Check your email for your results.
-                  </p>
-                ) : (
-                  <form
-                    onSubmit={async (e) => {
-                      e.preventDefault()
-                      if (!captureEmail) return
-                      try {
-                        await fetch('/api/waitlist/checkin', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            email: captureEmail,
-                            quizSymptoms: getReportedSymptoms().map(s => s.symptom),
-                            quizLevel: resultLevel,
-                          }),
-                        })
-                        setEmailCaptured(true)
-                      } catch {
-                        // silently fail
-                      }
-                    }}
-                    className="flex gap-2 max-w-sm mx-auto"
-                  >
-                    <input
-                      type="email"
-                      value={captureEmail}
-                      onChange={(e) => setCaptureEmail(e.target.value)}
-                      placeholder="Your email"
-                      className="input-field flex-1 text-sm"
-                      required
-                    />
-                    <button type="submit" className="btn-primary text-sm whitespace-nowrap">
-                      Send My Results
-                    </button>
-                  </form>
-                )}
               </div>
 
               {/* Section 5: Social Proof */}
@@ -732,6 +831,7 @@ export function LandingPage() {
                   </div>
                 ))}
               </div>
+              </>}
             </div>
           ) : (
             <div>
@@ -955,6 +1055,7 @@ export function LandingPage() {
             qualified healthcare provider. Individual results may vary.
           </p>
           <div className="flex flex-wrap justify-center gap-6 text-sm mb-6">
+            <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
             <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
             <Link href="/pricing" className="hover:text-white transition-colors">Pricing</Link>
@@ -1001,7 +1102,9 @@ export function LandingPage() {
                           quizSymptoms: getReportedSymptoms().map(s => s.symptom),
                           quizLevel: showResult ? resultLevel : undefined,
                         }),
-                      })
+                      });
+                      (window as any).gtag?.('event', 'conversion', { 'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC', value: 1.0, currency: 'USD' });
+                      (window as any).fbq?.('track', 'Lead')
                     } catch {
                       // silently fail
                     }
