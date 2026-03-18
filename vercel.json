@@ -5,6 +5,13 @@
       "schedule": "0 14 * * 1"
     }
   ],
+  "redirects": [
+    {
+      "source": "/quiz.html",
+      "destination": "/quiz",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/blog",
