@@ -11,34 +11,70 @@ const GRACE_PERIOD_MS = 3 * 24 * 60 * 60 * 1000
  */
 async function resolveUserId(
   metadataUserId: string | undefined,
-  stripeCustomerId: string | null | undefined
+  stripeCustomerId: string | null | undefined,
+  customerEmail?: string | null
 ): Promise<string | null> {
-  if (metadataUserId) return metadataUserId
-
-  if (!stripeCustomerId) return null
+  // 'anonymous' is not a real user ID — treat as undefined
+  if (metadataUserId && metadataUserId !== 'anonymous') return metadataUserId
 
   const supabase = createAdminClient()
-  const { data: user } = await supabase
-    .from('users')
-    .select('id')
-    .eq('stripe_customer_id', stripeCustomerId)
-    .single()
 
-  return user?.id || null
+  // Try by stripe_customer_id first
+  if (stripeCustomerId) {
+    const { data: user } = await supabase
+      .from('users')
+      .select('id')
+      .eq('stripe_customer_id', stripeCustomerId)
+      .single()
+    if (user?.id) return user.id
+  }
+
+  // Fall back to email lookup (critical for anonymous quiz → checkout flow)
+  if (customerEmail) {
+    const { data: user } = await supabase
+      .from('users')
+      .select('id')
+      .eq('email', customerEmail)
+      .single()
+    if (user?.id) return user.id
+  }
+
+  return null
 }
 
 export async function handleCheckoutCompleted(
   session: Stripe.Checkout.Session
 ) {
   const customerId = session.customer as string
-  const userId = await resolveUserId(session.metadata?.userId, customerId)
+  const customerEmail = session.customer_details?.email || session.metadata?.email
+  const userId = await resolveUserId(session.metadata?.userId, customerId, customerEmail)
 
   if (!userId) {
-    console.error('handleCheckoutCompleted: Could not resolve userId', {
+    // No matching user yet — they may sign up after paying.
+    // Store the Stripe customer ID + email so we can link on signup.
+    console.warn('handleCheckoutCompleted: No user found yet, will link on signup', {
       sessionId: session.id,
-      metadata: session.metadata,
+      customerEmail,
       customer: customerId,
     })
+
+    // Log for debugging — no user to attach event to yet
+
+    // Send welcome email even for not-yet-linked users
+    if (customerEmail) {
+      try {
+        const { sendWelcomeEmail } = await import('@/lib/email/retention-sequences')
+        await sendWelcomeEmail(customerEmail)
+      } catch {}
+    }
+
+    await sendPurchaseEvent({
+      email: customerEmail || undefined,
+      value: (session.amount_total || 0) / 100,
+      currency: session.currency?.toUpperCase() || 'USD',
+      eventId: session.id,
+    })
+
     return
   }
 
@@ -76,7 +112,6 @@ export async function handleCheckoutCompleted(
 
   // Send server-side Purchase event to Meta Conversions API
   const amountInDollars = (session.amount_total || 0) / 100
-  const customerEmail = session.customer_details?.email || session.metadata?.email
   await sendPurchaseEvent({
     email: customerEmail || undefined,
     value: amountInDollars,
@@ -87,8 +122,7 @@ export async function handleCheckoutCompleted(
   // Send welcome email
   try {
     const { sendWelcomeEmail } = await import('@/lib/email/retention-sequences')
-    const email = session.customer_details?.email || session.metadata?.email
-    if (email) await sendWelcomeEmail(email)
+    if (customerEmail) await sendWelcomeEmail(customerEmail)
   } catch (error) {
     console.error('handleCheckoutCompleted: Failed to send welcome email', error)
   }
