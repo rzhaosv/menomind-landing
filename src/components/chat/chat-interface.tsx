@@ -16,6 +16,7 @@ interface ChatInterfaceProps {
   anonymous?: boolean;
   quizContext?: { symptoms: string[]; level: string };
   onEmailCapture?: (email: string) => void;
+  initialPrompt?: string;
 }
 
 const ANONYMOUS_MESSAGE_LIMIT = 5;
@@ -48,12 +49,23 @@ function ChatInterface({
   anonymous = false,
   quizContext,
   onEmailCapture,
+  initialPrompt,
 }: ChatInterfaceProps) {
   const appUser = useAppUser();
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const [userSymptoms, setUserSymptoms] = useState<string[]>([]);
+
+  // Auto-send initial prompt (from plan action "Ask MenoMind" links)
+  const [initialPromptSent, setInitialPromptSent] = useState(false);
+  useEffect(() => {
+    if (initialPrompt && !initialPromptSent && messages.length === 0 && !isStreaming) {
+      setInitialPromptSent(true);
+      // Small delay so the component is fully mounted
+      setTimeout(() => sendMessage(initialPrompt), 500);
+    }
+  }, [initialPrompt, initialPromptSent, messages.length, isStreaming]);
 
   // Fetch user profile for personalized prompts
   useEffect(() => {

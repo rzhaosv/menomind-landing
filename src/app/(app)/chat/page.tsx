@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { ChatInterface } from '@/components/chat/chat-interface';
 import {
   ConversationList,
@@ -10,6 +11,8 @@ import type { ChatMessage } from '@/components/chat/message-bubble';
 import { PricingModal } from '@/components/subscription/pricing-modal';
 
 export default function ChatPage() {
+  const searchParams = useSearchParams();
+  const initialPrompt = searchParams.get('q') || undefined;
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeConversationId, setActiveConversationId] = useState<string | undefined>();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -178,6 +181,7 @@ export default function ChatPage() {
             onNewConversation={handleNewConversation}
             messageLimit={messageLimit}
             onLimitReached={() => setShowPricingModal(true)}
+            initialPrompt={initialPrompt}
           />
         )}
       </div>
