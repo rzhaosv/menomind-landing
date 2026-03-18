@@ -1,9 +1,45 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
-import { Suspense, useEffect } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { SYMPTOM_CATEGORIES, ACTION_PLANS } from '@/lib/quiz/symptom-data'
+
+function TrialButton() {
+  const [loading, setLoading] = useState(false)
+
+  async function handleClick() {
+    setLoading(true)
+    const w = window as any
+    w.gtag?.('event', 'results_trial_click')
+    w.fbq?.('track', 'InitiateCheckout')
+    try {
+      const res = await fetch('/api/stripe/checkout-trial', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+      if (res.ok) {
+        const { url } = await res.json()
+        if (url) window.location.href = url
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <button
+      onClick={handleClick}
+      disabled={loading}
+      className="w-full bg-brand-pink hover:bg-brand-pink/90 text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors shadow-md shadow-brand-pink/20 disabled:opacity-50"
+    >
+      {loading ? 'Loading...' : 'Start for $1 — Get Your Full Plan'}
+      <span className="block text-xs font-normal text-pink-200 mt-1">
+        First week $1, then $14.99/month. Cancel anytime.
+      </span>
+    </button>
+  )
+}
 
 interface TokenData {
   symptoms: string[]
@@ -194,29 +230,18 @@ function ResultsContent() {
             </div>
           </div>
 
-          {/* Section 4: Primary CTA */}
+          {/* Section 4: Primary CTA — Stripe checkout */}
           <div className="mb-6">
-            <Link
-              href={tryUrl}
-              className="block bg-brand-purple hover:bg-brand-purple-dark text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
-            >
-              Talk to Your AI Companion About These Results
-              <span className="block text-xs font-normal text-purple-200 mt-1">
-                Free · No account needed · Get personalized answers now
-              </span>
-            </Link>
+            <TrialButton />
           </div>
 
           {/* Section 5: Secondary CTA */}
           <div className="text-center mb-10">
-            <p className="text-sm text-gray-600 mb-2">
-              Not ready to chat? Create a free account to save your results and track symptoms over time.
-            </p>
             <Link
-              href="/signup"
-              className="text-sm text-brand-purple font-semibold hover:underline"
+              href={tryUrl}
+              className="text-sm text-gray-500 hover:text-brand-purple transition-colors underline"
             >
-              Create free account →
+              Or try a quick chat first &rarr;
             </Link>
           </div>
         </div>

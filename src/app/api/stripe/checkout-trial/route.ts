@@ -9,9 +9,19 @@ import { createCheckoutSession } from '@/lib/stripe/client'
  */
 export async function POST(request: Request) {
   try {
+    // Accept optional billingCycle from quiz paywall
+    let billingCycle: string | undefined
+    try {
+      const body = await request.json()
+      billingCycle = body.billingCycle
+    } catch {
+      // No body or invalid JSON — use default (monthly)
+    }
+
     const priceId =
-      process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY ||
-      'price_monthly_placeholder'
+      billingCycle === 'annual'
+        ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ANNUAL || process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY || 'price_monthly_placeholder'
+        : process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY || 'price_monthly_placeholder'
 
     const origin =
       request.headers.get('origin') ||

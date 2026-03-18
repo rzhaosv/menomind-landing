@@ -84,6 +84,15 @@ export async function handleCheckoutCompleted(
     eventId: session.id,
   })
 
+  // Send welcome email
+  try {
+    const { sendWelcomeEmail } = await import('@/lib/email/retention-sequences')
+    const email = session.customer_details?.email || session.metadata?.email
+    if (email) await sendWelcomeEmail(email)
+  } catch (error) {
+    console.error('handleCheckoutCompleted: Failed to send welcome email', error)
+  }
+
   console.log(`handleCheckoutCompleted: User ${userId} upgraded to premium`)
 }
 

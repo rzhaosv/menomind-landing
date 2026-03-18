@@ -3,8 +3,6 @@
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { SYMPTOM_CATEGORIES, ACTION_PLANS } from '@/lib/quiz/symptom-data'
-
 const SYMPTOMS_CHECKLIST = [
   'Anxiety that came out of nowhere',
   'Waking up at 3am and can\'t fall back asleep',
@@ -13,87 +11,6 @@ const SYMPTOMS_CHECKLIST = [
   'Exhausted no matter how much you sleep',
   'Periods that are all over the place',
   'Aches and pains that don\'t make sense',
-]
-
-const QUIZ_QUESTIONS = [
-  {
-    id: 'age',
-    title: 'First — how old are you?',
-    subtitle: 'This helps us give you more relevant information.',
-    options: ['Under 35', '35-39', '40-44', '45-49', '50-54', '55+'],
-    type: 'single' as const,
-  },
-  {
-    id: 'cognitive',
-    title: 'Have you noticed any of these lately?',
-    subtitle: 'These are more common than you think — and there\'s usually a hormonal reason.',
-    options: [
-      'Anxiety or panic attacks',
-      'Irritability or rage',
-      'Brain fog or memory issues',
-      'Feeling down or emotionally flat',
-      'None of these',
-    ],
-    type: 'multi' as const,
-  },
-  {
-    id: 'vasomotor',
-    title: 'What about your body — anything feel off?',
-    subtitle: 'Many women don\'t connect these to hormones at first.',
-    options: [
-      'Hot flashes',
-      'Night sweats',
-      'Heart palpitations',
-      'Dizziness',
-      'None of these',
-    ],
-    type: 'multi' as const,
-  },
-  {
-    id: 'somatic',
-    title: 'How about sleep, energy, or pain?',
-    subtitle: 'If you\'re exhausted but can\'t explain why — you\'re not alone.',
-    options: [
-      'Sleep disruption',
-      'Fatigue / low energy',
-      'Joint or muscle pain',
-      'Weight gain (especially midsection)',
-      'None of these',
-    ],
-    type: 'multi' as const,
-  },
-  {
-    id: 'periods',
-    title: 'Have your periods changed at all?',
-    subtitle: 'Even subtle changes can be a signal.',
-    options: [
-      'Becoming irregular',
-      'Heavier or lighter than usual',
-      'Skipping months',
-      'Stopped completely',
-      'No changes',
-    ],
-    type: 'single' as const,
-  },
-  {
-    id: 'history',
-    title: 'Do you know if anyone in your family went through menopause early?',
-    subtitle: 'It\'s okay if you\'re not sure — most women don\'t know.',
-    options: ['Yes', 'No', "I'm not sure"],
-    type: 'single' as const,
-  },
-  {
-    id: 'impact',
-    title: 'How much is all of this affecting your day-to-day?',
-    subtitle: 'Be honest — there\'s no wrong answer here.',
-    options: [
-      'Not really — just curious',
-      'A little — I can manage, but I notice it',
-      'A lot — it\'s affecting my work or relationships',
-      'It\'s overwhelming — I don\'t feel like myself',
-    ],
-    type: 'single' as const,
-  },
 ]
 
 const TESTIMONIALS = [
@@ -125,16 +42,7 @@ const TESTIMONIALS = [
 
 export function LandingPage() {
   const [checkedSymptoms, setCheckedSymptoms] = useState<Set<number>>(new Set())
-  const [quizStep, setQuizStep] = useState(-1) // -1 = not started
-  const [quizAnswers, setQuizAnswers] = useState<Record<string, string[]>>({})
-  const [showResult, setShowResult] = useState(false)
-  const [showAnalyzing, setShowAnalyzing] = useState(false)
-  const [analyzingStep, setAnalyzingStep] = useState(0)
-  const [emailGateCompleted, setEmailGateCompleted] = useState(false)
-  const [emailGateSkipped, setEmailGateSkipped] = useState(false)
   const [email, setEmail] = useState('')
-  const [captureEmail, setCaptureEmail] = useState('')
-  const [emailCaptured, setEmailCaptured] = useState(false)
   const [showExitPopup, setShowExitPopup] = useState(false)
   const [exitShown, setExitShown] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -168,176 +76,7 @@ export function LandingPage() {
   }
 
   function scrollToQuiz() {
-    setQuizStep(0);
-    (window as any).gtag?.('event', 'quiz_start');
-    (window as any).fbq?.('trackCustom', 'QuizStart');
-    setTimeout(() => {
-      quizRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, 100)
-  }
-
-  function selectAnswer(questionId: string, answer: string, type: 'single' | 'multi') {
-    setQuizAnswers((prev) => {
-      if (type === 'single') return { ...prev, [questionId]: [answer] }
-      const current = prev[questionId] || []
-      if (answer.startsWith('None')) return { ...prev, [questionId]: [answer] }
-      const filtered = current.filter((a) => !a.startsWith('None'))
-      if (filtered.includes(answer)) {
-        return { ...prev, [questionId]: filtered.filter((a) => a !== answer) }
-      }
-      return { ...prev, [questionId]: [...filtered, answer] }
-    })
-  }
-
-  function nextQuestion() {
-    if (quizStep < QUIZ_QUESTIONS.length - 1) {
-      // Track quiz step progression
-      (window as any).gtag?.('event', 'quiz_step', {
-        step: quizStep + 2,
-        question_id: QUIZ_QUESTIONS[quizStep + 1]?.id,
-        total: QUIZ_QUESTIONS.length,
-      })
-      setQuizStep((s) => s + 1)
-    } else {
-      // Start analyzing screen instead of showing results immediately
-      setShowAnalyzing(true)
-      setAnalyzingStep(0)
-
-      // Rotate through analyzing messages
-      const timer1 = setTimeout(() => setAnalyzingStep(1), 1200)
-      const timer2 = setTimeout(() => setAnalyzingStep(2), 2400)
-      const timer3 = setTimeout(() => {
-        setShowAnalyzing(false)
-        setShowResult(true)
-
-        // Track quiz completion
-        const level = getResultLevel()
-        const { reported } = getSymptomScore();
-        (window as any).gtag?.('event', 'quiz_complete', { result_level: level, symptom_count: reported });
-        (window as any).fbq?.('trackCustom', 'QuizComplete', { result_level: level, symptom_count: reported });
-
-        // Track email gate shown
-        (window as any).gtag?.('event', 'email_gate_shown', { result_level: level })
-      }, 3600)
-
-      return () => { clearTimeout(timer1); clearTimeout(timer2); clearTimeout(timer3) }
-    }
-  }
-
-  function getResultLevel(): 'low' | 'moderate' | 'strong' {
-    let score = 0
-    const a = quizAnswers
-    if (a.age?.[0] && ['40-44', '45-49', '50-54'].includes(a.age[0])) score += 2
-    if (a.age?.[0] === '35-39') score += 1
-    if ((a.cognitive?.length || 0) > 0 && !a.cognitive?.includes('None of these')) score += a.cognitive!.length
-    if ((a.vasomotor?.length || 0) > 0 && !a.vasomotor?.includes('None of these')) score += a.vasomotor!.length
-    if ((a.somatic?.length || 0) > 0 && !a.somatic?.includes('None of these')) score += a.somatic!.length
-    if (a.periods?.[0] && !['No changes'].includes(a.periods[0])) score += 2
-    if (a.history?.[0] === 'Yes') score += 1
-    if (a.impact?.[0]?.startsWith('It\'s overwhelming')) score += 2
-    else if (a.impact?.[0]?.startsWith('A lot')) score += 1
-
-    if (score >= 8) return 'strong'
-    if (score >= 4) return 'moderate'
-    return 'low'
-  }
-
-  // Get all reported symptoms across categories
-  function getReportedSymptoms() {
-    const reported: { category: string; symptom: string; explanation: string; prevalence: number }[] = []
-    const categories = ['cognitive', 'vasomotor', 'somatic', 'periods'] as const
-
-    for (const cat of categories) {
-      const answers = quizAnswers[cat] || []
-      if (answers.length === 0 || answers.includes('None of these') || answers.includes('No changes')) continue
-
-      const catData = SYMPTOM_CATEGORIES[cat]
-      for (const answer of answers) {
-        const symptomData = (catData.symptoms as Record<string, { explanation: string; prevalence: number }>)[answer]
-        if (symptomData) {
-          reported.push({
-            category: cat,
-            symptom: answer,
-            explanation: symptomData.explanation,
-            prevalence: symptomData.prevalence,
-          })
-        }
-      }
-    }
-    return reported
-  }
-
-  // Get the total symptom count for score display
-  function getSymptomScore() {
-    const reported = getReportedSymptoms()
-    const total = Object.values(SYMPTOM_CATEGORIES).reduce(
-      (sum, cat) => sum + Object.keys(cat.symptoms).length, 0
-    )
-    return { reported: reported.length, total }
-  }
-
-  // Get action plans based on most prominent symptom category
-  function getPersonalizedPlans() {
-    const categoryCounts: Record<string, number> = {}
-    const categories = ['cognitive', 'vasomotor', 'somatic'] as const
-
-    for (const cat of categories) {
-      const answers = quizAnswers[cat] || []
-      if (answers.includes('None of these')) continue
-      categoryCounts[cat] = answers.length
-    }
-
-    const topCategory = Object.entries(categoryCounts)
-      .sort(([, a], [, b]) => b - a)[0]?.[0] || 'general'
-
-    return ACTION_PLANS[topCategory] || ACTION_PLANS.general
-  }
-
-  // Get relevant testimonial based on symptoms
-  function getRelevantTestimonials() {
-    const hasAnxiety = quizAnswers.cognitive?.includes('Anxiety or panic attacks')
-    const hasBrainFog = quizAnswers.cognitive?.includes('Brain fog or memory issues')
-    const hasSleep = quizAnswers.somatic?.includes('Sleep disruption')
-
-    // Prioritize testimonials that match user's symptoms
-    const sorted = [...TESTIMONIALS].sort((a, b) => {
-      let scoreA = 0, scoreB = 0
-      if (hasAnxiety || hasBrainFog) {
-        if (a.name === 'Michelle T.') scoreA += 2
-        if (b.name === 'Michelle T.') scoreB += 2
-      }
-      if (hasSleep) {
-        if (a.name === 'Diane K.') scoreA += 2
-        if (b.name === 'Diane K.') scoreB += 2
-      }
-      return scoreB - scoreA
-    })
-    return sorted.slice(0, 2)
-  }
-
-  const resultLevel = getResultLevel()
-  const resultConfig = {
-    low: {
-      color: 'text-green-600',
-      bg: 'bg-green-50',
-      border: 'border-green-200',
-      label: 'Low Likelihood',
-      message: 'Your symptoms are mild right now, but the fact that you\'re here means you\'re listening to your body. That matters. Perimenopause can start subtly — knowing what to watch for puts you ahead.',
-    },
-    moderate: {
-      color: 'text-yellow-600',
-      bg: 'bg-yellow-50',
-      border: 'border-yellow-200',
-      label: 'Moderate Likelihood',
-      message: 'What you\'re describing is incredibly common in women your age, and there\'s a real biological reason for it. You\'re not stressed, broken, or imagining things — your hormones are shifting, and your body is responding exactly the way it should.',
-    },
-    strong: {
-      color: 'text-brand-pink',
-      bg: 'bg-pink-50',
-      border: 'border-pink-200',
-      label: 'Strong Likelihood',
-      message: 'Everything you\'re feeling makes sense. This isn\'t anxiety, it isn\'t burnout, and you\'re definitely not losing your mind. Your symptom pattern is textbook perimenopause — and the good news is, once you know what\'s happening, there\'s a lot you can do about it.',
-    },
+    quizRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
   return (
@@ -374,9 +113,9 @@ export function LandingPage() {
             Take our free 2-minute quiz and finally get answers that make sense.
           </p>
           <div className="mb-5">
-            <button onClick={scrollToQuiz} className="block w-full max-w-[340px] mx-auto bg-brand-pink text-white py-4 px-8 rounded-lg text-base font-semibold hover:bg-brand-pink-light transition-colors">
-              Take the Free Symptom Quiz →
-            </button>
+            <Link href="/quiz" className="block w-full max-w-[340px] mx-auto bg-brand-pink text-white py-4 px-8 rounded-lg text-base font-semibold hover:bg-brand-pink-light transition-colors text-center">
+              Take the Free Symptom Quiz &rarr;
+            </Link>
             <p className="text-white/80 text-xs mt-2">No credit card required</p>
           </div>
 
@@ -435,9 +174,9 @@ export function LandingPage() {
               <p className="text-brand-purple font-semibold">
                 {checkedSymptoms.size} out of {SYMPTOMS_CHECKLIST.length} — you&apos;re not imagining this. Let&apos;s find out what&apos;s going on.
               </p>
-              <button onClick={scrollToQuiz} className="btn-primary mt-4 text-sm">
-                Get My Free Results →
-              </button>
+              <Link href="/quiz" className="btn-primary mt-4 text-sm inline-block">
+                Get My Free Results &rarr;
+              </Link>
             </div>
           )}
         </div>
@@ -526,379 +265,29 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Quiz Section */}
+      {/* Quiz Section — CTA to dedicated quiz funnel */}
       <section ref={quizRef} className="py-16 px-5 bg-white" id="quiz">
-        <div className={`${showResult ? 'max-w-[640px]' : 'max-w-[520px]'} mx-auto`}>
-          {quizStep === -1 ? (
-            <div className="text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-4">
-                Let&apos;s figure out what&apos;s going on
-              </h2>
-              <p className="text-gray-600 mb-6">
-                7 quick questions. No account needed. You&apos;ll get a personalized breakdown of your symptoms and what they might mean — completely free.
-              </p>
-              <button onClick={() => {
-                setQuizStep(0);
-                (window as any).gtag?.('event', 'quiz_start');
-                (window as any).fbq?.('trackCustom', 'QuizStart');
-              }} className="btn-primary">
-                Let&apos;s Start →
-              </button>
-            </div>
-          ) : showAnalyzing ? (
-            <div className="max-w-[500px] mx-auto text-center py-12">
-              <div className="mb-8">
-                <div className="w-16 h-16 mx-auto mb-6 relative">
-                  <div className="absolute inset-0 rounded-full border-4 border-brand-purple/20"></div>
-                  <div className="absolute inset-0 rounded-full border-4 border-brand-purple border-t-transparent animate-spin"></div>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Analyzing your responses...</h3>
-                <div className="space-y-3 mt-6">
-                  {[
-                    'Comparing with 2,400+ women in your age group...',
-                    'Matching your symptoms to clinical patterns...',
-                    'Building your personalized assessment...',
-                  ].map((msg, i) => (
-                    <p
-                      key={i}
-                      className={`text-sm transition-all duration-500 ${
-                        i <= analyzingStep ? 'text-gray-700 opacity-100' : 'text-gray-400 opacity-0'
-                      }`}
-                    >
-                      {i < analyzingStep ? '✓' : i === analyzingStep ? '...' : ''} {msg}
-                    </p>
-                  ))}
-                </div>
-              </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-brand-purple rounded-full transition-all duration-1000 ease-out"
-                  style={{ width: `${((analyzingStep + 1) / 3) * 100}%` }}
-                />
-              </div>
-            </div>
-          ) : showResult ? (
-            <div className="max-w-[600px] mx-auto">
-              {/* Section 1: Personalized Symptom Score */}
-              <h2 className="text-2xl sm:text-3xl font-bold text-center mb-3">
-                Here&apos;s what we found
-              </h2>
-              <p className="text-gray-500 text-center mb-8 text-sm">
-                Based on what you told us, here&apos;s what&apos;s likely going on — and why.
-              </p>
-
-              {(() => {
-                const { reported, total } = getSymptomScore()
-                const percentage = Math.round((reported / total) * 100)
-                const scoreColors = {
-                  low: { ring: 'text-green-500', track: 'text-green-100' },
-                  moderate: { ring: 'text-yellow-500', track: 'text-yellow-100' },
-                  strong: { ring: 'text-red-500', track: 'text-red-100' },
-                }
-                const severityLabels = { low: 'Mild', moderate: 'Moderate', strong: 'Significant' }
-                const colors = scoreColors[resultLevel]
-
-                return (
-                  <div className={`${resultConfig[resultLevel].bg} ${resultConfig[resultLevel].border} border-2 rounded-2xl p-8 mb-8 text-center`}>
-                    {/* Circular Progress Ring */}
-                    <div className="relative w-32 h-32 mx-auto mb-4">
-                      <svg className="w-32 h-32 -rotate-90" viewBox="0 0 120 120">
-                        <circle cx="60" cy="60" r="50" fill="none" strokeWidth="10"
-                          className={colors.track} stroke="currentColor" />
-                        <circle cx="60" cy="60" r="50" fill="none" strokeWidth="10"
-                          className={colors.ring} stroke="currentColor"
-                          strokeLinecap="round"
-                          strokeDasharray={`${percentage * 3.14} ${314 - percentage * 3.14}`} />
-                      </svg>
-                      <div className="absolute inset-0 flex flex-col items-center justify-center">
-                        <span className={`text-2xl font-bold ${resultConfig[resultLevel].color}`}>
-                          {reported}
-                        </span>
-                        <span className="text-xs text-gray-500">of {total}</span>
-                      </div>
-                    </div>
-                    <p className={`text-lg font-bold ${resultConfig[resultLevel].color} mb-2`}>
-                      {severityLabels[resultLevel]} Symptom Level
-                    </p>
-                    <p className="text-gray-700 text-sm">
-                      You reported {reported} symptom{reported !== 1 ? 's' : ''} that {reported !== 1 ? 'are' : 'is'} commonly linked to hormonal changes.
-                    </p>
-                    <p className="text-gray-600 text-sm mt-2">
-                      {resultConfig[resultLevel].message}
-                    </p>
-                  </div>
-                )
-              })()}
-
-              {/* Email Gate — between teaser score and full results */}
-              {!emailGateCompleted && !emailGateSkipped && (
-                <div className="mb-8 p-6 bg-white rounded-2xl border-2 border-brand-purple/20 text-center shadow-sm">
-                  <p className="text-lg font-bold text-brand-dark mb-1">
-                    Your full report is ready
-                  </p>
-                  <p className="text-sm text-gray-600 mb-1">
-                    Where should I send it?
-                  </p>
-                  <p className="text-xs text-gray-400 mb-4">
-                    Includes: detailed symptom breakdown, personalized action plan, and a check-in in a few days.
-                  </p>
-                  <form
-                    onSubmit={async (e) => {
-                      e.preventDefault()
-                      if (!captureEmail) return
-                      try {
-                        await fetch('/api/waitlist/checkin', {
-                          method: 'POST',
-                          headers: { 'Content-Type': 'application/json' },
-                          body: JSON.stringify({
-                            email: captureEmail,
-                            quizSymptoms: getReportedSymptoms().map(s => s.symptom),
-                            quizLevel: resultLevel,
-                          }),
-                        })
-                        setEmailCaptured(true);
-                        setEmailGateCompleted(true);
-                        (window as any).gtag?.('event', 'conversion', { 'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC', value: 1.0, currency: 'USD' });
-                        (window as any).fbq?.('track', 'Lead')
-                      } catch {
-                        // silently fail
-                      }
-                    }}
-                    className="flex gap-2 max-w-sm mx-auto"
-                  >
-                    <input
-                      type="email"
-                      value={captureEmail}
-                      onChange={(e) => setCaptureEmail(e.target.value)}
-                      placeholder="Your email"
-                      className="input-field flex-1 text-sm"
-                      required
-                    />
-                    <button type="submit" className="btn-primary text-sm whitespace-nowrap">
-                      Send My Report
-                    </button>
-                  </form>
-                  <p className="text-xs text-gray-400 mt-3">Join 2,400+ women who&apos;ve taken this assessment</p>
-                  <button
-                    onClick={() => {
-                      setEmailGateSkipped(true);
-                      (window as any).gtag?.('event', 'email_gate_skipped', { result_level: resultLevel })
-                    }}
-                    className="text-xs text-gray-400 hover:text-gray-600 mt-2 underline"
-                  >
-                    Skip for now
-                  </button>
-                </div>
-              )}
-
-              {emailGateCompleted && !emailGateSkipped && (
-                <div className="mb-8 p-4 bg-green-50 rounded-xl border border-green-200 text-center">
-                  <p className="text-sm text-green-700 font-medium">
-                    ✓ Got it! Check your email for your full report.
-                  </p>
-                </div>
-              )}
-
-              {/* Sections 2-5: Full results — visible after email gate */}
-              {(emailGateCompleted || emailGateSkipped) && <>
-              {/* Section 2: Symptom Breakdown */}
-              <div className="mb-8">
-                <h3 className="text-lg font-bold mb-1">Why you&apos;re feeling this way</h3>
-                <p className="text-xs text-gray-500 mb-4">Every one of these has a biological explanation.</p>
-                <div className="space-y-3">
-                  {(['cognitive', 'vasomotor', 'somatic', 'periods'] as const).map((catKey) => {
-                    const cat = SYMPTOM_CATEGORIES[catKey]
-                    const answers = quizAnswers[catKey] || []
-                    const hasSymptoms = answers.length > 0 && !answers.includes('None of these') && !answers.includes('No changes')
-
-                    if (!hasSymptoms) {
-                      return (
-                        <div key={catKey} className="p-4 rounded-xl bg-gray-50 border border-gray-100 opacity-60">
-                          <div className="flex items-center gap-2">
-                            <span>{cat.icon}</span>
-                            <span className="font-medium text-gray-400 text-sm">{cat.label}</span>
-                            <span className="text-xs text-gray-400 ml-auto">Not reported</span>
-                          </div>
-                        </div>
-                      )
-                    }
-
-                    return (
-                      <div key={catKey} className="p-4 rounded-xl bg-white border-2 border-brand-purple/20 shadow-sm">
-                        <div className="flex items-center gap-2 mb-3">
-                          <span>{cat.icon}</span>
-                          <span className="font-semibold text-sm">{cat.label}</span>
-                        </div>
-                        <div className="space-y-2">
-                          {answers.map((answer) => {
-                            const data = (cat.symptoms as Record<string, { explanation: string; prevalence: number }>)[answer]
-                            if (!data) return null
-                            return (
-                              <div key={answer} className="pl-6">
-                                <p className="text-sm font-medium text-brand-purple">{answer}</p>
-                                <p className="text-xs text-gray-600 mt-0.5">{data.explanation}</p>
-                                <p className="text-xs text-gray-400 mt-0.5">
-                                  {data.prevalence}% of women in your age group report this
-                                </p>
-                              </div>
-                            )
-                          })}
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-
-              {/* Section 3: Personalized Action Plan Preview */}
-              <div className="mb-8">
-                <h3 className="text-lg font-bold mb-1">What you can actually do about it</h3>
-                <p className="text-xs text-gray-500 mb-4">Personalized to your symptoms. No guesswork.</p>
-                <div className="space-y-3">
-                  {getPersonalizedPlans().map((plan, i) => (
-                    <div
-                      key={i}
-                      className="p-4 rounded-xl border bg-white border-gray-200"
-                    >
-                      <div className="flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 bg-brand-purple text-white">
-                          {i + 1}
-                        </span>
-                        <div>
-                          <p className="text-sm font-semibold">{plan.title}</p>
-                          <p className="text-xs text-gray-600 mt-0.5">{plan.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Section 4: CTA Block */}
-              <div className="mb-8">
-                <Link
-                  href={`/signup?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
-                  onClick={() => {
-                    (window as any).gtag?.('event', 'quiz_signup_cta_click', { result_level: resultLevel });
-                    (window as any).fbq?.('trackCustom', 'QuizToSignupClick', { result_level: resultLevel });
-                  }}
-                  className="block bg-brand-purple hover:bg-brand-purple-dark text-white text-center py-4 px-6 rounded-xl font-semibold transition-colors"
-                >
-                  Get Your Personalized Plan
-                  <span className="block text-xs font-normal text-purple-200 mt-1">
-                    Free account &middot; Takes 30 seconds &middot; Personalized dashboard
-                  </span>
-                </Link>
-                <div className="text-center mt-3">
-                  <Link
-                    href={`/try?symptoms=${encodeURIComponent(getReportedSymptoms().map(s => s.symptom).join(','))}&level=${resultLevel}`}
-                    onClick={() => {
-                      (window as any).gtag?.('event', 'quiz_chat_cta_click', { result_level: resultLevel });
-                      (window as any).fbq?.('trackCustom', 'QuizToChatClick', { result_level: resultLevel });
-                    }}
-                    className="text-sm text-gray-500 hover:text-brand-purple transition-colors underline"
-                  >
-                    Or try a quick chat first →
-                  </Link>
-                </div>
-              </div>
-
-              {/* Section 5: Social Proof */}
-              <div className="space-y-4">
-                {getRelevantTestimonials().map((t) => (
-                  <div key={t.name} className="flex items-start gap-4 p-4 bg-white rounded-xl border border-gray-200">
-                    <Image
-                      src={t.image}
-                      alt={t.name}
-                      width={48}
-                      height={48}
-                      className="w-12 h-12 rounded-full object-cover shrink-0"
-                    />
-                    <div>
-                      <div className="flex items-center gap-1 mb-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <span key={star} className="text-yellow-400 text-sm">★</span>
-                        ))}
-                      </div>
-                      <p className="text-sm text-gray-600 italic">&quot;{t.quote}&quot;</p>
-                      <p className="text-xs text-gray-500 mt-2 font-medium">
-                        {t.name}, {t.age} — {t.location}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              </>}
-            </div>
-          ) : (
-            <div>
-              {/* Progress bar */}
-              <div className="mb-6">
-                <div className="flex justify-between text-xs text-gray-500 mb-1">
-                  <span>Question {quizStep + 1} of {QUIZ_QUESTIONS.length}</span>
-                  <span>{Math.round(((quizStep + 1) / QUIZ_QUESTIONS.length) * 100)}%</span>
-                </div>
-                <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-brand-purple rounded-full transition-all duration-300"
-                    style={{ width: `${((quizStep + 1) / QUIZ_QUESTIONS.length) * 100}%` }}
-                  />
-                </div>
-              </div>
-
-              {/* Micro-encouragement */}
-              {quizStep >= 4 && (
-                <p className="text-xs text-brand-purple font-medium mb-3">
-                  Almost there — your personalized results are coming together.
-                </p>
-              )}
-
-              <h3 className="text-xl font-bold mb-1">{QUIZ_QUESTIONS[quizStep].title}</h3>
-              {QUIZ_QUESTIONS[quizStep].subtitle && (
-                <p className="text-sm text-gray-500 mb-4">{QUIZ_QUESTIONS[quizStep].subtitle}</p>
-              )}
-              <div className="space-y-3">
-                {QUIZ_QUESTIONS[quizStep].options.map((option) => {
-                  const selected = quizAnswers[QUIZ_QUESTIONS[quizStep].id]?.includes(option)
-                  return (
-                    <button
-                      key={option}
-                      onClick={() =>
-                        selectAnswer(
-                          QUIZ_QUESTIONS[quizStep].id,
-                          option,
-                          QUIZ_QUESTIONS[quizStep].type
-                        )
-                      }
-                      className={`w-full text-left p-4 rounded-xl border-2 transition-all text-sm font-medium ${
-                        selected
-                          ? 'border-brand-purple bg-brand-purple/10 text-brand-purple'
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  )
-                })}
-              </div>
-              <div className="flex justify-between mt-6">
-                <button
-                  onClick={() => setQuizStep((s) => Math.max(0, s - 1))}
-                  className="text-gray-500 hover:text-gray-700 text-sm font-medium"
-                  disabled={quizStep === 0}
-                >
-                  ← Back
-                </button>
-                <button
-                  onClick={nextQuestion}
-                  className="btn-primary text-sm"
-                  disabled={!quizAnswers[QUIZ_QUESTIONS[quizStep].id]?.length}
-                >
-                  {quizStep === QUIZ_QUESTIONS.length - 1 ? 'See My Results →' : 'Next →'}
-                </button>
-              </div>
-            </div>
-          )}
+        <div className="max-w-[520px] mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">
+            Let&apos;s figure out what&apos;s going on
+          </h2>
+          <p className="text-gray-600 mb-6">
+            Quick assessment. No account needed. You&apos;ll get a personalized
+            breakdown of your symptoms and what they might mean — completely free.
+          </p>
+          <Link
+            href="/quiz"
+            onClick={() => {
+              (window as any).gtag?.('event', 'landing_quiz_cta_click');
+              (window as any).fbq?.('trackCustom', 'LandingQuizCTAClick');
+            }}
+            className="btn-primary inline-block text-base"
+          >
+            Take the Free Assessment &rarr;
+          </Link>
+          <p className="text-xs text-gray-500 mt-3">
+            Takes 2 minutes &middot; No credit card required
+          </p>
         </div>
       </section>
 
@@ -1033,9 +422,9 @@ export function LandingPage() {
             No judgment. No dismissal. Just real answers about what&apos;s happening in your body — for free.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={scrollToQuiz} className="bg-brand-pink text-white py-4 px-8 rounded-xl font-semibold hover:bg-brand-pink-light transition-colors">
+            <Link href="/quiz" className="bg-brand-pink text-white py-4 px-8 rounded-xl font-semibold hover:bg-brand-pink-light transition-colors inline-block">
               Take the Free Quiz
-            </button>
+            </Link>
             <Link href="/signup" className="bg-white text-brand-purple py-4 px-8 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
               Create Free Account
             </Link>
@@ -1094,11 +483,7 @@ export function LandingPage() {
                       await fetch('/api/waitlist/checkin', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                          email,
-                          quizSymptoms: getReportedSymptoms().map(s => s.symptom),
-                          quizLevel: showResult ? resultLevel : undefined,
-                        }),
+                        body: JSON.stringify({ email }),
                       });
                       (window as any).gtag?.('event', 'conversion', { 'send_to': 'AW-17830146300/qbF8CJjiioccEPzhibZC', value: 1.0, currency: 'USD' });
                       (window as any).fbq?.('track', 'Lead')
@@ -1122,9 +507,9 @@ export function LandingPage() {
 
       {/* Sticky Mobile CTA */}
       <div className="fixed bottom-0 left-0 right-0 z-30 sm:hidden bg-white border-t border-gray-200 p-3">
-        <button onClick={scrollToQuiz} className="w-full bg-brand-pink text-white py-3 rounded-lg font-semibold text-sm">
-          Take the Free Quiz →
-        </button>
+        <Link href="/quiz" className="block w-full bg-brand-pink text-white py-3 rounded-lg font-semibold text-sm text-center">
+          Take the Free Quiz &rarr;
+        </Link>
       </div>
     </div>
   )

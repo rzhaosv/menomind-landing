@@ -1,9 +1,8 @@
 {
-  "redirects": [
+  "crons": [
     {
-      "source": "/quiz",
-      "destination": "/quiz.html",
-      "permanent": false
+      "path": "/api/cron/weekly-insights",
+      "schedule": "0 14 * * 1"
     }
   ],
   "rewrites": [

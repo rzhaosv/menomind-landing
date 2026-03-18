@@ -122,6 +122,50 @@ export async function sendPaymentFailedEmail(
   })
 }
 
+export async function sendWelcomeEmail(email: string) {
+  await resend.emails.send({
+    from: FROM_EMAIL,
+    to: email,
+    replyTo: REPLY_TO,
+    subject: "Welcome to MenoMind — here's your first step",
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.6;">
+        <div style="background: linear-gradient(135deg, #6B3F8D, #8B5AAF); padding: 32px; text-align: center; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 24px;">Welcome to MenoMind</h1>
+        </div>
+        <div style="padding: 32px; background: #fff;">
+          <p>You just took one of the most important steps in understanding what your body is going through. Most women wait years before they connect the dots — you're already ahead.</p>
+
+          <p style="font-weight: 600; font-size: 16px; margin-top: 24px;">Here's how to get the most out of your first week:</p>
+
+          <div style="background: #F5F0F9; padding: 20px; border-radius: 12px; margin: 16px 0;">
+            <p style="margin: 0 0 12px; font-weight: 600;">1. Talk to your AI companion</p>
+            <p style="margin: 0 0 16px; font-size: 14px; color: #555;">Ask anything — "Is this perimenopause?", "Why am I waking up at 3am?", "What should I tell my doctor?" You'll get personalized, evidence-based answers instantly.</p>
+
+            <p style="margin: 0 0 12px; font-weight: 600;">2. Log your symptoms daily</p>
+            <p style="margin: 0 0 16px; font-size: 14px; color: #555;">It takes 30 seconds. After 7 days, you'll start seeing patterns you can't spot on your own — like which symptoms cluster together and when they peak.</p>
+
+            <p style="margin: 0 0 12px; font-weight: 600;">3. Generate a doctor-ready report</p>
+            <p style="margin: 0; font-size: 14px; color: #555;">After a week of tracking, you can download a formatted report to bring to your next appointment. No more being dismissed.</p>
+          </div>
+
+          <div style="text-align: center; margin: 32px 0;">
+            <a href="https://menomind.app/dashboard" style="background: #6B3F8D; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Go to My Dashboard</a>
+          </div>
+
+          <p style="font-size: 14px; color: #666;">Every Monday, you'll get a personalized check-in email with insights based on your symptom patterns. Keep logging and your reports will get more accurate over time.</p>
+
+          <p style="color: #666;">— The MenoMind Team</p>
+        </div>
+        <div style="padding: 16px 32px; background: #F5F0F9; text-align: center; font-size: 12px; color: #888; border-radius: 0 0 12px 12px;">
+          <p><a href="https://www.menomind.app" style="color: #6B3F8D;">menomind.app</a> · Built for women navigating perimenopause</p>
+          <p style="margin-top: 8px;"><a href="https://menomind.app/settings/subscription" style="color: #888;">Manage subscription</a></p>
+        </div>
+      </div>
+    `,
+  })
+}
+
 export async function sendWinbackEmail(
   email: string,
   name: string
