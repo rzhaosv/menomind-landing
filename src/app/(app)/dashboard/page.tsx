@@ -8,6 +8,7 @@ import { TrendChart, type DayData } from '@/components/dashboard/trend-chart';
 import { PlanActions, type PlanAction } from '@/components/dashboard/plan-actions';
 import { QuickChat } from '@/components/dashboard/quick-chat';
 import { UpgradeBanner } from '@/components/dashboard/upgrade-banner';
+import { DoctorReportCard } from '@/components/dashboard/doctor-report-card';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -213,6 +214,18 @@ export default async function DashboardPage() {
 
           {/* Quick chat */}
           <QuickChat />
+
+          {/* Doctor report card (premium users) */}
+          <DoctorReportCard
+            tier={tier}
+            daysLogged={
+              new Set(
+                (streakLogsRaw ?? []).map((l) =>
+                  new Date(l.logged_at).toISOString().split('T')[0]
+                )
+              ).size
+            }
+          />
 
           {/* Upgrade banner (free users only) */}
           <UpgradeBanner tier={tier} />
