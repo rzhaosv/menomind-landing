@@ -53,6 +53,44 @@ function ChatInterface({
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   const [input, setInput] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
+  const [userSymptoms, setUserSymptoms] = useState<string[]>([]);
+
+  // Fetch user profile for personalized prompts
+  useEffect(() => {
+    if (anonymous) return;
+    fetch('/api/user/profile')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (!data?.data) return;
+        const profile = data.data.user_profiles;
+        const symptoms: string[] = [];
+
+        // Extract symptoms from health_conditions if stored there
+        if (profile?.health_conditions?.symptoms) {
+          symptoms.push(...profile.health_conditions.symptoms);
+        }
+        // Also map goals to relevant symptom areas
+        const goalToSymptom: Record<string, string> = {
+          'manage-hot-flashes': 'hot_flashes',
+          'better-sleep': 'sleep_disruption',
+          'manage-mood': 'mood_swings',
+          'understand-symptoms': 'brain_fog',
+          'manage-weight': 'weight_gain',
+          'reduce-anxiety': 'anxiety',
+          'manage-fatigue': 'fatigue',
+          'manage-pain': 'joint_pain',
+        };
+        if (profile?.goals) {
+          for (const goal of profile.goals) {
+            const mapped = goalToSymptom[goal];
+            if (mapped && !symptoms.includes(mapped)) symptoms.push(mapped);
+          }
+        }
+
+        if (symptoms.length > 0) setUserSymptoms(symptoms);
+      })
+      .catch(() => {});
+  }, [anonymous]);
   const [error, setError] = useState<string | null>(null);
   const [currentConversationId, setCurrentConversationId] = useState(conversationId);
   const [userMessageCount, setUserMessageCount] = useState(0);
@@ -274,7 +312,11 @@ function ChatInterface({
               }}
               isFirstAssistant={true}
             />
-            <SuggestedPrompts onSelect={handlePromptSelect} />
+            <SuggestedPrompts
+              onSelect={handlePromptSelect}
+              symptoms={userSymptoms}
+              userName={appUser?.name?.split(' ')[0]}
+            />
           </div>
         ) : (
           <div className="max-w-3xl mx-auto">

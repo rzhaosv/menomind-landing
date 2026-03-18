@@ -38,30 +38,19 @@ function SeverityBadge({ severity }: { severity: number }) {
 function SymptomSummary({ todayLog }: SymptomSummaryProps) {
   if (!todayLog) {
     return (
-      <Card className="border-2 border-dashed border-brand-purple/20">
+      <Card className="border-2 border-brand-purple/15 bg-gradient-to-br from-brand-purple/[0.03] to-brand-pink/[0.03]">
         <CardContent className="text-center py-8">
           <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-brand-purple/10 flex items-center justify-center">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={1.5}
-              stroke="currentColor"
-              className="w-7 h-7 text-brand-purple"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.5v15m7.5-7.5h-15"
-              />
-            </svg>
+            <span className="text-2xl">📊</span>
           </div>
           <h3 className="text-lg font-semibold text-brand-dark mb-1">
-            No symptoms logged today
+            Start your daily check-in
           </h3>
-          <p className="text-gray-500 text-sm mb-5">
-            Track your symptoms to build insights over time.
+          <p className="text-gray-500 text-sm mb-2">
+            It takes 30 seconds. After 7 days, you&apos;ll start seeing patterns you can&apos;t spot on your own.
+          </p>
+          <p className="text-xs text-brand-purple font-medium mb-5">
+            Women who track daily are 3x more likely to identify symptom triggers
           </p>
           <Link href="/track">
             <Button size="md">Log Today&apos;s Symptoms</Button>

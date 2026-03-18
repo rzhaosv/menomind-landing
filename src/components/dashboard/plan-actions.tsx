@@ -36,20 +36,26 @@ function PlanActions({ planName, actions }: PlanActionsProps) {
 
   if (!planName || actions.length === 0) {
     return (
-      <Card>
+      <Card className="border-2 border-brand-purple/15 bg-gradient-to-br from-brand-purple/[0.03] to-brand-pink/[0.03]">
         <CardHeader>
           <CardTitle>Today&apos;s Plan</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center py-4">
-            <p className="text-sm text-gray-500 mb-3">
-              No active wellness plan yet.
+            <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-brand-purple/10 flex items-center justify-center">
+              <span className="text-xl">📋</span>
+            </div>
+            <p className="text-sm font-medium text-brand-dark mb-1">
+              Get your personalized wellness plan
+            </p>
+            <p className="text-xs text-gray-500 mb-4">
+              AI-generated action items for nutrition, sleep, exercise, and stress — tailored to your symptoms.
             </p>
             <Link
               href="/plans"
-              className="text-sm font-medium text-brand-purple hover:text-brand-purple-dark transition-colors"
+              className="inline-block bg-brand-purple text-white text-sm font-semibold px-5 py-2.5 rounded-lg hover:bg-brand-purple-dark transition-colors"
             >
-              Create a plan &rarr;
+              Generate My Plan
             </Link>
           </div>
         </CardContent>
