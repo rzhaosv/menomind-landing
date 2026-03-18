@@ -353,7 +353,7 @@ export default function QuizPage() {
       </div>
 
       {/* Main content */}
-      <main className="flex-1 flex items-center justify-center px-5 py-8">
+      <main className="flex-1 flex items-start justify-center px-5 py-6 sm:py-8 sm:items-center overflow-y-auto">
         <div className="w-full max-w-[520px]">
           {/* ─── QUIZ PHASE ─── */}
           {phase === 'quiz' && (() => {
@@ -872,22 +872,6 @@ export default function QuizPage() {
         </footer>
       )}
 
-      {/* CSS animation */}
-      <style jsx>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(8px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out;
-        }
-      `}</style>
     </div>
   )
 }
