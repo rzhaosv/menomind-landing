@@ -120,6 +120,10 @@
     {
       "source": "/blog/is-this-perimenopause",
       "destination": "/blog/is-this-perimenopause.html"
+    },
+    {
+      "source": "/blog/hot-flashes-night-sweats",
+      "destination": "/blog/hot-flashes-night-sweats.html"
     }
   ]
 }
