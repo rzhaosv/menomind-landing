@@ -26,11 +26,24 @@ export default function QuizPage() {
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
 
-  // Track quiz start
+  // Track quiz start — retry until gtag is loaded (race condition with afterInteractive)
   useEffect(() => {
-    const w = window as any
-    w.gtag?.('event', 'quiz_start')
-    w.fbq?.('trackCustom', 'QuizStart')
+    function fireQuizStart() {
+      const w = window as any
+      if (typeof w.gtag === 'function') {
+        w.gtag('event', 'quiz_start')
+        w.fbq?.('trackCustom', 'QuizStart')
+        return true
+      }
+      return false
+    }
+    if (!fireQuizStart()) {
+      const interval = setInterval(() => {
+        if (fireQuizStart()) clearInterval(interval)
+      }, 200)
+      // Stop trying after 10 seconds
+      setTimeout(() => clearInterval(interval), 10000)
+    }
   }, [])
 
   // Track paywall shown
