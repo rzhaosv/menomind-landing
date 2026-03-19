@@ -50,7 +50,7 @@ export default function QuizPage() {
   useEffect(() => {
     if (phase === 'paywall') {
       const w = window as any
-      w.gtag?.('event', 'quiz_paywall_shown')
+      w.gtag?.('event', 'quiz_s16_paywall')
       w.fbq?.('trackCustom', 'QuizPaywallShown')
     }
   }, [phase])
@@ -163,14 +163,20 @@ export default function QuizPage() {
     setTimeout(() => advance(), 250)
   }
 
+  // ─── Screen names for per-step GA4 tracking ───
+  const SCREEN_NAMES = [
+    'quiz_s01_age', 'quiz_s02_cognitive', 'quiz_s03_vasomotor',
+    'quiz_s04_somatic', 'quiz_s05_periods', 'quiz_s06_history',
+    'quiz_s07_impact', 'quiz_s08_education', 'quiz_s09_goals',
+    'quiz_s10_tried', 'quiz_s11_timeline', 'quiz_s12_commitment',
+  ]
+
   // ─── Navigation ───
   function advance() {
-    // Track step progression
+    // Track per-screen event for GA4 funnel analysis
     const w = window as any
-    w.gtag?.('event', 'quiz_step', {
-      step: step + 1,
-      total: TOTAL_STEPS,
-    })
+    const screenEvent = SCREEN_NAMES[step] || `quiz_step_${step + 1}`
+    w.gtag?.('event', screenEvent, { step: step + 1 })
 
     if (step < SCREENS.length - 1) {
       setStep((s) => s + 1)
@@ -200,7 +206,7 @@ export default function QuizPage() {
     setAnalyzingStep(0)
 
     const w = window as any
-    w.gtag?.('event', 'quiz_analyzing')
+    w.gtag?.('event', 'quiz_s13_analyzing')
     w.fbq?.('trackCustom', 'QuizAnalyzing')
 
     // Rotate through messages
@@ -213,6 +219,7 @@ export default function QuizPage() {
           setPhase('reveal')
           const level = getResultLevel()
           const { reported } = getSymptomScore()
+          w.gtag?.('event', 'quiz_s14_reveal')
           w.gtag?.('event', 'quiz_complete', {
             result_level: level,
             symptom_count: reported,
@@ -655,7 +662,7 @@ export default function QuizPage() {
                 <button
                   onClick={() => {
                     const w = window as any
-                    w.gtag?.('event', 'quiz_reveal_continue')
+                    w.gtag?.('event', 'quiz_s15_email')
                     setPhase('email')
                   }}
                   className="btn-primary w-full mt-6"
@@ -719,6 +726,7 @@ export default function QuizPage() {
                     onClick={() => {
                       const w = window as any
                       w.gtag?.('event', 'quiz_email_skipped')
+                      w.gtag?.('event', 'quiz_s16_paywall')
                       setPhase('paywall')
                     }}
                     className="text-xs text-gray-400 hover:text-gray-600 mt-3 underline"
