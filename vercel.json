@@ -124,6 +124,10 @@
     {
       "source": "/blog/hot-flashes-night-sweats",
       "destination": "/blog/hot-flashes-night-sweats.html"
+    },
+    {
+      "source": "/blog/how-long-does-perimenopause-last",
+      "destination": "/blog/how-long-does-perimenopause-last.html"
     }
   ]
 }
