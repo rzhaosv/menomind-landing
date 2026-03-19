@@ -12,6 +12,7 @@ function SuccessContent() {
   const sessionId = searchParams.get('session_id')
   const [tracked, setTracked] = useState(false)
   const [signingIn, setSigningIn] = useState(false)
+  const [signInAttempted, setSignInAttempted] = useState(false)
   const [fallbackEmail, setFallbackEmail] = useState<string | null>(null)
 
   // Track purchase conversion
@@ -34,32 +35,30 @@ function SuccessContent() {
     }
   }, [success, tracked, sessionId])
 
-  // Auto-sign in after checkout
+  // Auto-sign in after checkout (runs ONCE)
   useEffect(() => {
-    if (success && sessionId && !signingIn) {
-      setSigningIn(true)
+    if (!success || !sessionId || signInAttempted) return
+    setSignInAttempted(true)
+    setSigningIn(true)
 
-      fetch('/api/auth/post-checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sessionId }),
+    fetch('/api/auth/post-checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.url && !data.fallback) {
+          window.location.href = data.url
+        } else if (data.email) {
+          setFallbackEmail(data.email)
+          setSigningIn(false)
+        } else {
+          setSigningIn(false)
+        }
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.url && !data.fallback) {
-            // Auto-redirect to magic link — signs them in
-            window.location.href = data.url
-          } else if (data.email) {
-            // Fallback: show email to sign in with
-            setFallbackEmail(data.email)
-            setSigningIn(false)
-          } else {
-            setSigningIn(false)
-          }
-        })
-        .catch(() => setSigningIn(false))
-    }
-  }, [success, sessionId, signingIn])
+      .catch(() => setSigningIn(false))
+  }, [success, sessionId, signInAttempted])
 
   if (canceled) {
     return (
