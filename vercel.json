@@ -132,6 +132,10 @@
     {
       "source": "/blog/perimenopause-anxiety-or-mental-health",
       "destination": "/blog/perimenopause-anxiety-or-mental-health.html"
+    },
+    {
+      "source": "/blog/natural-remedies-perimenopause",
+      "destination": "/blog/natural-remedies-perimenopause.html"
     }
   ]
 }
