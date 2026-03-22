@@ -16,7 +16,7 @@ const TOTAL_STEPS = SCREENS.length + 4
 type Phase = 'quiz' | 'analyzing' | 'reveal' | 'email' | 'paywall'
 
 export default function QuizPage() {
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(-1) // -1 = welcome screen
   const [phase, setPhase] = useState<Phase>('quiz')
   const [answers, setAnswers] = useState<Record<string, string[]>>({})
   const [analyzingStep, setAnalyzingStep] = useState(0)
@@ -26,20 +26,19 @@ export default function QuizPage() {
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
 
-  // Track quiz start — retry until gtag is loaded (race condition with afterInteractive)
+  // Track page landed (not quiz_start — that fires when they click "Start")
   useEffect(() => {
-    function fireQuizStart() {
+    function fireLanded() {
       const w = window as any
       if (typeof w.gtag === 'function') {
-        w.gtag('event', 'quiz_start')
-        w.fbq?.('trackCustom', 'QuizStart')
+        w.gtag('event', 'quiz_landed')
         return true
       }
       return false
     }
-    if (!fireQuizStart()) {
+    if (!fireLanded()) {
       const interval = setInterval(() => {
-        if (fireQuizStart()) clearInterval(interval)
+        if (fireLanded()) clearInterval(interval)
       }, 200)
       // Stop trying after 10 seconds
       setTimeout(() => clearInterval(interval), 10000)
@@ -299,11 +298,20 @@ export default function QuizPage() {
 
   // ─── Progress calculation ───
   function getProgress() {
+    if (step === -1) return 0 // welcome screen
     if (phase === 'quiz') return ((step + 1) / TOTAL_STEPS) * 100
     if (phase === 'analyzing') return ((SCREENS.length + 1) / TOTAL_STEPS) * 100
     if (phase === 'reveal') return ((SCREENS.length + 2) / TOTAL_STEPS) * 100
     if (phase === 'email') return ((SCREENS.length + 3) / TOTAL_STEPS) * 100
     return 100 // paywall
+  }
+
+  // Start the quiz from welcome screen
+  function startQuiz() {
+    setStep(0)
+    const w = window as any
+    w.gtag?.('event', 'quiz_start')
+    w.fbq?.('trackCustom', 'QuizStart')
   }
 
   // ─── Result config ───
@@ -353,7 +361,7 @@ export default function QuizPage() {
           >
             MenoMind
           </Link>
-          {phase === 'quiz' && step > 0 && (
+          {phase === 'quiz' && step > 0 && step !== -1 && (
             <button
               onClick={goBack}
               className="text-sm text-gray-500 hover:text-gray-700"
@@ -364,19 +372,80 @@ export default function QuizPage() {
         </div>
       </header>
 
-      {/* Progress bar */}
-      <div className="w-full h-1.5 bg-gray-200">
-        <div
-          className="h-full bg-brand-purple rounded-r-full transition-all duration-500 ease-out"
-          style={{ width: `${getProgress()}%` }}
-        />
-      </div>
+      {/* Progress bar — hidden on welcome screen */}
+      {step >= 0 && (
+        <div className="w-full h-1.5 bg-gray-200">
+          <div
+            className="h-full bg-brand-purple rounded-r-full transition-all duration-500 ease-out"
+            style={{ width: `${getProgress()}%` }}
+          />
+        </div>
+      )}
 
       {/* Main content — renders immediately as static HTML, interactive after hydration */}
       <main className="flex-1 flex items-start justify-center px-5 py-6 sm:py-8 sm:items-center overflow-y-auto">
         <div className="w-full max-w-[520px]">
+          {/* ─── WELCOME SCREEN ─── */}
+          {step === -1 && (
+            <div className="text-center animate-fadeIn">
+              <h1 className="text-2xl sm:text-3xl font-bold text-brand-dark mb-3 leading-tight">
+                Could your symptoms be hormonal?
+              </h1>
+              <p className="text-gray-500 text-sm mb-6">
+                Find out in 2 minutes. No signup. No judgment.
+              </p>
+
+              <div className="bg-white rounded-2xl p-5 mb-6 text-left border border-gray-200">
+                <p className="text-sm font-semibold text-brand-dark mb-3">
+                  Based on your answers, you&apos;ll get:
+                </p>
+                <div className="space-y-2.5">
+                  {[
+                    { icon: '🔍', text: 'Which of your symptoms are connected' },
+                    { icon: '📊', text: 'A personalized symptom breakdown' },
+                    { icon: '💡', text: "What's likely causing them" },
+                  ].map((item) => (
+                    <div key={item.text} className="flex items-start gap-2.5">
+                      <span className="text-base shrink-0">{item.icon}</span>
+                      <span className="text-sm text-gray-700">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={startQuiz}
+                className="w-full bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 transition-colors text-lg shadow-md shadow-brand-pink/20"
+              >
+                Start My Assessment
+              </button>
+
+              <div className="flex items-center justify-center gap-4 mt-4 text-xs text-gray-400">
+                <span>Free</span>
+                <span>No account needed</span>
+                <span>Private</span>
+              </div>
+
+              <div className="flex items-center justify-center gap-2 mt-5">
+                <div className="flex -space-x-1.5">
+                  {['S', 'M', 'J', 'L'].map((initial) => (
+                    <div
+                      key={initial}
+                      className="w-6 h-6 rounded-full bg-brand-purple-light border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
+                    >
+                      {initial}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-gray-500">
+                  Taken by 2,400+ women this month
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* ─── QUIZ PHASE ─── */}
-          {phase === 'quiz' && (() => {
+          {phase === 'quiz' && step >= 0 && (() => {
             const screen = SCREENS[step]
 
             // Education screen
