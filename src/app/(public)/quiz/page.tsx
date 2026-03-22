@@ -25,6 +25,12 @@ export default function QuizPage() {
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  // Mark as mounted so we know React has hydrated
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Track quiz start — retry until gtag is loaded (race condition with afterInteractive)
   useEffect(() => {
@@ -165,7 +171,7 @@ export default function QuizPage() {
 
   // ─── Screen names for per-step GA4 tracking ───
   const SCREEN_NAMES = [
-    'quiz_s01_age', 'quiz_s02_cognitive', 'quiz_s03_vasomotor',
+    'quiz_s01_symptoms', 'quiz_s02_age', 'quiz_s03_vasomotor',
     'quiz_s04_somatic', 'quiz_s05_periods', 'quiz_s06_history',
     'quiz_s07_impact', 'quiz_s08_education', 'quiz_s09_goals',
     'quiz_s10_tried', 'quiz_s11_timeline', 'quiz_s12_commitment',
@@ -344,12 +350,12 @@ export default function QuizPage() {
 
   return (
     <div className="min-h-screen bg-brand-cream flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-brand-cream/95 backdrop-blur-sm border-b border-brand-purple/[0.08] px-5 py-3">
+      {/* Header — not sticky on mobile to save screen space */}
+      <header className="z-40 bg-brand-cream/95 backdrop-blur-sm border-b border-brand-purple/[0.08] px-5 py-3 sm:sticky sm:top-0">
         <div className="max-w-[520px] mx-auto flex items-center justify-between">
           <Link
             href="/"
-            className="text-xl font-bold text-brand-purple tracking-tight"
+            className="text-lg font-bold text-brand-purple tracking-tight"
           >
             MenoMind
           </Link>
@@ -371,6 +377,16 @@ export default function QuizPage() {
           style={{ width: `${getProgress()}%` }}
         />
       </div>
+
+      {/* Loading overlay — covers quiz until React hydrates so users don't tap dead buttons */}
+      {!mounted && (
+        <div className="fixed inset-0 z-50 bg-brand-cream flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-10 h-10 mx-auto mb-3 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin" />
+            <p className="text-sm text-gray-500">Loading your assessment...</p>
+          </div>
+        </div>
+      )}
 
       {/* Main content */}
       <main className="flex-1 flex items-start justify-center px-5 py-6 sm:py-8 sm:items-center overflow-y-auto">
@@ -440,6 +456,13 @@ export default function QuizPage() {
 
             return (
               <div className="animate-fadeIn">
+                {/* Context intro on first screen */}
+                {step === 0 && (
+                  <p className="text-xs text-brand-purple/70 font-medium mb-4 text-center">
+                    Based on your answers, we&apos;ll show you which symptoms are connected — and what&apos;s likely causing them.
+                  </p>
+                )}
+
                 {/* Micro-encouragement on later steps */}
                 {step >= 8 && (
                   <p className="text-xs text-brand-purple font-medium mb-3">
@@ -447,7 +470,7 @@ export default function QuizPage() {
                   </p>
                 )}
 
-                <h2 className="text-xl sm:text-2xl font-bold text-brand-dark mb-1">
+                <h2 className="text-2xl font-bold text-brand-dark mb-1">
                   {q.title}
                 </h2>
                 {q.subtitle && (
@@ -467,7 +490,7 @@ export default function QuizPage() {
                             selectAnswer(q.id, option, q.type)
                           }
                         }}
-                        className={`w-full text-left p-4 rounded-xl border-2 transition-all text-sm font-medium ${
+                        className={`w-full text-left p-4 rounded-xl border-2 transition-all text-base font-medium ${
                           selected
                             ? 'border-brand-purple bg-brand-purple/10 text-brand-purple'
                             : 'border-gray-200 hover:border-gray-300 bg-white'

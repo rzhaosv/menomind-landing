@@ -32,25 +32,25 @@ export type QuizScreen =
 // Core symptom questions (existing, reformatted)
 export const CORE_QUESTIONS: QuizQuestion[] = [
   {
-    id: 'age',
-    title: 'First — how old are you?',
-    subtitle: 'This helps us give you more relevant information.',
-    options: ['Under 35', '35-39', '40-44', '45-49', '50-54', '55+'],
-    type: 'single',
-  },
-  {
     id: 'cognitive',
-    title: 'Have you noticed any of these lately?',
+    title: 'Has any of this been happening to you?',
     subtitle:
-      "These are more common than you think — and there's usually a hormonal reason.",
+      "Check everything that sounds familiar — most women have more than they realize.",
     options: [
-      'Anxiety or panic attacks',
-      'Irritability or rage',
-      'Brain fog or memory issues',
-      'Feeling down or emotionally flat',
+      'Anxiety or panic that came out of nowhere',
+      'Brain fog — forgetting words, losing your train of thought',
+      'Rage or irritability that feels out of character',
+      'Feeling emotionally flat or disconnected',
       'None of these',
     ],
     type: 'multi',
+  },
+  {
+    id: 'age',
+    title: 'How old are you?',
+    subtitle: 'This helps us match your symptoms to the right patterns.',
+    options: ['Under 35', '35-39', '40-44', '45-49', '50-54', '55+'],
+    type: 'single',
   },
   {
     id: 'vasomotor',
