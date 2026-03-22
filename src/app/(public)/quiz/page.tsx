@@ -25,12 +25,6 @@ export default function QuizPage() {
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
-  const [mounted, setMounted] = useState(false)
-
-  // Mark as mounted so we know React has hydrated
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   // Track quiz start — retry until gtag is loaded (race condition with afterInteractive)
   useEffect(() => {
@@ -378,17 +372,7 @@ export default function QuizPage() {
         />
       </div>
 
-      {/* Loading overlay — covers quiz until React hydrates so users don't tap dead buttons */}
-      {!mounted && (
-        <div className="fixed inset-0 z-50 bg-brand-cream flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-10 h-10 mx-auto mb-3 border-4 border-brand-purple/20 border-t-brand-purple rounded-full animate-spin" />
-            <p className="text-sm text-gray-500">Loading your assessment...</p>
-          </div>
-        </div>
-      )}
-
-      {/* Main content */}
+      {/* Main content — renders immediately as static HTML, interactive after hydration */}
       <main className="flex-1 flex items-start justify-center px-5 py-6 sm:py-8 sm:items-center overflow-y-auto">
         <div className="w-full max-w-[520px]">
           {/* ─── QUIZ PHASE ─── */}
