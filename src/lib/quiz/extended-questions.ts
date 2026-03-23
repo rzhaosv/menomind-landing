@@ -33,17 +33,17 @@ export type QuizScreen =
 export const CORE_QUESTIONS: QuizQuestion[] = [
   {
     id: 'cognitive',
-    title: 'Has any of this been happening to you?',
-    subtitle:
-      "Check everything that sounds familiar — most women have more than they realize.",
+    title: 'What bothers you the most right now?',
+    subtitle: 'Tap the one that fits best.',
     options: [
-      'Anxiety or panic that came out of nowhere',
-      'Brain fog — forgetting words, losing your train of thought',
-      'Rage or irritability that feels out of character',
-      'Feeling emotionally flat or disconnected',
-      'None of these',
+      'Anxiety, brain fog, or mood changes',
+      'Hot flashes, night sweats, or heart racing',
+      'Sleep problems, fatigue, or weight gain',
+      'Period changes or pain',
+      'Multiple symptoms — hard to pin down',
+      "I'm not sure yet — I just want answers",
     ],
-    type: 'multi',
+    type: 'single',
   },
   {
     id: 'age',

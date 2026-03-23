@@ -253,6 +253,7 @@ export default function QuizPage() {
       })
       setEmailCaptured(true)
       const w = window as any
+      w.gtag?.('event', 'quiz_s15_email')
       w.gtag?.('event', 'quiz_email_captured')
       w.gtag?.('event', 'conversion', {
         send_to: 'AW-17830146300/qbF8CJjiioccEPzhibZC',
@@ -261,7 +262,11 @@ export default function QuizPage() {
       })
       w.fbq?.('track', 'Lead')
       // Auto-advance to paywall after brief confirmation
-      setTimeout(() => setPhase('paywall'), 1200)
+      setTimeout(() => {
+        const w2 = window as any
+        w2.gtag?.('event', 'quiz_s16_paywall')
+        setPhase('paywall')
+      }, 1200)
     } catch {
       // silently continue
     } finally {
@@ -509,13 +514,6 @@ export default function QuizPage() {
 
             return (
               <div className="animate-fadeIn">
-                {/* Context intro on first screen */}
-                {step === 0 && (
-                  <p className="text-xs text-brand-purple/70 font-medium mb-4 text-center">
-                    Based on your answers, we&apos;ll show you which symptoms are connected — and what&apos;s likely causing them.
-                  </p>
-                )}
-
                 {/* Micro-encouragement on later steps */}
                 {step >= 8 && (
                   <p className="text-xs text-brand-purple font-medium mb-3">
@@ -560,7 +558,7 @@ export default function QuizPage() {
                   <button
                     onClick={advance}
                     disabled={!hasAnswer}
-                    className="btn-primary w-full mt-6 disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full mt-6 bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                   >
                     Next &rarr;
                   </button>
@@ -735,16 +733,57 @@ export default function QuizPage() {
                   </div>
                 )}
 
-                <button
-                  onClick={() => {
-                    const w = window as any
-                    w.gtag?.('event', 'quiz_s15_email')
-                    setPhase('email')
-                  }}
-                  className="btn-primary w-full mt-6"
-                >
-                  See My Full Report &rarr;
-                </button>
+                {/* Inline email capture — no separate screen */}
+                <div className="mt-6 bg-white rounded-2xl border-2 border-brand-purple/15 p-5 text-center">
+                  <p className="text-sm font-semibold text-brand-dark mb-1">
+                    Your full report is ready
+                  </p>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Enter your email to see the full breakdown + get a copy sent to you.
+                  </p>
+                  {emailCaptured ? (
+                    <div className="text-sm text-green-600 font-medium py-2">
+                      ✓ Sent! Continuing to your results...
+                    </div>
+                  ) : (
+                    <>
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault()
+                          handleEmailSubmit(e)
+                        }}
+                        className="flex gap-2"
+                      >
+                        <input
+                          type="email"
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="your@email.com"
+                          className="input-field flex-1 text-sm"
+                          required
+                        />
+                        <button
+                          type="submit"
+                          disabled={emailSubmitting}
+                          className="bg-brand-pink text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-brand-pink/90 transition-colors whitespace-nowrap disabled:opacity-50"
+                        >
+                          {emailSubmitting ? '...' : 'Get Report'}
+                        </button>
+                      </form>
+                      <button
+                        onClick={() => {
+                          const w = window as any
+                          w.gtag?.('event', 'quiz_email_skipped')
+                          w.gtag?.('event', 'quiz_s16_paywall')
+                          setPhase('paywall')
+                        }}
+                        className="text-xs text-gray-400 hover:text-gray-600 mt-3 underline"
+                      >
+                        Skip — show me the paywall
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             )
           })()}
