@@ -31,30 +31,46 @@ export type QuizScreen =
 
 // Core symptom questions (existing, reformatted)
 export const CORE_QUESTIONS: QuizQuestion[] = [
-  {
-    id: 'cognitive',
-    title: 'What bothers you the most right now?',
-    subtitle: 'Tap the one that fits best.',
-    options: [
-      'Anxiety, brain fog, or mood changes',
-      'Hot flashes, night sweats, or heart racing',
-      'Sleep problems, fatigue, or weight gain',
-      'Period changes or pain',
-      'Multiple symptoms — hard to pin down',
-      "I'm not sure yet — I just want answers",
-    ],
-    type: 'single',
-  },
+  // Stage 1: Warm-up (easy, non-threatening, single-tap)
   {
     id: 'age',
-    title: 'How old are you?',
-    subtitle: 'This helps us match your symptoms to the right patterns.',
+    title: 'First, how old are you?',
+    subtitle: 'This helps us personalize your results.',
     options: ['Under 35', '35-39', '40-44', '45-49', '50-54', '55+'],
     type: 'single',
   },
+  // Stage 2: Primary concern (experiential language, not clinical)
+  {
+    id: 'cognitive',
+    title: "What's been on your mind lately?",
+    subtitle: 'Tap the one that resonates most.',
+    options: [
+      'My mood feels unpredictable',
+      'My sleep has changed',
+      'My energy isn\'t what it used to be',
+      'My body feels different',
+      'I just don\'t feel like myself',
+    ],
+    type: 'single',
+  },
+  // Stage 2: Timeline (easy, builds narrative)
+  {
+    id: 'timeline',
+    title: 'When did you first notice these changes?',
+    subtitle: 'Even a rough estimate helps.',
+    options: [
+      'Last few weeks',
+      '1-3 months ago',
+      '3-12 months ago',
+      '1-3 years ago',
+      '3+ years ago',
+    ],
+    type: 'single',
+  },
+  // Stage 3: Symptom details (multi-select, user is now committed)
   {
     id: 'vasomotor',
-    title: 'What about your body — anything feel off?',
+    title: 'Have you noticed any of these?',
     subtitle: "Many women don't connect these to hormones at first.",
     options: [
       'Hot flashes',
@@ -91,6 +107,7 @@ export const CORE_QUESTIONS: QuizQuestion[] = [
     ],
     type: 'single',
   },
+  // Stage 4: Deeper context
   {
     id: 'history',
     title: 'Do you know if anyone in your family went through menopause early?',
@@ -140,20 +157,17 @@ export const DEPTH_QUESTIONS: QuizQuestion[] = [
     ],
     type: 'multi',
   },
-  {
-    id: 'timeline',
-    title: 'When did you first notice something was off?',
-    subtitle: 'Even a rough estimate helps.',
-    options: [
-      'Last few weeks',
-      '1-3 months ago',
-      '3-12 months ago',
-      '1-3 years ago',
-      '3+ years ago',
-    ],
-    type: 'single',
-  },
 ]
+
+// Education screen shown after age question (normalizes symptoms before asking about them)
+export const EARLY_EDUCATION_SCREEN: EducationScreen = {
+  id: 'education_early',
+  type: 'education',
+  headline: "You're in the right place.",
+  stat: '8 out of 10 women experience unexpected changes in mood, energy, and thinking — often years before menopause.',
+  body: "Most women have no idea these changes are hormonal. The fact that you're here means you're already ahead.",
+  socialProof: '14,000+ women have taken this assessment',
+}
 
 // Education screen shown between core and depth questions
 export const EDUCATION_SCREEN: EducationScreen = {
@@ -188,12 +202,18 @@ export const ANALYZING_MESSAGES = [
 export function buildQuizScreens(): QuizScreen[] {
   const screens: QuizScreen[] = []
 
-  // Screens 1-7: Core questions
-  for (const q of CORE_QUESTIONS) {
-    screens.push({ ...q, screenType: 'question' })
+  // Q1: Age (warm-up)
+  screens.push({ ...CORE_QUESTIONS[0], screenType: 'question' })
+
+  // Education interstitial after age (normalizes symptoms)
+  screens.push({ ...EARLY_EDUCATION_SCREEN, screenType: 'education' })
+
+  // Q2-Q8: Remaining core questions
+  for (let i = 1; i < CORE_QUESTIONS.length; i++) {
+    screens.push({ ...CORE_QUESTIONS[i], screenType: 'question' })
   }
 
-  // Screen 8: Education break
+  // Education break before depth questions
   screens.push({ ...EDUCATION_SCREEN, screenType: 'education' })
 
   // Screens 9-11: Depth questions

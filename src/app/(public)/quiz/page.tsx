@@ -164,10 +164,11 @@ export default function QuizPage() {
 
   // ─── Screen names for per-step GA4 tracking ───
   const SCREEN_NAMES = [
-    'quiz_s01_symptoms', 'quiz_s02_age', 'quiz_s03_vasomotor',
-    'quiz_s04_somatic', 'quiz_s05_periods', 'quiz_s06_history',
-    'quiz_s07_impact', 'quiz_s08_education', 'quiz_s09_goals',
-    'quiz_s10_tried', 'quiz_s11_timeline', 'quiz_s12_commitment',
+    'quiz_s01_age', 'quiz_s02_education', 'quiz_s03_concern',
+    'quiz_s04_timeline', 'quiz_s05_vasomotor', 'quiz_s06_somatic',
+    'quiz_s07_periods', 'quiz_s08_history', 'quiz_s09_impact',
+    'quiz_s10_education2', 'quiz_s11_goals', 'quiz_s12_tried',
+    'quiz_s13_commitment',
   ]
 
   // ─── Navigation ───
