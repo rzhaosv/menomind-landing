@@ -314,6 +314,7 @@ export default function QuizPage() {
   // Start the quiz from welcome screen
   function startQuiz() {
     setStep(0)
+    window.scrollTo(0, 0)
     const w = window as any
     w.gtag?.('event', 'quiz_start')
     w.fbq?.('trackCustom', 'QuizStart')
@@ -420,7 +421,7 @@ export default function QuizPage() {
 
               <button
                 onClick={startQuiz}
-                className="w-full bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 transition-colors text-lg shadow-md shadow-brand-pink/20"
+                className="w-full bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 active:scale-95 transition-all text-lg shadow-md shadow-brand-pink/20"
               >
                 Start My Assessment
               </button>
@@ -513,7 +514,7 @@ export default function QuizPage() {
             const hasAnswer = currentAnswers.length > 0
 
             return (
-              <div className="animate-fadeIn">
+              <div className={step === 0 ? '' : 'animate-fadeIn'}>
                 {/* Micro-encouragement on later steps */}
                 {step >= 8 && (
                   <p className="text-xs text-brand-purple font-medium mb-3">
@@ -541,7 +542,7 @@ export default function QuizPage() {
                             selectAnswer(q.id, option, q.type)
                           }
                         }}
-                        className={`w-full text-left p-4 rounded-xl border-2 transition-all text-base font-medium ${
+                        className={`w-full text-left p-4 rounded-xl border-2 transition-all text-base font-medium active:scale-[0.98] ${
                           selected
                             ? 'border-brand-purple bg-brand-purple/10 text-brand-purple'
                             : 'border-gray-200 hover:border-gray-300 bg-white'
