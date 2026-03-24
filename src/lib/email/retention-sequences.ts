@@ -33,7 +33,10 @@ export async function sendNurtureEmail(
             <a href="https://menomind.app/dashboard" style="background: #6B3F8D; color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; font-weight: 600; display: inline-block;">Start Tracking Your Symptoms</a>
           </div>
           <p>You're not imagining it. And you don't have to figure it out alone.</p>
-          <p style="color: #666;">— The MenoMind Team</p>
+          <p style="color: #444; margin-top: 24px; padding-top: 16px; border-top: 1px solid #eee;">
+            <strong>P.S.</strong> I'm genuinely curious — what made you take the quiz? And did the results match what you were feeling? Just hit reply — I read every one.
+          </p>
+          <p style="color: #666;">— Ray, MenoMind founder</p>
           ${resultsUrl ? `<p style="font-size: 13px; color: #888;">P.S. If you haven't looked at your quiz results yet, they're still waiting for you. <a href="${resultsUrl}" style="color: #6B3F8D;">View Results →</a></p>` : ''}
         </div>
         <div style="padding: 16px 32px; background: #F5F0F9; text-align: center; font-size: 12px; color: #888; border-radius: 0 0 12px 12px;">
@@ -116,6 +119,33 @@ export async function sendPaymentFailedEmail(
         </a>
         <p style="color: #999; font-size: 13px; margin-top: 32px; line-height: 1.5;">
           If you'd like to cancel instead, you can do that from your Settings page. Your data stays safe either way.
+        </p>
+      </div>
+    `,
+  })
+}
+
+export async function sendPersonalCheckIn(
+  email: string,
+  scheduledAt?: Date
+) {
+  await resend.emails.send({
+    ...(scheduledAt && { scheduledAt: scheduledAt.toISOString() }),
+    from: 'Ray from MenoMind <hello@menomind.app>',
+    to: email,
+    replyTo: REPLY_TO,
+    subject: 'Quick question about your quiz results',
+    html: `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; color: #333; line-height: 1.8; padding: 20px;">
+        <p>Hey,</p>
+        <p>You took the MenoMind symptom quiz a few days ago. I'm Ray, the founder, and I wanted to ask you something real:</p>
+        <p><strong>Did anything in your results surprise you?</strong></p>
+        <p>I built MenoMind because someone close to me went through years of symptoms before anyone connected the dots. I want to make sure this tool actually helps women like you — not just generates data.</p>
+        <p>If you have 30 seconds, just reply with what you thought. Even "it was okay" or "not helpful" helps me improve it.</p>
+        <p>No sales pitch. Just listening.</p>
+        <p>— Ray</p>
+        <p style="font-size: 12px; color: #999; margin-top: 32px; border-top: 1px solid #eee; padding-top: 16px;">
+          You're receiving this because you took the MenoMind symptom quiz. <a href="https://menomind.app" style="color: #6B3F8D;">menomind.app</a>
         </p>
       </div>
     `,

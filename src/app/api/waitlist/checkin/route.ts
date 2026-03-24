@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { sendQuizResultsEmail } from '@/lib/email/quiz-results'
-import { sendNurtureEmail } from '@/lib/email/retention-sequences'
+import { sendNurtureEmail, sendPersonalCheckIn } from '@/lib/email/retention-sequences'
 
 export async function POST(request: Request) {
   try {
@@ -70,6 +70,13 @@ export async function POST(request: Request) {
       await sendNurtureEmail(cleanEmail, resultsUrl, new Date(Date.now() + 48 * 60 * 60 * 1000))
     } catch (emailError) {
       console.error('Failed to schedule nurture email:', emailError)
+    }
+
+    // Schedule personal check-in for day 5
+    try {
+      await sendPersonalCheckIn(cleanEmail, new Date(Date.now() + 5 * 24 * 60 * 60 * 1000))
+    } catch (emailError) {
+      console.error('Failed to schedule personal check-in:', emailError)
     }
 
     return NextResponse.json({ success: true })
