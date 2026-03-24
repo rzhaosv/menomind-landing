@@ -395,36 +395,31 @@ export default function QuizPage() {
           {/* ─── WELCOME SCREEN ─── */}
           {step === -1 && (
             <div className="text-center animate-fadeIn">
-              {/* Symptom list — mirrors the ad creative */}
-              <div className="mb-5">
-                <div className="flex flex-wrap justify-center gap-2 text-sm font-medium text-brand-dark">
-                  {['Brain fog', 'Night sweats', 'Rage', 'Anxiety'].map((s) => (
-                    <span key={s} className="bg-white border border-gray-200 px-3 py-1.5 rounded-full">
-                      {s}
-                    </span>
-                  ))}
-                </div>
-                <p className="text-brand-purple font-semibold text-base mt-3">
-                  Sound familiar?
-                </p>
+              {/* Symptom pills — echo the ad creative */}
+              <div className="flex flex-wrap justify-center gap-2 mb-4">
+                {['Brain fog', 'Night sweats', 'Rage', 'Anxiety'].map((s) => (
+                  <span key={s} className="bg-white border border-gray-200 text-brand-dark text-sm font-medium px-3 py-1.5 rounded-full">
+                    {s}
+                  </span>
+                ))}
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-bold text-brand-dark mb-2 leading-tight">
-                What if they&apos;re connected?
+                Could your symptoms be hormonal?
               </h1>
               <p className="text-gray-500 text-sm mb-6">
-                What if there&apos;s a name for what&apos;s happening — and you&apos;re not imagining it?
+                Find out in 2 minutes. No signup. No judgment.
               </p>
 
               <div className="bg-white rounded-2xl p-5 mb-6 text-left border border-gray-200">
                 <p className="text-sm font-semibold text-brand-dark mb-3">
-                  Take this free 2-minute check to:
+                  Based on your answers, you&apos;ll get:
                 </p>
                 <div className="space-y-2.5">
                   {[
-                    'Find out if your symptoms are hormonal',
-                    'See how they connect to each other',
-                    'Finally get a clear answer',
+                    'Find out if your symptoms are connected',
+                    'A personalized symptom breakdown',
+                    'Clear next steps — not guesswork',
                   ].map((text) => (
                     <div key={text} className="flex items-start gap-2.5">
                       <span className="text-brand-purple text-sm font-bold shrink-0 mt-0.5">&#10003;</span>
@@ -457,7 +452,7 @@ export default function QuizPage() {
                   ))}
                 </div>
                 <p className="text-xs text-gray-500">
-                  Join 14,000+ women who finally got answers
+                  Taken by 14,000+ women this month
                 </p>
               </div>
             </div>
