@@ -31,26 +31,27 @@ export type QuizScreen =
 
 // Core symptom questions (existing, reformatted)
 export const CORE_QUESTIONS: QuizQuestion[] = [
-  // Stage 1: Warm-up (easy, non-threatening, single-tap)
+  // Q1: Symptom concern — validates the ad click, creates micro-commitment
   {
-    id: 'age',
-    title: 'First, how old are you?',
-    subtitle: 'This helps us personalize your results.',
-    options: ['Under 35', '35-39', '40-44', '45-49', '50-54', '55+'],
+    id: 'primary_concern',
+    title: "What's been affecting you most?",
+    subtitle: 'Tap the one that fits best.',
+    options: [
+      'Hot flashes or night sweats',
+      'Sleep problems',
+      'Mood changes or anxiety',
+      'Brain fog or memory issues',
+      'Weight or body changes',
+      "I'm not sure — I just want answers",
+    ],
     type: 'single',
   },
-  // Stage 2: Primary concern (experiential language, not clinical)
+  // Q2: Age — easy demographic, builds on commitment
   {
-    id: 'cognitive',
-    title: "What's been on your mind lately?",
-    subtitle: 'Tap the one that resonates most.',
-    options: [
-      'My mood feels unpredictable',
-      'My sleep has changed',
-      'My energy isn\'t what it used to be',
-      'My body feels different',
-      'I just don\'t feel like myself',
-    ],
+    id: 'age',
+    title: 'How old are you?',
+    subtitle: 'This helps us personalize your results.',
+    options: ['Under 35', '35-39', '40-44', '45-49', '50-54', '55+'],
     type: 'single',
   },
   // Stage 2: Timeline (easy, builds narrative)
@@ -202,14 +203,17 @@ export const ANALYZING_MESSAGES = [
 export function buildQuizScreens(): QuizScreen[] {
   const screens: QuizScreen[] = []
 
-  // Q1: Age (warm-up)
+  // Q1: Primary concern (symptom selector — validates ad click)
   screens.push({ ...CORE_QUESTIONS[0], screenType: 'question' })
+
+  // Q2: Age
+  screens.push({ ...CORE_QUESTIONS[1], screenType: 'question' })
 
   // Education interstitial after age (normalizes symptoms)
   screens.push({ ...EARLY_EDUCATION_SCREEN, screenType: 'education' })
 
-  // Q2-Q8: Remaining core questions
-  for (let i = 1; i < CORE_QUESTIONS.length; i++) {
+  // Q3+: Remaining core questions
+  for (let i = 2; i < CORE_QUESTIONS.length; i++) {
     screens.push({ ...CORE_QUESTIONS[i], screenType: 'question' })
   }
 

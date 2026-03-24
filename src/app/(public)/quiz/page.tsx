@@ -16,7 +16,7 @@ const TOTAL_STEPS = SCREENS.length + 4
 type Phase = 'quiz' | 'analyzing' | 'reveal' | 'email' | 'paywall'
 
 export default function QuizPage() {
-  const [step, setStep] = useState(-1) // -1 = welcome screen
+  const [step, setStep] = useState(0) // starts at Q1 immediately — no welcome screen
   const [phase, setPhase] = useState<Phase>('quiz')
   const [answers, setAnswers] = useState<Record<string, string[]>>({})
   const [analyzingStep, setAnalyzingStep] = useState(0)
@@ -26,19 +26,20 @@ export default function QuizPage() {
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
 
-  // Track page landed (not quiz_start — that fires when they click "Start")
+  // Track quiz start on page mount (no welcome screen — quiz IS the landing)
   useEffect(() => {
-    function fireLanded() {
+    function fireStart() {
       const w = window as any
       if (typeof w.gtag === 'function') {
-        w.gtag('event', 'quiz_landed')
+        w.gtag('event', 'quiz_start')
+        w.fbq?.('trackCustom', 'QuizStart')
         return true
       }
       return false
     }
-    if (!fireLanded()) {
+    if (!fireStart()) {
       const interval = setInterval(() => {
-        if (fireLanded()) clearInterval(interval)
+        if (fireStart()) clearInterval(interval)
       }, 200)
       // Stop trying after 10 seconds
       setTimeout(() => clearInterval(interval), 10000)
@@ -164,7 +165,7 @@ export default function QuizPage() {
 
   // ─── Screen names for per-step GA4 tracking ───
   const SCREEN_NAMES = [
-    'quiz_s01_age', 'quiz_s02_education', 'quiz_s03_concern',
+    'quiz_s01_concern', 'quiz_s02_age', 'quiz_s03_education',
     'quiz_s04_timeline', 'quiz_s05_vasomotor', 'quiz_s06_somatic',
     'quiz_s07_periods', 'quiz_s08_history', 'quiz_s09_impact',
     'quiz_s10_education2', 'quiz_s11_goals', 'quiz_s12_tried',
@@ -304,7 +305,6 @@ export default function QuizPage() {
 
   // ─── Progress calculation ───
   function getProgress() {
-    if (step === -1) return 0 // welcome screen
     if (phase === 'quiz') return ((step + 1) / TOTAL_STEPS) * 100
     if (phase === 'analyzing') return ((SCREENS.length + 1) / TOTAL_STEPS) * 100
     if (phase === 'reveal') return ((SCREENS.length + 2) / TOTAL_STEPS) * 100
@@ -312,14 +312,6 @@ export default function QuizPage() {
     return 100 // paywall
   }
 
-  // Start the quiz from welcome screen
-  function startQuiz() {
-    setStep(0)
-    window.scrollTo(0, 0)
-    const w = window as any
-    w.gtag?.('event', 'quiz_start')
-    w.fbq?.('trackCustom', 'QuizStart')
-  }
 
   // ─── Result config ───
   const resultLevel = getResultLevel()
@@ -368,7 +360,7 @@ export default function QuizPage() {
           >
             MenoMind
           </Link>
-          {phase === 'quiz' && step > 0 && step !== -1 && (
+          {phase === 'quiz' && step > 0 && (
             <button
               onClick={goBack}
               className="text-sm text-gray-500 hover:text-gray-700"
@@ -379,87 +371,19 @@ export default function QuizPage() {
         </div>
       </header>
 
-      {/* Progress bar — hidden on welcome screen */}
-      {step >= 0 && (
-        <div className="w-full h-1.5 bg-gray-200">
-          <div
-            className="h-full bg-brand-purple rounded-r-full transition-all duration-500 ease-out"
-            style={{ width: `${getProgress()}%` }}
-          />
-        </div>
-      )}
+      {/* Progress bar */}
+      <div className="w-full h-1.5 bg-gray-200">
+        <div
+          className="h-full bg-brand-purple rounded-r-full transition-all duration-500 ease-out"
+          style={{ width: `${getProgress()}%` }}
+        />
+      </div>
 
       {/* Main content — renders immediately as static HTML, interactive after hydration */}
       <main className="flex-1 flex items-start justify-center px-5 py-6 sm:py-8 sm:items-center overflow-y-auto">
         <div className="w-full max-w-[520px]">
-          {/* ─── WELCOME SCREEN ─── */}
-          {step === -1 && (
-            <div className="text-center animate-fadeIn">
-              {/* Symptom pills — echo the ad creative */}
-              <div className="flex flex-wrap justify-center gap-2 mb-4">
-                {['Brain fog', 'Night sweats', 'Rage', 'Anxiety'].map((s) => (
-                  <span key={s} className="bg-white border border-gray-200 text-brand-dark text-sm font-medium px-3 py-1.5 rounded-full">
-                    {s}
-                  </span>
-                ))}
-              </div>
-
-              <h1 className="text-2xl sm:text-3xl font-bold text-brand-dark mb-2 leading-tight">
-                Could your symptoms be hormonal?
-              </h1>
-              <p className="text-gray-500 text-sm mb-6">
-                Find out in 2 minutes. No signup. No judgment.
-              </p>
-
-              <div className="bg-white rounded-2xl p-5 mb-6 text-left border border-gray-200">
-                <p className="text-sm font-semibold text-brand-dark mb-3">
-                  Based on your answers, you&apos;ll get:
-                </p>
-                <div className="space-y-2.5">
-                  {[
-                    'Find out if your symptoms are connected',
-                    'A personalized symptom breakdown',
-                    'Clear next steps — not guesswork',
-                  ].map((text) => (
-                    <div key={text} className="flex items-start gap-2.5">
-                      <span className="text-brand-purple text-sm font-bold shrink-0 mt-0.5">&#10003;</span>
-                      <span className="text-sm text-gray-700">{text}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                onClick={startQuiz}
-                className="w-full bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 active:scale-95 transition-all text-lg shadow-md shadow-brand-pink/20"
-              >
-                Start My Assessment
-              </button>
-
-              <p className="text-xs text-gray-400 mt-3">
-                Free &middot; No account needed &middot; Private &middot; Takes 2 minutes
-              </p>
-
-              <div className="flex items-center justify-center gap-2 mt-5">
-                <div className="flex -space-x-1.5">
-                  {['S', 'M', 'J', 'L'].map((initial) => (
-                    <div
-                      key={initial}
-                      className="w-6 h-6 rounded-full bg-brand-purple-light border-2 border-white flex items-center justify-center text-white text-[10px] font-bold"
-                    >
-                      {initial}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-xs text-gray-500">
-                  Taken by 14,000+ women this month
-                </p>
-              </div>
-            </div>
-          )}
-
           {/* ─── QUIZ PHASE ─── */}
-          {phase === 'quiz' && step >= 0 && (() => {
+          {phase === 'quiz' && (() => {
             const screen = SCREENS[step]
 
             // Education screen
@@ -523,6 +447,18 @@ export default function QuizPage() {
 
             return (
               <div className={step === 0 ? '' : 'animate-fadeIn'}>
+                {/* Hybrid landing context on Q1 — headline + subhead */}
+                {step === 0 && (
+                  <div className="text-center mb-5">
+                    <h1 className="text-2xl sm:text-3xl font-bold text-brand-dark mb-1 leading-tight">
+                      Could your symptoms be hormonal?
+                    </h1>
+                    <p className="text-gray-500 text-sm">
+                      Answer 8 quick questions to find out
+                    </p>
+                  </div>
+                )}
+
                 {/* Micro-encouragement on later steps */}
                 {step >= 8 && (
                   <p className="text-xs text-brand-purple font-medium mb-3">
@@ -530,7 +466,7 @@ export default function QuizPage() {
                   </p>
                 )}
 
-                <h2 className="text-2xl font-bold text-brand-dark mb-1">
+                <h2 className={`font-bold text-brand-dark mb-1 ${step === 0 ? 'text-xl' : 'text-2xl'}`}>
                   {q.title}
                 </h2>
                 {q.subtitle && (
@@ -561,6 +497,13 @@ export default function QuizPage() {
                     )
                   })}
                 </div>
+
+                {/* Trust signal on Q1 only */}
+                {step === 0 && (
+                  <p className="text-xs text-gray-400 text-center mt-4">
+                    Trusted by 14,000+ women &middot; Free &middot; Private
+                  </p>
+                )}
 
                 {/* Next button for multi-select questions */}
                 {q.type === 'multi' && (
