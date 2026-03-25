@@ -41,6 +41,14 @@ FB-AD-IMAGE-PROMPT.md
 FB-CAMPAIGN-PLAN.md
 PROFITABILITY-PROMPT.md
 MenoMind_Google_Ads_API_Design_Document.pdf
+5k.md
+GAMEPLAN.md
+menomind_google_ads_audience_plan.md
+menopause_community_language_seo_research.md
+reddit-post-*.md
+.tiktok_credentials.env
+tiktok_poster.py
+supabase/.temp/
 
 # claude local config
 .claude/settings.local.json
