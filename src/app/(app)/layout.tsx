@@ -14,7 +14,8 @@ export default async function AppLayout({
     redirect('/login')
   }
 
-  // Check if onboarding is completed
+  // Check if onboarding is completed (middleware handles redirect,
+  // but we still need the flag for AppShell)
   const { data: profile } = await supabase
     .from('user_profiles')
     .select('onboarding_completed')
