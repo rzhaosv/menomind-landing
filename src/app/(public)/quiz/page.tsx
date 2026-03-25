@@ -350,69 +350,66 @@ export default function QuizPage() {
   const rc = resultConfig[resultLevel]
 
   return (
-    <div className="min-h-screen bg-brand-cream flex flex-col">
-      {/* Header — not sticky on mobile to save screen space */}
-      <header className="z-40 bg-brand-cream/95 backdrop-blur-sm border-b border-brand-purple/[0.08] px-5 py-3 sm:sticky sm:top-0">
-        <div className="max-w-[520px] mx-auto flex items-center justify-between">
-          <Link
-            href="/"
-            className="text-lg font-bold text-brand-purple tracking-tight"
-          >
-            MenoMind
-          </Link>
-          {phase === 'quiz' && step > 0 && (
-            <button
-              onClick={goBack}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
-              &larr; Back
-            </button>
-          )}
+    <div className="min-h-screen bg-sw-surface flex flex-col font-body text-sw-on-surface">
+      {/* Header — Sophisticated Wellness glassmorphism */}
+      <header className="fixed top-0 left-0 w-full px-6 py-4 flex items-center justify-between sw-glass z-50">
+        {phase === 'quiz' && step > 0 ? (
+          <button onClick={goBack} className="flex items-center gap-1 text-sw-on-surface-variant">
+            <span className="material-symbols-outlined text-xl">arrow_back</span>
+          </button>
+        ) : (
+          <div className="w-8" />
+        )}
+        <Link href="/" className="text-lg font-headline font-bold tracking-tight text-sw-primary">
+          MenoMind
+        </Link>
+        <div className="text-sw-secondary text-sm font-medium">
+          {phase === 'quiz' ? `Step ${step + 1} of ${SCREENS.length}` : ''}
         </div>
       </header>
 
-      {/* Progress bar */}
-      <div className="w-full h-1.5 bg-gray-200">
+      {/* Progress bar — sage green, slim */}
+      <div className="fixed top-[60px] left-0 w-full h-1 bg-sw-surface-highest z-40">
         <div
-          className="h-full bg-brand-purple rounded-r-full transition-all duration-500 ease-out"
+          className="h-full bg-sw-secondary rounded-r-full transition-all duration-500 ease-out"
           style={{ width: `${getProgress()}%` }}
         />
       </div>
 
-      {/* Main content — renders immediately as static HTML, interactive after hydration */}
-      <main className="flex-1 flex items-start justify-center px-5 py-6 sm:py-8 sm:items-center overflow-y-auto">
+      {/* Main content */}
+      <main className="flex-1 pt-20 pb-28 px-6 flex items-start justify-center sm:items-center overflow-y-auto">
         <div className="w-full max-w-[520px]">
           {/* ─── QUIZ PHASE ─── */}
           {phase === 'quiz' && (() => {
             const screen = SCREENS[step]
 
-            // Education screen
+            // Education screen — editorial card
             if (screen.screenType === 'education') {
               return (
                 <div className="text-center animate-fadeIn">
-                  <div className="w-14 h-14 bg-brand-purple/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-2xl">💡</span>
+                  <div className="w-14 h-14 bg-sw-secondary-container rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <span className="material-symbols-outlined text-2xl text-sw-secondary">school</span>
                   </div>
-                  <h2 className="text-2xl font-bold text-brand-dark mb-4">
+                  <h2 className="text-2xl font-headline font-bold text-sw-on-surface mb-4">
                     {screen.headline}
                   </h2>
-                  <div className="bg-white rounded-2xl p-6 border-2 border-brand-purple/15 mb-6">
-                    <p className="text-lg font-semibold text-brand-purple mb-2">
+                  <div className="bg-sw-surface-low rounded-2xl p-6 mb-6">
+                    <p className="text-lg font-semibold text-sw-primary font-headline mb-2">
                       {screen.stat}
                     </p>
                     {screen.statSource && (
-                      <p className="text-xs text-gray-400">
+                      <p className="text-xs text-sw-on-surface-variant font-body">
                         Source: {screen.statSource}
                       </p>
                     )}
                   </div>
-                  <p className="text-gray-600 text-sm mb-8">{screen.body}</p>
+                  <p className="text-sw-on-surface-variant text-sm mb-8 font-body">{screen.body}</p>
                   {screen.socialProof && (
-                    <p className="text-xs text-gray-500 mb-6">
+                    <p className="text-xs text-sw-on-surface-variant mb-6 font-body">
                       {screen.socialProof}
                     </p>
                   )}
-                  <button onClick={advance} className="btn-primary w-full">
+                  <button onClick={advance} className="sw-gradient-cta text-white font-semibold py-4 px-6 rounded-xl w-full font-body">
                     Continue
                   </button>
                 </div>
@@ -423,16 +420,16 @@ export default function QuizPage() {
             if (screen.screenType === 'commitment') {
               return (
                 <div className="text-center animate-fadeIn">
-                  <div className="w-14 h-14 bg-brand-pink/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <span className="text-2xl">✨</span>
+                  <div className="w-14 h-14 bg-sw-secondary-container rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <span className="material-symbols-outlined text-2xl text-sw-secondary">verified</span>
                   </div>
-                  <h2 className="text-2xl font-bold text-brand-dark mb-4">
+                  <h2 className="text-2xl font-headline font-bold text-sw-on-surface mb-4">
                     {screen.headline}
                   </h2>
-                  <p className="text-gray-600 text-sm mb-8">{screen.body}</p>
+                  <p className="text-sw-on-surface-variant text-sm mb-8 font-body">{screen.body}</p>
                   <button
                     onClick={advance}
-                    className="w-full bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 transition-colors text-lg"
+                    className="w-full sw-gradient-cta text-white font-semibold py-4 px-6 rounded-xl transition-colors text-lg font-body"
                   >
                     {screen.buttonText}
                   </button>
@@ -445,15 +442,17 @@ export default function QuizPage() {
             const currentAnswers = answers[q.id] || []
             const hasAnswer = currentAnswers.length > 0
 
+            const icons = (screen as any).icons as string[] | undefined
+
             return (
               <div className={step === 0 ? '' : 'animate-fadeIn'}>
-                {/* Hybrid landing context on Q1 — headline + subhead */}
+                {/* Hybrid landing context on Q1 */}
                 {step === 0 && (
-                  <div className="text-center mb-5">
-                    <h1 className="text-2xl sm:text-3xl font-bold text-brand-dark mb-1 leading-tight">
+                  <div className="text-center mb-6">
+                    <h1 className="text-2xl sm:text-3xl font-headline font-bold text-sw-primary mb-1 leading-tight">
                       Could your symptoms be hormonal?
                     </h1>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-sw-on-surface-variant text-sm font-body">
                       Answer 8 quick questions to find out
                     </p>
                   </div>
@@ -461,21 +460,22 @@ export default function QuizPage() {
 
                 {/* Micro-encouragement on later steps */}
                 {step >= 8 && (
-                  <p className="text-xs text-brand-purple font-medium mb-3">
+                  <p className="text-xs text-sw-secondary font-medium mb-3 font-body">
                     Almost there — your personalized results are coming together.
                   </p>
                 )}
 
-                <h2 className={`font-bold text-brand-dark mb-1 ${step === 0 ? 'text-xl' : 'text-2xl'}`}>
+                <h2 className={`font-headline font-bold text-sw-on-surface mb-1 ${step === 0 ? 'text-xl' : 'text-2xl'}`}>
                   {q.title}
                 </h2>
                 {q.subtitle && (
-                  <p className="text-sm text-gray-500 mb-5">{q.subtitle}</p>
+                  <p className="text-sm text-sw-on-surface-variant mb-5 font-body">{q.subtitle}</p>
                 )}
 
                 <div className="space-y-3">
-                  {q.options.map((option) => {
+                  {q.options.map((option, idx) => {
                     const selected = currentAnswers.includes(option)
+                    const icon = icons?.[idx]
                     return (
                       <button
                         key={option}
@@ -486,13 +486,23 @@ export default function QuizPage() {
                             selectAnswer(q.id, option, q.type)
                           }
                         }}
-                        className={`w-full text-left p-4 rounded-xl border-2 transition-all text-base font-medium active:scale-[0.98] ${
+                        className={`w-full text-left p-4 rounded-xl transition-all text-base font-medium font-body active:scale-[0.98] flex items-center gap-3 ${
                           selected
-                            ? 'border-brand-purple bg-brand-purple/10 text-brand-purple'
-                            : 'border-gray-200 hover:border-gray-300 bg-white'
+                            ? 'bg-sw-secondary-container border border-sw-secondary/40'
+                            : 'bg-sw-surface-low hover:bg-sw-surface-high'
                         }`}
                       >
-                        {option}
+                        {icon && (
+                          <span className={`material-symbols-outlined text-2xl shrink-0 ${selected ? 'text-sw-secondary' : 'text-sw-on-surface-variant'}`}>
+                            {icon}
+                          </span>
+                        )}
+                        <span className="flex-1">{option}</span>
+                        <div className={`w-5 h-5 rounded-full border-2 shrink-0 flex items-center justify-center ${
+                          selected ? 'border-sw-secondary bg-sw-secondary' : 'border-sw-outline-variant'
+                        }`}>
+                          {selected && <div className="w-2 h-2 rounded-full bg-white" />}
+                        </div>
                       </button>
                     )
                   })}
@@ -500,20 +510,22 @@ export default function QuizPage() {
 
                 {/* Trust signal on Q1 only */}
                 {step === 0 && (
-                  <p className="text-xs text-gray-400 text-center mt-4">
+                  <p className="text-xs text-sw-on-surface-variant text-center mt-5 font-body">
                     Trusted by 14,000+ women &middot; Free &middot; Private
                   </p>
                 )}
 
-                {/* Next button for multi-select questions */}
+                {/* Fixed bottom nav for multi-select questions */}
                 {q.type === 'multi' && (
-                  <button
-                    onClick={advance}
-                    disabled={!hasAnswer}
-                    className="w-full mt-6 bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                  >
-                    Next &rarr;
-                  </button>
+                  <div className="fixed bottom-0 left-0 w-full px-6 py-4 sw-glass shadow-[0_-8px_24px_rgba(27,28,28,0.04)]">
+                    <button
+                      onClick={advance}
+                      disabled={!hasAnswer}
+                      className="w-full sw-gradient-cta text-white font-semibold py-4 px-6 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed font-body"
+                    >
+                      Continue
+                    </button>
+                  </div>
                 )}
               </div>
             )
@@ -522,31 +534,41 @@ export default function QuizPage() {
           {/* ─── ANALYZING PHASE ─── */}
           {phase === 'analyzing' && (
             <div className="text-center animate-fadeIn py-8">
-              <div className="w-16 h-16 mx-auto mb-6 relative">
-                <div className="absolute inset-0 rounded-full border-4 border-brand-purple/20" />
-                <div className="absolute inset-0 rounded-full border-4 border-brand-purple border-t-transparent animate-spin" />
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-sw-secondary-container flex items-center justify-center pulse-animation">
+                <span className="material-symbols-outlined text-4xl text-sw-secondary">biotech</span>
               </div>
-              <h3 className="text-xl font-bold mb-2">
-                Analyzing your responses...
+              <h3 className="text-xl font-headline font-bold text-sw-on-surface mb-2">
+                Crafting your personalized profile...
               </h3>
-              <div className="space-y-3 mt-6">
+              <p className="text-sm text-sw-on-surface-variant font-body mb-6">
+                Our AI is analyzing your responses
+              </p>
+              <div className="space-y-4 mt-6 text-left max-w-xs mx-auto">
                 {ANALYZING_MESSAGES.map((msg, i) => (
-                  <p
+                  <div
                     key={i}
-                    className={`text-sm transition-all duration-500 ${
-                      i <= analyzingStep
-                        ? 'text-gray-700 opacity-100'
-                        : 'text-gray-400 opacity-0'
+                    className={`flex items-center gap-3 transition-all duration-500 ${
+                      i <= analyzingStep ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
-                    {i < analyzingStep ? '✓' : i === analyzingStep ? '...' : ''}{' '}
-                    {msg}
-                  </p>
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${
+                      i < analyzingStep ? 'bg-sw-secondary' : i === analyzingStep ? 'bg-sw-secondary-container' : 'bg-sw-surface-high'
+                    }`}>
+                      {i < analyzingStep ? (
+                        <span className="material-symbols-outlined text-sm text-white">check</span>
+                      ) : (
+                        <div className="w-2 h-2 rounded-full bg-sw-secondary animate-pulse" />
+                      )}
+                    </div>
+                    <span className={`text-sm font-body ${i <= analyzingStep ? 'text-sw-on-surface' : 'text-sw-on-surface-variant'}`}>
+                      {msg}
+                    </span>
+                  </div>
                 ))}
               </div>
-              <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden mt-8">
+              <div className="w-full h-1.5 bg-sw-surface-highest rounded-full overflow-hidden mt-8">
                 <div
-                  className="h-full bg-brand-purple rounded-full transition-all duration-1000 ease-out"
+                  className="h-full bg-sw-secondary rounded-full transition-all duration-1000 ease-out"
                   style={{
                     width: `${((analyzingStep + 1) / ANALYZING_MESSAGES.length) * 100}%`,
                   }}
@@ -566,10 +588,10 @@ export default function QuizPage() {
 
             return (
               <div className="animate-fadeIn">
-                <h2 className="text-2xl font-bold text-center mb-2">
+                <h2 className="text-2xl font-headline font-bold text-center text-sw-on-surface mb-2">
                   Here&apos;s what we found
                 </h2>
-                <p className="text-gray-500 text-center text-sm mb-6">
+                <p className="text-sw-on-surface-variant text-center text-sm mb-6 font-body">
                   Based on your responses, here&apos;s your symptom profile.
                 </p>
 
@@ -805,146 +827,82 @@ export default function QuizPage() {
             </div>
           )}
 
-          {/* ─── PAYWALL PHASE ─── */}
+          {/* ─── PAYWALL PHASE — $37 one-time report ─── */}
           {phase === 'paywall' && (() => {
-            const topSymptoms = getTopSymptomNames()
-            const paywallHeadline =
-              topSymptoms.length >= 2
-                ? `Your plan for managing ${topSymptoms[0]} and ${topSymptoms[1]} is ready`
-                : topSymptoms.length === 1
-                  ? `Your plan for managing ${topSymptoms[0]} is ready`
-                  : 'Your personalized perimenopause plan is ready'
-
             return (
               <div className="animate-fadeIn">
-                <h2 className="text-2xl font-bold text-center text-brand-dark mb-6">
-                  {paywallHeadline}
-                </h2>
+                <div className="text-center mb-6">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-sw-secondary-container flex items-center justify-center">
+                    <span className="material-symbols-outlined text-3xl text-sw-secondary">description</span>
+                  </div>
+                  <h2 className="text-2xl font-headline font-bold text-sw-on-surface mb-2">
+                    Your Hormonal Balance Profile is Ready
+                  </h2>
+                  <p className="text-sm text-sw-on-surface-variant font-body">
+                    Get your personalized 12-page report with actionable insights.
+                  </p>
+                </div>
 
-                {/* Value pillars */}
+                {/* Value stack */}
                 <div className="space-y-3 mb-6">
                   {[
-                    {
-                      icon: '🔍',
-                      title: 'Full Symptom Breakdown',
-                      desc: 'Why each symptom is happening and how they connect',
-                    },
-                    {
-                      icon: '🩺',
-                      title: 'Doctor-Ready Report',
-                      desc: 'A printable report so your doctor takes you seriously',
-                    },
-                    {
-                      icon: '📋',
-                      title: 'Personalized Action Plan',
-                      desc: 'Week-by-week steps tailored to your symptoms',
-                    },
-                    {
-                      icon: '💬',
-                      title: 'AI Menopause Companion',
-                      desc: 'Ask anything, anytime — evidence-based answers 24/7',
-                    },
-                  ].map((pillar) => (
-                    <div
-                      key={pillar.title}
-                      className="flex items-start gap-3 p-4 bg-white rounded-xl border border-gray-200"
-                    >
-                      <span className="text-xl shrink-0 mt-0.5">
-                        {pillar.icon}
-                      </span>
+                    { icon: 'analytics', title: 'Detailed Symptom Analysis', desc: 'How your symptoms connect and what they mean' },
+                    { icon: 'assignment', title: 'Personalized Action Plan', desc: 'Evidence-based steps tailored to your profile' },
+                    { icon: 'medical_information', title: 'Doctor Conversation Script', desc: 'Exactly what to say so your doctor takes you seriously' },
+                    { icon: 'medication', title: 'Supplement & Lifestyle Guide', desc: 'What actually works — backed by clinical research' },
+                  ].map((item) => (
+                    <div key={item.title} className="flex items-start gap-3 p-4 bg-sw-surface-low rounded-xl">
+                      <span className="material-symbols-outlined text-xl text-sw-secondary shrink-0 mt-0.5">{item.icon}</span>
                       <div>
-                        <p className="text-sm font-semibold">{pillar.title}</p>
-                        <p className="text-xs text-gray-600">{pillar.desc}</p>
+                        <p className="text-sm font-semibold font-body text-sw-on-surface">{item.title}</p>
+                        <p className="text-xs text-sw-on-surface-variant font-body">{item.desc}</p>
                       </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Billing toggle */}
-                <div className="flex items-center justify-center gap-3 mb-4">
-                  <button
-                    onClick={() => setBillingCycle('monthly')}
-                    className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors ${
-                      billingCycle === 'monthly'
-                        ? 'bg-brand-purple text-white'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Monthly
-                  </button>
-                  <button
-                    onClick={() => setBillingCycle('annual')}
-                    className={`text-sm font-medium px-4 py-2 rounded-lg transition-colors ${
-                      billingCycle === 'annual'
-                        ? 'bg-brand-purple text-white'
-                        : 'text-gray-500 hover:text-gray-700'
-                    }`}
-                  >
-                    Annual
-                    <span className="ml-1 text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-semibold">
-                      Save 44%
-                    </span>
-                  </button>
-                </div>
-
-                {/* Price display */}
+                {/* Price */}
                 <div className="text-center mb-4">
-                  {billingCycle === 'annual' ? (
-                    <>
-                      <p className="text-3xl font-bold text-brand-dark">
-                        $79.99
-                        <span className="text-sm font-normal text-gray-500">
-                          /year
-                        </span>
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        That&apos;s just $6.67/month
-                      </p>
-                    </>
-                  ) : (
-                    <p className="text-3xl font-bold text-brand-dark">
-                      $14.99
-                      <span className="text-sm font-normal text-gray-500">
-                        /month
-                      </span>
-                    </p>
-                  )}
+                  <p className="text-sm text-sw-on-surface-variant font-body line-through mb-1">$97 value</p>
+                  <p className="text-4xl font-headline font-bold text-sw-primary">
+                    $37
+                  </p>
+                  <p className="text-sm text-sw-on-surface-variant font-body mt-1">
+                    One-time payment &middot; Instant access
+                  </p>
                 </div>
 
                 {/* CTA */}
                 <button
                   onClick={handleCheckout}
                   disabled={checkoutLoading}
-                  className="w-full bg-brand-pink text-white font-semibold py-4 px-6 rounded-xl hover:bg-brand-pink/90 transition-colors shadow-lg shadow-brand-pink/20 text-lg disabled:opacity-50"
+                  className="w-full sw-gradient-cta text-white font-semibold py-4 px-6 rounded-xl transition-all text-lg font-body disabled:opacity-50 active:scale-[0.98]"
                 >
-                  {checkoutLoading
-                    ? 'Loading...'
-                    : 'Start for $1 — first week'}
+                  {checkoutLoading ? 'Loading...' : 'Get My Personalized Report — $37'}
                 </button>
-                <p className="text-xs text-gray-400 text-center mt-2">
-                  {billingCycle === 'annual'
-                    ? '$1 for your first week, then $79.99/year. Cancel anytime.'
-                    : '$1 for your first week, then $14.99/month. Cancel anytime.'}
-                </p>
 
                 {/* Trust signals */}
-                <div className="flex flex-wrap justify-center gap-4 mt-6 text-xs text-gray-500">
-                  <span>🔒 Encrypted & private</span>
-                  <span>💯 14-day money-back guarantee</span>
+                <div className="flex flex-wrap justify-center gap-4 mt-5 text-xs text-sw-on-surface-variant font-body">
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">lock</span> Secure checkout
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">verified_user</span> 30-day guarantee
+                  </span>
                 </div>
                 <div className="flex items-center justify-center gap-2 mt-4">
                   <div className="flex -space-x-2">
                     {['S', 'M', 'J', 'L'].map((initial) => (
                       <div
                         key={initial}
-                        className="w-7 h-7 rounded-full bg-brand-purple-light border-2 border-white flex items-center justify-center text-white text-xs font-bold"
+                        className="w-7 h-7 rounded-full bg-sw-primary-container border-2 border-sw-surface flex items-center justify-center text-white text-xs font-bold"
                       >
                         {initial}
                       </div>
                     ))}
                   </div>
-                  <p className="text-xs text-gray-500">
-                    2,400+ women this month
+                  <p className="text-xs text-sw-on-surface-variant font-body">
+                    14,000+ women trust MenoMind
                   </p>
                 </div>
               </div>
@@ -952,13 +910,6 @@ export default function QuizPage() {
           })()}
         </div>
       </main>
-
-      {/* Subtle footer on quiz screens */}
-      {phase === 'quiz' && (
-        <footer className="text-center py-3 text-xs text-gray-400">
-          🔒 Your answers are private and encrypted
-        </footer>
-      )}
 
     </div>
   )

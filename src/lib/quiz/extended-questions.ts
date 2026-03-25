@@ -3,6 +3,7 @@ export interface QuizQuestion {
   title: string
   subtitle?: string
   options: string[]
+  icons?: string[] // Material Symbols icon names for each option
   type: 'single' | 'multi'
 }
 
@@ -44,6 +45,7 @@ export const CORE_QUESTIONS: QuizQuestion[] = [
       'Weight or body changes',
       "I'm not sure — I just want answers",
     ],
+    icons: ['thermostat', 'bedtime', 'mood_bad', 'psychology', 'monitor_weight', 'help_outline'],
     type: 'single',
   },
   // Q2: Age — easy demographic, builds on commitment
