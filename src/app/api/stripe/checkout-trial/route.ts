@@ -1,36 +1,19 @@
 import { NextResponse } from 'next/server'
-import { createCheckoutSession } from '@/lib/stripe/client'
+import { createReportCheckoutSession } from '@/lib/stripe/client'
 
 /**
- * Anonymous trial checkout — no auth required.
- * Creates a Stripe Checkout session with $1 first-week trial.
- * Stripe captures the email at checkout. The webhook handler
- * creates the user account upon successful payment.
+ * Quiz paywall checkout — creates a one-time $37 payment for the report.
+ * No auth required (anonymous quiz flow).
  */
 export async function POST(request: Request) {
   try {
-    // Accept optional billingCycle from quiz paywall
-    let billingCycle: string | undefined
-    try {
-      const body = await request.json()
-      billingCycle = body.billingCycle
-    } catch {
-      // No body or invalid JSON — use default (monthly)
-    }
-
-    const priceId =
-      billingCycle === 'annual'
-        ? process.env.NEXT_PUBLIC_STRIPE_PRICE_ANNUAL || process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY || 'price_monthly_placeholder'
-        : process.env.NEXT_PUBLIC_STRIPE_PRICE_MONTHLY || 'price_monthly_placeholder'
-
     const origin =
       request.headers.get('origin') ||
       process.env.NEXT_PUBLIC_APP_URL ||
       'https://menomind.app'
 
-    const session = await createCheckoutSession({
-      priceId,
-      userId: 'anonymous', // resolved in webhook after checkout
+    const session = await createReportCheckoutSession({
+      userId: 'anonymous',
       returnUrl: `${origin}/success`,
     })
 

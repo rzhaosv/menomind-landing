@@ -114,6 +114,51 @@ async function getOrCreateIntroPrice(): Promise<Stripe.Price | null> {
   }
 }
 
+/**
+ * Create a one-time payment checkout for the $37 report.
+ */
+export async function createReportCheckoutSession({
+  userId,
+  returnUrl,
+}: {
+  userId: string
+  returnUrl: string
+}) {
+  const stripe = getStripe()
+
+  // Get or create the $37 report price
+  let reportPrice: Stripe.Price | undefined
+  const prices = await stripe.prices.list({ limit: 50, active: true, type: 'one_time' })
+  reportPrice = prices.data.find(
+    (p) => p.unit_amount === 3700 && p.metadata?.purpose === 'report'
+  )
+
+  if (!reportPrice) {
+    const product = await stripe.products.create({
+      name: 'MenoMind — Personalized Hormonal Balance Report',
+      description: '12-page personalized report with symptom analysis, action plan, and doctor conversation script.',
+      metadata: { purpose: 'report' },
+    })
+    reportPrice = await stripe.prices.create({
+      product: product.id,
+      unit_amount: 3700,
+      currency: 'usd',
+      metadata: { purpose: 'report' },
+    })
+  }
+
+  const session = await stripe.checkout.sessions.create({
+    line_items: [{ price: reportPrice.id, quantity: 1 }],
+    mode: 'payment',
+    success_url: `${returnUrl}?success=true&session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${returnUrl}?canceled=true`,
+    metadata: { userId },
+    allow_promotion_codes: true,
+  })
+
+  return session
+}
+
 export async function createCustomerPortalSession({
   customerId,
   returnUrl,
