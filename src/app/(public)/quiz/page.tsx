@@ -25,6 +25,7 @@ export default function QuizPage() {
   const [emailCaptured, setEmailCaptured] = useState(false)
   const [billingCycle, setBillingCycle] = useState<'annual' | 'monthly'>('annual')
   const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [orderBump, setOrderBump] = useState(false)
 
   // Track quiz start on page mount (no welcome screen — quiz IS the landing)
   useEffect(() => {
@@ -363,9 +364,7 @@ export default function QuizPage() {
         <Link href="/" className="text-lg font-headline font-bold tracking-tight text-sw-primary">
           MenoMind
         </Link>
-        <div className="text-sw-secondary text-sm font-medium">
-          {phase === 'quiz' ? `Step ${step + 1} of ${SCREENS.length}` : ''}
-        </div>
+        <div className="w-8" />
       </header>
 
       {/* Progress bar — sage green, slim */}
@@ -410,7 +409,7 @@ export default function QuizPage() {
                     </p>
                   )}
                   <button onClick={advance} className="sw-gradient-cta text-white font-semibold py-4 px-6 rounded-xl w-full font-body">
-                    Continue
+                    {(screen as any).cta || 'Continue'}
                   </button>
                 </div>
               )
@@ -709,11 +708,11 @@ export default function QuizPage() {
 
                 {/* Inline email capture — no separate screen */}
                 <div className="mt-6 bg-white rounded-2xl border-2 border-brand-purple/15 p-5 text-center">
-                  <p className="text-sm font-semibold text-brand-dark mb-1">
-                    Your full report is ready
+                  <p className="text-sm font-semibold text-sw-on-surface font-headline mb-1">
+                    Your results are ready.
                   </p>
-                  <p className="text-xs text-gray-500 mb-4">
-                    Enter your email to see the full breakdown + get a copy sent to you.
+                  <p className="text-xs text-sw-on-surface-variant font-body mb-4">
+                    Where should we send your personalized perimenopause report?
                   </p>
                   {emailCaptured ? (
                     <div className="text-sm text-green-600 font-medium py-2">
@@ -732,7 +731,7 @@ export default function QuizPage() {
                           type="email"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
-                          placeholder="your@email.com"
+                          placeholder="Your email address"
                           className="input-field flex-1 text-sm"
                           required
                         />
@@ -741,7 +740,7 @@ export default function QuizPage() {
                           disabled={emailSubmitting}
                           className="bg-brand-pink text-white text-sm font-semibold px-4 py-2.5 rounded-xl hover:bg-brand-pink/90 transition-colors whitespace-nowrap disabled:opacity-50"
                         >
-                          {emailSubmitting ? '...' : 'Get Report'}
+                          {emailSubmitting ? '...' : 'Send My Report \u2192'}
                         </button>
                       </form>
                       <button
@@ -753,7 +752,7 @@ export default function QuizPage() {
                         }}
                         className="text-xs text-gray-400 hover:text-gray-600 mt-3 underline"
                       >
-                        Skip — show me the paywall
+                        Skip for now
                       </button>
                     </>
                   )}
@@ -765,18 +764,14 @@ export default function QuizPage() {
           {/* ─── EMAIL CAPTURE PHASE ─── */}
           {phase === 'email' && (
             <div className="text-center animate-fadeIn">
-              <div className="w-14 h-14 bg-brand-purple/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <span className="text-2xl">📧</span>
+              <div className="w-14 h-14 bg-sw-secondary-container rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <span className="material-symbols-outlined text-2xl text-sw-secondary">mail</span>
               </div>
-              <h2 className="text-2xl font-bold text-brand-dark mb-2">
-                Your full symptom report is ready
+              <h2 className="text-2xl font-headline font-bold text-sw-on-surface mb-2">
+                Your results are ready.
               </h2>
-              <p className="text-gray-600 text-sm mb-1">
-                Where should we send it?
-              </p>
-              <p className="text-xs text-gray-400 mb-6">
-                Includes: detailed symptom breakdown, personalized action plan,
-                and a check-in in a few days.
+              <p className="text-sw-on-surface-variant text-sm font-body mb-6">
+                Where should we send your personalized perimenopause report?
               </p>
 
               {emailCaptured ? (
@@ -795,7 +790,7 @@ export default function QuizPage() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="your@email.com"
+                      placeholder="Your email address"
                       className="input-field flex-1 text-sm"
                       required
                       autoFocus
@@ -803,13 +798,13 @@ export default function QuizPage() {
                     <button
                       type="submit"
                       disabled={emailSubmitting}
-                      className="btn-primary text-sm whitespace-nowrap disabled:opacity-50"
+                      className="sw-gradient-cta text-white text-sm font-semibold px-4 py-2.5 rounded-xl whitespace-nowrap disabled:opacity-50 font-body"
                     >
-                      {emailSubmitting ? '...' : 'Get My Report'}
+                      {emailSubmitting ? '...' : 'Send My Report \u2192'}
                     </button>
                   </form>
-                  <p className="text-xs text-gray-400 mt-4">
-                    Join 2,400+ women who&apos;ve taken this assessment
+                  <p className="text-xs text-sw-on-surface-variant font-body mt-4">
+                    Free. Private. No spam. Unsubscribe anytime.
                   </p>
                   <button
                     onClick={() => {
@@ -829,46 +824,57 @@ export default function QuizPage() {
 
           {/* ─── PAYWALL PHASE — $37 one-time report ─── */}
           {phase === 'paywall' && (() => {
+            // Personalization based on Q1 answer
+            const concern = answers['primary_concern']?.[0] || ''
+            const personalizationMap: Record<string, string> = {
+              '\u{1F630} 3am anxiety that comes out of nowhere': 'Your symptom pattern \u2014 especially the sudden anxiety and sleep disruption \u2014 is consistent with early hormonal transition. This is treatable and you are not alone.',
+              '\u{1F32B}\uFE0F Brain fog \u2014 forgetting words mid-sentence': 'The brain fog and memory changes you\u2019re experiencing have a hormonal explanation. Your report covers exactly what\u2019s happening and what to do next.',
+              '\u{1F621} Rage or irritability that doesn\'t feel like "just stress"': 'The irritability you\u2019re experiencing isn\u2019t a personality change. It\u2019s estrogen. Your report explains the connection and what actually helps.',
+              '\u{1F634} Sleep problems \u2014 can\'t fall or stay asleep': 'Sleep disruption is one of the first signs of hormonal change \u2014 often appearing years before other symptoms. Your report covers why and what works.',
+              '\u{1F493} Random heart palpitations or racing heart': 'Random heart palpitations in your 40s are alarming \u2014 and almost always hormonal, not cardiac. Your report explains the mechanism and when to seek care.',
+              '\u{1F937} Feeling unlike myself \u2014 but I can\'t explain it': 'Feeling unlike yourself \u2014 without being able to explain why \u2014 is one of the most reported and least discussed perimenopause symptoms. Your report validates what you\u2019re experiencing.',
+            }
+            const personalizedText = personalizationMap[concern] || 'Based on your symptom pattern, your personalized report covers what\u2019s likely happening hormonally and what you can do about it.'
+
             return (
               <div className="animate-fadeIn">
-                <div className="text-center mb-6">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-sw-secondary-container flex items-center justify-center">
-                    <span className="material-symbols-outlined text-3xl text-sw-secondary">description</span>
-                  </div>
+                <div className="text-center mb-4">
                   <h2 className="text-2xl font-headline font-bold text-sw-on-surface mb-2">
-                    Your Hormonal Balance Profile is Ready
+                    Your Perimenopause Profile is ready.
                   </h2>
                   <p className="text-sm text-sw-on-surface-variant font-body">
-                    Get your personalized 12-page report with actionable insights.
+                    Based on your answers, here&apos;s what we found:
+                  </p>
+                </div>
+
+                {/* Personalization block */}
+                <div className="bg-sw-surface-low rounded-xl p-5 mb-6">
+                  <p className="text-sm text-sw-on-surface font-body leading-relaxed italic">
+                    &ldquo;{personalizedText}&rdquo;
                   </p>
                 </div>
 
                 {/* Value stack */}
-                <div className="space-y-3 mb-6">
+                <div className="space-y-2.5 mb-6">
                   {[
-                    { icon: 'analytics', title: 'Detailed Symptom Analysis', desc: 'How your symptoms connect and what they mean' },
-                    { icon: 'assignment', title: 'Personalized Action Plan', desc: 'Evidence-based steps tailored to your profile' },
-                    { icon: 'medical_information', title: 'Doctor Conversation Script', desc: 'Exactly what to say so your doctor takes you seriously' },
-                    { icon: 'medication', title: 'Supplement & Lifestyle Guide', desc: 'What actually works — backed by clinical research' },
+                    'Your personalized symptom analysis',
+                    'What your hormone levels are likely doing right now',
+                    'The 6 symptoms most women miss until year 3',
+                    'What to say to your doctor (and what to ask for)',
+                    'Evidence-based next steps \u2014 no prescription required',
                   ].map((item) => (
-                    <div key={item.title} className="flex items-start gap-3 p-4 bg-sw-surface-low rounded-xl">
-                      <span className="material-symbols-outlined text-xl text-sw-secondary shrink-0 mt-0.5">{item.icon}</span>
-                      <div>
-                        <p className="text-sm font-semibold font-body text-sw-on-surface">{item.title}</p>
-                        <p className="text-xs text-sw-on-surface-variant font-body">{item.desc}</p>
-                      </div>
+                    <div key={item} className="flex items-start gap-2.5">
+                      <span className="text-sw-secondary font-bold shrink-0 mt-0.5">{'\u2713'}</span>
+                      <span className="text-sm text-sw-on-surface font-body">{item}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* Price */}
                 <div className="text-center mb-4">
-                  <p className="text-sm text-sw-on-surface-variant font-body line-through mb-1">$97 value</p>
+                  <p className="text-sm text-sw-on-surface-variant font-body line-through mb-1">$113</p>
                   <p className="text-4xl font-headline font-bold text-sw-primary">
                     $37
-                  </p>
-                  <p className="text-sm text-sw-on-surface-variant font-body mt-1">
-                    One-time payment &middot; Instant access
                   </p>
                 </div>
 
@@ -878,33 +884,31 @@ export default function QuizPage() {
                   disabled={checkoutLoading}
                   className="w-full sw-gradient-cta text-white font-semibold py-4 px-6 rounded-xl transition-all text-lg font-body disabled:opacity-50 active:scale-[0.98]"
                 >
-                  {checkoutLoading ? 'Loading...' : 'Get My Personalized Report — $37'}
+                  {checkoutLoading ? 'Loading...' : 'Get My Report Now \u2192'}
                 </button>
 
-                {/* Trust signals */}
-                <div className="flex flex-wrap justify-center gap-4 mt-5 text-xs text-sw-on-surface-variant font-body">
-                  <span className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">lock</span> Secure checkout
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <span className="material-symbols-outlined text-sm">verified_user</span> 30-day guarantee
-                  </span>
-                </div>
-                <div className="flex items-center justify-center gap-2 mt-4">
-                  <div className="flex -space-x-2">
-                    {['S', 'M', 'J', 'L'].map((initial) => (
-                      <div
-                        key={initial}
-                        className="w-7 h-7 rounded-full bg-sw-primary-container border-2 border-sw-surface flex items-center justify-center text-white text-xs font-bold"
-                      >
-                        {initial}
-                      </div>
-                    ))}
+                {/* Order bump */}
+                <label className="flex items-start gap-3 mt-5 p-4 bg-sw-surface-low rounded-xl cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={orderBump}
+                    onChange={(e) => setOrderBump(e.target.checked)}
+                    className="mt-1 w-4 h-4 accent-sw-secondary"
+                  />
+                  <div>
+                    <p className="text-sm font-semibold font-body text-sw-on-surface">
+                      Add the 30-Day Symptom Tracker + Supplement Guide for $17
+                    </p>
+                    <p className="text-xs text-sw-on-surface-variant font-body mt-0.5">
+                      Used by 2,300+ women to track patterns and prep for doctor appointments.
+                    </p>
                   </div>
-                  <p className="text-xs text-sw-on-surface-variant font-body">
-                    14,000+ women trust MenoMind
-                  </p>
-                </div>
+                </label>
+
+                {/* Trust */}
+                <p className="text-xs text-sw-on-surface-variant font-body text-center mt-5">
+                  {'\uD83D\uDD12'} Secure checkout &middot; 30-day money-back guarantee &middot; Instant digital delivery
+                </p>
               </div>
             )
           })()}

@@ -15,6 +15,7 @@ export interface EducationScreen {
   statSource?: string
   body: string
   socialProof?: string
+  cta?: string
 }
 
 export interface CommitmentScreen {
@@ -35,17 +36,16 @@ export const CORE_QUESTIONS: QuizQuestion[] = [
   // Q1: Symptom concern — validates the ad click, creates micro-commitment
   {
     id: 'primary_concern',
-    title: "What's been affecting you most?",
+    title: "Which of these sounds like you right now?",
     subtitle: 'Tap the one that fits best.',
     options: [
-      'Hot flashes or night sweats',
-      'Sleep problems',
-      'Mood changes or anxiety',
-      'Brain fog or memory issues',
-      'Weight or body changes',
-      "I'm not sure — I just want answers",
+      '\u{1F630} 3am anxiety that comes out of nowhere',
+      '\u{1F32B}\uFE0F Brain fog \u2014 forgetting words mid-sentence',
+      '\u{1F621} Rage or irritability that doesn\'t feel like "just stress"',
+      '\u{1F634} Sleep problems \u2014 can\'t fall or stay asleep',
+      '\u{1F493} Random heart palpitations or racing heart',
+      '\u{1F937} Feeling unlike myself \u2014 but I can\'t explain it',
     ],
-    icons: ['thermostat', 'bedtime', 'mood_bad', 'psychology', 'monitor_weight', 'help_outline'],
     type: 'single',
   },
   // Q2: Age — easy demographic, builds on commitment
@@ -166,21 +166,20 @@ export const DEPTH_QUESTIONS: QuizQuestion[] = [
 export const EARLY_EDUCATION_SCREEN: EducationScreen = {
   id: 'education_early',
   type: 'education',
-  headline: "You're in the right place.",
-  stat: '8 out of 10 women experience unexpected changes in mood, energy, and thinking — often years before menopause.',
-  body: "Most women have no idea these changes are hormonal. The fact that you're here means you're already ahead.",
-  socialProof: '14,000+ women have taken this assessment',
+  headline: "Everyone warned you about hot flashes.",
+  stat: '',
+  body: "Nobody mentioned the 3am anxiety. The rage that comes from nowhere. Forgetting a word mid-sentence and calling the refrigerator \u2018the cold food box.\u2019 These aren\u2019t stress. These aren\u2019t aging. They\u2019re hormonal \u2014 and more common than hot flashes.",
+  cta: "That sounds familiar \u2192",
 }
 
 // Education screen shown between core and depth questions
 export const EDUCATION_SCREEN: EducationScreen = {
   id: 'education_1',
   type: 'education',
-  headline: "You're not imagining this.",
-  stat: 'The average woman sees 3+ doctors before getting a perimenopause diagnosis.',
-  statSource: 'Biote Medical, 2023',
-  body: "Most women experience symptoms for years before anyone connects the dots. That's not your fault — it's a gap in the system.",
-  socialProof: '2,400+ women have taken this assessment this month',
+  headline: "Your tests came back \u2018normal.\u2019 You\u2019re not imagining it.",
+  stat: '',
+  body: "The average woman visits her doctor 3\u20134 times before anyone mentions perimenopause. Standard lab tests often miss hormonal fluctuation entirely. You\u2019re not crazy. You\u2019re not anxious. Your body is changing \u2014 and there\u2019s a name for it.",
+  cta: "Keep going \u2192",
 }
 
 // Commitment screen shown after depth questions
@@ -194,11 +193,9 @@ export const COMMITMENT_SCREEN: CommitmentScreen = {
 
 // Analyzing screen messages
 export const ANALYZING_MESSAGES = [
-  'Comparing with 2,400+ women in your age group...',
-  'Identifying symptom patterns and connections...',
-  'Matching your profile to clinical research...',
-  'Checking for commonly missed correlations...',
-  'Building your personalized assessment...',
+  'Reviewing your symptom pattern...',
+  'Comparing to 14,000+ women like you...',
+  'Building your personalized report...',
 ]
 
 // Full quiz flow as ordered screens
@@ -214,13 +211,18 @@ export function buildQuizScreens(): QuizScreen[] {
   // Education interstitial after age (normalizes symptoms)
   screens.push({ ...EARLY_EDUCATION_SCREEN, screenType: 'education' })
 
-  // Q3+: Remaining core questions
-  for (let i = 2; i < CORE_QUESTIONS.length; i++) {
+  // Q3: timeline, Q4: vasomotor, Q5: somatic
+  for (let i = 2; i <= 4; i++) {
     screens.push({ ...CORE_QUESTIONS[i], screenType: 'question' })
   }
 
-  // Education break before depth questions
+  // Second education interstitial (after somatic symptoms)
   screens.push({ ...EDUCATION_SCREEN, screenType: 'education' })
+
+  // Q6+: periods, history, impact
+  for (let i = 5; i < CORE_QUESTIONS.length; i++) {
+    screens.push({ ...CORE_QUESTIONS[i], screenType: 'question' })
+  }
 
   // Screens 9-11: Depth questions
   for (const q of DEPTH_QUESTIONS) {
