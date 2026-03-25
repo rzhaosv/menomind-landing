@@ -50,7 +50,7 @@ export default function QuizPage() {
   useEffect(() => {
     if (phase === 'paywall') {
       const w = window as any
-      w.gtag?.('event', 'quiz_s16_paywall')
+      w.gtag?.('event', 'quiz_s17_paywall')
       w.fbq?.('trackCustom', 'QuizPaywallShown')
     }
   }, [phase])
@@ -207,7 +207,7 @@ export default function QuizPage() {
     setAnalyzingStep(0)
 
     const w = window as any
-    w.gtag?.('event', 'quiz_s13_analyzing')
+    w.gtag?.('event', 'quiz_s14_analyzing')
     w.fbq?.('trackCustom', 'QuizAnalyzing')
 
     // Rotate through messages
@@ -220,7 +220,7 @@ export default function QuizPage() {
           setPhase('reveal')
           const level = getResultLevel()
           const { reported } = getSymptomScore()
-          w.gtag?.('event', 'quiz_s14_reveal')
+          w.gtag?.('event', 'quiz_s15_reveal')
           w.gtag?.('event', 'quiz_complete', {
             result_level: level,
             symptom_count: reported,
@@ -255,7 +255,7 @@ export default function QuizPage() {
       })
       setEmailCaptured(true)
       const w = window as any
-      w.gtag?.('event', 'quiz_s15_email')
+      w.gtag?.('event', 'quiz_s16_email')
       w.gtag?.('event', 'quiz_email_captured')
       w.gtag?.('event', 'conversion', {
         send_to: 'AW-17830146300/qbF8CJjiioccEPzhibZC',
@@ -266,7 +266,7 @@ export default function QuizPage() {
       // Auto-advance to paywall after brief confirmation
       setTimeout(() => {
         const w2 = window as any
-        w2.gtag?.('event', 'quiz_s16_paywall')
+        w2.gtag?.('event', 'quiz_s17_paywall')
         setPhase('paywall')
       }, 1200)
     } catch {
@@ -748,7 +748,7 @@ export default function QuizPage() {
                         onClick={() => {
                           const w = window as any
                           w.gtag?.('event', 'quiz_email_skipped')
-                          w.gtag?.('event', 'quiz_s16_paywall')
+                          w.gtag?.('event', 'quiz_s17_paywall')
                           setPhase('paywall')
                         }}
                         className="text-xs text-gray-400 hover:text-gray-600 mt-3 underline"
@@ -815,7 +815,7 @@ export default function QuizPage() {
                     onClick={() => {
                       const w = window as any
                       w.gtag?.('event', 'quiz_email_skipped')
-                      w.gtag?.('event', 'quiz_s16_paywall')
+                      w.gtag?.('event', 'quiz_s17_paywall')
                       setPhase('paywall')
                     }}
                     className="text-xs text-gray-400 hover:text-gray-600 mt-3 underline"
