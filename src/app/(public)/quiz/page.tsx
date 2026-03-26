@@ -449,10 +449,10 @@ export default function QuizPage() {
                 {step === 0 && (
                   <div className="text-center mb-6">
                     <h1 className="text-2xl sm:text-3xl font-headline font-bold text-sw-primary mb-1 leading-tight">
-                      Could your symptoms be hormonal?
+                      5 Signs You Might Be in Perimenopause
                     </h1>
                     <p className="text-sw-on-surface-variant text-sm font-body">
-                      Answer 8 quick questions to find out
+                      (That Your Doctor Might Miss)
                     </p>
                   </div>
                 )}
@@ -827,12 +827,12 @@ export default function QuizPage() {
             // Personalization based on Q1 answer
             const concern = answers['primary_concern']?.[0] || ''
             const personalizationMap: Record<string, string> = {
-              '3am anxiety that comes out of nowhere': 'Your symptom pattern \u2014 especially the sudden anxiety and sleep disruption \u2014 is consistent with early hormonal transition. This is treatable and you are not alone.',
-              'Brain fog \u2014 forgetting words mid-sentence': 'The brain fog and memory changes you\u2019re experiencing have a hormonal explanation. Your report covers exactly what\u2019s happening and what to do next.',
-              'Rage or irritability that doesn\'t feel like "just stress"': 'The irritability you\u2019re experiencing isn\u2019t a personality change. It\u2019s estrogen. Your report explains the connection and what actually helps.',
-              'Sleep problems \u2014 can\'t fall or stay asleep': 'Sleep disruption is one of the first signs of hormonal change \u2014 often appearing years before other symptoms. Your report covers why and what works.',
-              'Random heart palpitations or racing heart': 'Random heart palpitations in your 40s are alarming \u2014 and almost always hormonal, not cardiac. Your report explains the mechanism and when to seek care.',
-              'Feeling unlike myself \u2014 but I can\'t explain it': 'Feeling unlike yourself \u2014 without being able to explain why \u2014 is one of the most reported and least discussed perimenopause symptoms. Your report validates what you\u2019re experiencing.',
+              'Waking up at 3am \u2014 for no reason': 'Your symptom pattern \u2014 especially the sudden wakeups and sleep disruption \u2014 is consistent with early hormonal transition. This is treatable and you are not alone.',
+              'New anxiety \u2014 that appeared out of nowhere': 'The anxiety you\u2019re experiencing isn\u2019t a personality change. It has a hormonal explanation. Your report covers exactly what\u2019s happening and what to do next.',
+              'Brain fog \u2014 forgetting words, losing focus': 'The brain fog and memory changes you\u2019re experiencing have a hormonal explanation. Your report covers exactly what\u2019s happening and what to do next.',
+              'Rage or irritability \u2014 that isn\'t "just stress"': 'The irritability you\u2019re experiencing isn\u2019t a personality change. It\u2019s estrogen. Your report explains the connection and what actually helps.',
+              'Heart palpitations \u2014 random, out of nowhere': 'Random heart palpitations in your 40s are alarming \u2014 and almost always hormonal, not cardiac. Your report explains the mechanism and when to seek care.',
+              'Feeling unlike yourself \u2014 but you can\'t explain why': 'Feeling unlike yourself \u2014 without being able to explain why \u2014 is one of the most reported and least discussed perimenopause symptoms. Your report validates what you\u2019re experiencing.',
             }
             const personalizedText = personalizationMap[concern] || 'Based on your symptom pattern, your personalized report covers what\u2019s likely happening hormonally and what you can do about it.'
 
