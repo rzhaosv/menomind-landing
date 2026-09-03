@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { sendPurchaseEvent } from '@/lib/meta/conversions-api'
 
 /**
  * RevenueCat webhook → Supabase users.subscription_tier
@@ -162,26 +161,8 @@ export async function POST(request: Request) {
     },
   })
 
-  // Server-side purchase attribution for paid conversions (production only)
-  if (
-    event.environment === 'PRODUCTION' &&
-    (event.type === 'INITIAL_PURCHASE' || event.type === 'RENEWAL') &&
-    event.period_type !== 'TRIAL' &&
-    typeof event.price === 'number' &&
-    event.price > 0
-  ) {
-    try {
-      const { data: user } = await supabase.from('users').select('email').eq('id', userId).single()
-      await sendPurchaseEvent({
-        email: user?.email || undefined,
-        value: event.price,
-        currency: (event.currency || 'USD').toUpperCase(),
-        eventId: `rc_${event.id}`,
-      })
-    } catch (err) {
-      console.error('revenuecat/webhook: meta purchase event failed', err)
-    }
-  }
+  // Note: no ad-attribution calls here. App Store purchases are not shared with ad networks,
+  // matching the App Privacy declaration (no tracking).
 
   return NextResponse.json({ ok: true, tier: nextTier })
 }
