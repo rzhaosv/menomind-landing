@@ -227,7 +227,9 @@
     <footer>
         <div class="footer-content">
             <p class="footer-text">MenoMind is not a substitute for professional medical advice. Always consult with a healthcare provider about symptoms and treatment options.</p>
-            <div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/quiz">Take the Assessment</a><a href="mailto:support@menomind.app">Contact</a></div>
+            <div id="mm-appstore" style="display:none;margin:14px 0 4px"><a href="/app?ct=blog" style="display:inline-flex;align-items:center;gap:10px;background:#111;color:#fff;text-decoration:none;border-radius:12px;padding:10px 16px;font-weight:600"><span style="font-size:20px">&#63743;</span><span style="text-align:left;line-height:1.1"><span style="display:block;font-size:10px;opacity:.8;text-transform:uppercase;letter-spacing:.5px">Download on the</span><span style="display:block;font-size:16px">App Store</span></span></a><div style="font-size:12px;opacity:.7;margin-top:6px">Free · 7-day Premium trial</div></div>
+<script>fetch('/api/app-store-status').then(function(r){return r.json()}).then(function(s){if(s&&s.live){var e=document.getElementById('mm-appstore');if(e)e.style.display='block'}}).catch(function(){})</script>
+<div class="footer-links"><a href="/">Home</a><a href="/blog">Blog</a><a href="/quiz">Take the Assessment</a><a href="mailto:support@menomind.app">Contact</a></div>
             <div class="payment-badge"><span>Secure payments by Stripe</span></div>
         </div>
     </footer>

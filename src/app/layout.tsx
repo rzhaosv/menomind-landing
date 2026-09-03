@@ -50,6 +50,25 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${notoSerif.variable} ${manrope.variable}`}>
       <head>
         <meta name="apple-itunes-app" content="app-id=6761165992" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'SoftwareApplication',
+            name: 'MenoMind: Menopause Tracker',
+            operatingSystem: 'iOS',
+            applicationCategory: 'HealthApplication',
+            description: 'Perimenopause and menopause symptom tracker with an AI companion, personalized wellness plans and doctor-ready reports.',
+            url: 'https://www.menomind.app',
+            installUrl: 'https://apps.apple.com/app/id6761165992',
+            offers: [
+              { '@type': 'Offer', price: '0', priceCurrency: 'USD', description: 'Free symptom tracking' },
+              { '@type': 'Offer', price: '14.99', priceCurrency: 'USD', description: 'MenoMind Premium monthly, 7-day free trial' },
+              { '@type': 'Offer', price: '79.99', priceCurrency: 'USD', description: 'MenoMind Premium yearly, 7-day free trial' },
+            ],
+            publisher: { '@type': 'Organization', name: 'MenoMind', url: 'https://www.menomind.app' },
+          }) }}
+        />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
       </head>
       <body className={`${inter.className} font-sans`}>

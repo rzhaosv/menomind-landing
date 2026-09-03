@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { AppStoreCta } from '@/components/app-store/app-store-cta'
 import Image from 'next/image'
 const SYMPTOMS_CHECKLIST = [
   'Anxiety that came out of nowhere',
@@ -117,6 +118,7 @@ export function LandingPage() {
               Take the Free Symptom Quiz &rarr;
             </Link>
             <p className="text-white/80 text-xs mt-2">No credit card required</p>
+            <AppStoreCta campaign="landing_hero" className="mt-4" />
           </div>
 
           {/* Social Proof */}
@@ -433,6 +435,10 @@ export function LandingPage() {
       </section>
 
       {/* Footer */}
+      <section className="py-10 px-5 bg-white text-center">
+        <AppStoreCta campaign="landing_footer" variant="dark" />
+      </section>
+
       <footer className="py-10 px-5 bg-brand-dark text-white/60">
         <div className="max-w-[720px] mx-auto">
           <p className="text-xs leading-relaxed mb-6">

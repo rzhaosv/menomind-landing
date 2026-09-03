@@ -161,6 +161,20 @@ export async function POST(request: Request) {
     },
   })
 
+  // Lifecycle emails (Resend). Non-blocking; never fail the webhook on email errors.
+  try {
+    if (event.type === 'INITIAL_PURCHASE' || (event.type === 'BILLING_ISSUE')) {
+      const { data: u } = await supabase.from('users').select('email, full_name').eq('id', userId).single()
+      if (u?.email) {
+        const mod = await import('@/lib/email/retention-sequences')
+        if (event.type === 'INITIAL_PURCHASE') await mod.sendWelcomeEmail(u.email)
+        else await mod.sendPaymentFailedEmail(u.email, u.full_name || 'there')
+      }
+    }
+  } catch (err) {
+    console.error('revenuecat/webhook: lifecycle email failed', err)
+  }
+
   // Note: no ad-attribution calls here. App Store purchases are not shared with ad networks,
   // matching the App Privacy declaration (no tracking).
 
