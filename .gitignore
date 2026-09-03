@@ -59,3 +59,4 @@ supabase/.temp/
 next-env.d.ts
 .vercel
 Stitch Projects/
+.env*
